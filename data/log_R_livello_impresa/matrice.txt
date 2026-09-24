@@ -1,0 +1,31 @@
+=== LOG: matrice ===
+Data/Ora avvio: 2025-12-14 18:20:36 
+
+
+> knn_list <- spdep::knearneigh(coords_jit, k = k_opt)
+
+> (knn_nb     <- spdep::knn2nb(knn_list))
+Neighbour list object:
+Number of regions: 30673 
+Number of nonzero links: 2361821 
+Percentage nonzero weights: 0.2510351 
+Average number of links: 77 
+Non-symmetric neighbours list
+
+> (listw_knn  <- spdep::nb2listw(knn_nb, style="W", zero.policy=TRUE))
+Characteristics of weights list object:
+Neighbour list object:
+Number of regions: 30673 
+Number of nonzero links: 2361821 
+Percentage nonzero weights: 0.2510351 
+Average number of links: 77 
+Non-symmetric neighbours list
+
+Weights style: W 
+Weights constants summary:
+      n        nn    S0       S1       S2
+W 30673 940832929 30673 699.8602 125514.1
+
+> save_rds(listw_knn, "listw_knn")
+
+> close_log()

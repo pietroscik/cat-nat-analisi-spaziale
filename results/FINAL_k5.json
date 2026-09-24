@@ -1,0 +1,95 @@
+{
+ "n": 3823,
+ "spec": "y=log1p(Premio_Teorico_Comunale_EUR); X=log1p(Risk_Frana_Asset_PMI, Risk_Frana_Asset_Grandi); W KNN row-std, coord corrette",
+ "k5": {
+  "coefs": {
+   "interc": {
+    "est": 6.11612,
+    "se": 0.26285,
+    "z": 23.269
+   },
+   "b_PMI": {
+    "est": 0.00613,
+    "se": 0.00499,
+    "z": 1.227
+   },
+   "b_Grandi": {
+    "est": 0.14336,
+    "se": 0.00387,
+    "z": 37.053
+   },
+   "th_PMI": {
+    "est": -0.05205,
+    "se": 0.00625,
+    "z": -8.327
+   },
+   "th_Grandi": {
+    "est": -0.03735,
+    "se": 0.00926,
+    "z": -4.032
+   },
+   "rho": {
+    "est": 0.4966,
+    "se": 0.02162,
+    "z": 22.973
+   },
+   "lns2": {
+    "est": 0.44975,
+    "se": 0.02306,
+    "z": 19.5
+   }
+  },
+  "logL_SDM": -6351.71,
+  "AIC_SDM": 12717.4,
+  "AIC_SAR": 12838.1,
+  "AIC_SEM": 12821.1,
+  "LR_vs_SAR": 126.71,
+  "LR_vs_SEM": 109.64,
+  "sar_rho": 0.4641,
+  "sem_lam": 0.5471,
+  "moran_resid": {
+   "I": -0.0486,
+   "p_two": 0.004
+  },
+  "effects": {
+   "PMI": {
+    "direct": 0.0006,
+    "indirect": -0.0918,
+    "total": -0.0912
+   },
+   "Grandi": {
+    "direct": 0.1511,
+    "indirect": 0.0595,
+    "total": 0.2106
+   }
+  },
+  "RESET_F": 24.4,
+  "BP_LM": 124.37
+ },
+ "robustness": {
+  "6": {
+   "rho": 0.53698,
+   "se_rho": 0.02271,
+   "b_Grandi": 0.14241,
+   "b_PMI": 0.00603,
+   "th_PMI": -0.05003,
+   "th_Grandi": -0.04282
+  },
+  "7": {
+   "rho": 0.57507,
+   "se_rho": 0.0237,
+   "b_Grandi": 0.14224,
+   "b_PMI": 0.00515,
+   "th_PMI": -0.04575,
+   "th_Grandi": -0.05034
+  },
+  "8": {
+   "rho": 0.61398,
+   "se_rho": 0.02443,
+   "b_Grandi": 0.14203,
+   "b_PMI": 0.00472,
+   "th_PMI": -0.04242,
+   "th_Grandi": -0.05711
+  }
+ }
+}

@@ -1,0 +1,92 @@
+=== LOG: autocorrelazione_globale ===
+Data/Ora avvio: 2025-12-14 18:21:07 
+
+
+> var_int <- as.numeric(imprese_sf_jit$ISP_bn)
+
+> # Moran e Geary
+> mt  <- spdep::moran.test(var_int, listw_knn, zero.policy=TRUE); print(mt)
+
+	Moran I test under randomisation
+
+data:  var_int  
+weights: listw_knn    
+
+Moran I statistic standard deviate = 10.08, p-value < 2.2e-16
+alternative hypothesis: greater
+sample estimates:
+Moran I statistic       Expectation          Variance 
+     8.647849e-03     -3.260303e-05      7.416494e-07 
+
+
+> ge  <- spdep::geary.test(var_int, listw_knn, zero.policy=TRUE); print(ge)
+
+	Geary C test under randomisation
+
+data:  var_int 
+weights: listw_knn   
+
+Geary C statistic standard deviate = 3.5139, p-value = 0.0002208
+alternative hypothesis: Expectation greater than statistic
+sample estimates:
+Geary C statistic       Expectation          Variance 
+     9.947403e-01      1.000000e+00      2.240401e-06 
+
+
+> # Moran Montecarlo (diagnostica addizionale)
+> mc  <- spdep::moran.mc(var_int, listw_knn, nsim=999, zero.policy=TRUE); print(mc)
+
+	Monte-Carlo simulation of Moran I
+
+data:  var_int 
+weights: listw_knn  
+number of simulations + 1: 1000 
+
+statistic = 0.0086478, observed rank = 1000, p-value = 0.001
+alternative hypothesis: greater
+
+
+> # Scatterplot
+> pdf(file.path(output_dir,"02_maps","moran_scatterplot_knn.pdf"), width=8, height=6)
+
+> par(mar=c(4,4,2,1))
+
+> spdep::moran.plot(var_int, listw_knn, zero.policy=TRUE,
++                   pch=20, col="#3182bd", cex=.2, labels=FALSE)
+
+> abline(h=0, v=0, lty=2); dev.off()
+RStudioGD 
+        2 
+
+> # --- STILE 1: smoothScatter ---
+> pdf(file.path(output_dir,"02_maps","moran_scatterplot_smooth.pdf"), width=8, height=7)
+
+> par(mar=c(4.5, 4.5, 3, 2)) # Margini per etichette
+
+> # Dati già calcolati (dalle righe 291-292 del tuo script)
+> x_val <- imprese_sf_jit$ISP_std 
+
+> y_val <- imprese_sf_jit$lag_ISP_std
+
+> # Paletta di colori (bianco -> blu)
+> pal <- colorRampPalette(c("white", "#B0E0E6", "#3182bd", "#08306B"))
+
+> # Crea il plot di densità
+> smoothScatter(x_val, y_val, 
++               colramp = pal,        # Usa la nostra paletta
++               nrpoints = 10 .... [TRUNCATED] 
+RStudioGD 
+        2 
+RStudioGD 
+        2 
+pacchetto ‘hexbin’ aperto con successo con controllo somme MD5
+
+I pacchetti binari scaricati sono in
+	C:\Users\39329\AppData\Local\Temp\RtmpEXvaYM\downloaded_packages
+Quota cluster significativi: 12.72 %
+
+ High-High    Low-Low   High-Low   Low-High Non signif 
+       992       1135        940        835      26771 
+
+Coldspot 99% Coldspot 95%   Non signif  Hotspot 95%  Hotspot 99% 
+        2074         1280        24346         1147         1826 

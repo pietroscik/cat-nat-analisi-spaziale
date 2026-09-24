@@ -1,0 +1,23 @@
+=== LOG: aggregazione_report_finali ===
+Data/Ora avvio: 2025-12-14 20:25:36 
+
+Avvio aggregazione dei report dei modelli migliori...
+indexing riepilogo_modello_dettaglio.csv [====================] 810.40MB/s, eta:  0s                                                                                    # A tibble: 160 × 1
+   `Subset;Area;Dimensione;n;k_best;model;AIC;Moran_resid_p;BP_p;AD_p;best_by_AIC`
+   <chr>                                                                          
+ 1 Micro_Nord-Est;Nord-Est;Micro;128;40;OLS;148,5;0,76;0,28;0,117;FALSO           
+ 2 Micro_Nord-Est;Nord-Est;Micro;128;40;SAR(err);148,31;0,41;;0,116;VERO          
+ 3 Micro_Nord-Est;Nord-Est;Micro;128;40;SDM(mix);155,05;0,82;;0,659;FALSO         
+ 4 Micro_Nord-Est;Nord-Est;Micro;128;40;GMM(err);;0,81;;0,155;FALSO               
+ 5 Piccola_Nord-Est;Nord-Est;Piccola;2541;48;OLS;1864,66;0;0;3,70E-24;FALSO       
+ 6 Piccola_Nord-Est;Nord-Est;Piccola;2541;48;SAR(err);1851,51;0,52;;3,70E-24;FALSO
+ 7 Piccola_Nord-Est;Nord-Est;Piccola;2541;48;SDM(mix);1846,8;0,42;;3,70E-24;VERO  
+ 8 Piccola_Nord-Est;Nord-Est;Piccola;2541;48;GMM(err);;0;;3,70E-24;FALSO          
+ 9 Media_Nord-Est;Nord-Est;Media;3704;46;OLS;2913,25;0;0;3,70E-24;FALSO           
+10 Media_Nord-Est;Nord-Est;Media;3704;46;SAR(err);2875,6;0,61;;3,70E-24;FALSO     
+# ℹ 150 more rows
+# ℹ Use `print(n = ...)` to see more rows
+indexing riepilogo_modello_dettaglio.csv [======--------------] 123.29MB/s, eta:  0sindexing riepilogo_modello_dettaglio.csv [======================] 7.03MB/s, eta:  0s                                                                                    indexing riepilogo_modello_dettaglio.csv [====================] 578.85MB/s, eta:  0s                                                                                    Trovati 19 modelli migliori da aggregare...
+
+=== Aggregazione completata. ===
+File creato: C:/Users/39329/OneDrive - Uniparthenope/tesi/Tesi Magistrale/Tesi-Magistrale_backup0/05_analysis_spatial/03_tables/_REPORT_FINALE_MODELLI_MIGLIORI.txt

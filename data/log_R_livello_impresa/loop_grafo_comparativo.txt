@@ -1,0 +1,3 @@
+=== LOG: loop_grafo_comparativo ===
+Data/Ora avvio: 2025-12-14 19:14:19 
+

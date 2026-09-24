@@ -1,0 +1,51 @@
+=== LOG: analisi_k_nazionale ===
+Data/Ora avvio: 2025-12-14 18:02:09 
+
+
+> # jitter per duplicati
+> imprese_sf_jit <- jitter_coords(imprese_sf_tr, 1e-4)
+
+> coords_jit     <- st_coordinates(imprese_sf_jit)
+
+> # curva distanza ai k-vicini
+> a <- nrow(imprese_sf_jit)
+
+> max_k <- max(1, floor(sqrt(a) * 0.5))
+
+> knn_res <- FNN::get.knn(coords_jit, k = max_k)
+
+> dist_median <- apply(knn_res$nn.dist, 2, median)
+
+> dist_mean   <- apply(knn_res$nn.dist, 2, mean)
+
+> dist_sd     <- apply(knn_res$nn.dist, 2, sd)
+
+> plot_df <- data.frame(k = 1:max_k, mean = dist_mean, median = dist_median, sd = dist_sd)
+
+> p_kdist <- ggplot(plot_df) +
++   geom_line(aes(k, mean,   color="Media"),   linewidth = .6) +
++   geom_line(aes(k, median, color="Mediana", linetype .... [TRUNCATED] 
+
+> save_pdf(p_kdist, "plot_k_distanza")
+
+> # validazione Moran vs k (parallelo)
+> ris_k <- validazione_moransI_k_parallel(imprese_sf_jit)
+
+> save_table(ris_k, "k_moran")
+
+> p_kmor <- ggplot(ris_k, aes(k, moran_i, color=p<.05))+
++   geom_line() + geom_point() +
++   scale_color_manual(values=c("TRUE"="green","FALSE"="red" .... [TRUNCATED] 
+
+> save_pdf(p_kmor, "plot_k_moran")
+
+> # criterio combinato unico
+> tmp <- scegli_k_knn(imprese_sf_jit, k_min=5, k_max=max_k, step=2)
+
+> k_opt <- tmp$best_k
+
+> cat("\nk ottimale selezionato:", k_opt, "\n")
+
+k ottimale selezionato: 77 
+
+> close_log()

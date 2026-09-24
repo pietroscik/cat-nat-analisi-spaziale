@@ -1,0 +1,14 @@
+=== LOG: robustezza_finale_fdr_nazionale ===
+Data/Ora avvio: 2025-11-09 15:30:58 
+
+Esecuzione test di robustezza FDR sull'analisi nazionale...
+
+--- Confronto Conteggi Cluster Nazionali (Standard vs. FDR) ---
+     Cluster Conteggio_Standard Conteggio_FDR
+1  High-High                600            NA
+2    Low-Low                839            NA
+3   High-Low                671            NA
+4   Low-High                538            NA
+5 Non signif              22487         25135
+
+Test FDR sull'analisi nazionale completato.

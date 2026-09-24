@@ -1,0 +1,83 @@
+=== LOG: analisi_dimensione_macroarea ===
+Data/Ora avvio: 2025-12-14 18:38:45 
+
+
+=== Analisi: Nord-Ovest × Micro ===
+k* = 62 
+Completato: Micro_Nord-Ovest 
+
+=== Analisi: Nord-Ovest × Piccola ===
+k* = 72 
+Completato: Piccola_Nord-Ovest 
+
+=== Analisi: Nord-Ovest × Media ===
+k* = 66 
+Completato: Media_Nord-Ovest 
+
+=== Analisi: Nord-Ovest × Grande ===
+k* = 56 
+Completato: Grande_Nord-Ovest 
+
+=== Analisi: Centro × Micro ===
+k* = 50 
+Completato: Micro_Centro 
+
+=== Analisi: Centro × Piccola ===
+k* = 68 
+Completato: Piccola_Centro 
+
+=== Analisi: Centro × Media ===
+k* = 64 
+Completato: Media_Centro 
+
+=== Analisi: Centro × Grande ===
+k* = 22 
+Completato: Grande_Centro 
+
+=== Analisi: Nord-Est × Micro ===
+k* = 46 
+Completato: Micro_Nord-Est 
+
+=== Analisi: Nord-Est × Piccola ===
+k* = 70 
+Completato: Piccola_Nord-Est 
+
+=== Analisi: Nord-Est × Media ===
+k* = 70 
+Completato: Media_Nord-Est 
+
+=== Analisi: Nord-Est × Grande ===
+k* = 74 
+Completato: Grande_Nord-Est 
+
+=== Analisi: Isole × Micro ===
+k* = 18 
+Completato: Micro_Isole 
+
+=== Analisi: Isole × Piccola ===
+k* = 32 
+Completato: Piccola_Isole 
+
+=== Analisi: Isole × Media ===
+k* = 42 
+Completato: Media_Isole 
+
+=== Analisi: Isole × Grande ===
+k* = 16 
+Completato: Grande_Isole 
+
+=== Analisi: Sud × Micro ===
+k* = 44 
+Completato: Micro_Sud 
+
+=== Analisi: Sud × Piccola ===
+k* = 50 
+Completato: Piccola_Sud 
+
+=== Analisi: Sud × Media ===
+k* = 24 
+Completato: Media_Sud 
+
+=== Analisi: Sud × Grande ===
+k* = 54 
+Completato: Grande_Sud 
