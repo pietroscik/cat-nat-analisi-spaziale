@@ -84,27 +84,56 @@ criterio con k* specifici (16–74; tabella in `docs/log_R_livello_impresa.md`).
 ### 3.2 Il contesto interpretativo dell'ISP
 
 La variabile esplorata a livello impresa è l'**ISP — Indicatore Sintetico di Performance**,
-un **indicatore composito sviluppato nella tesi** come sintesi standardizzata degli indicatori
-economico-finanziari di performance d'impresa (redditività del capitale e degli investimenti,
-efficienza operativa, solidità patrimoniale e finanziaria, tra i quali i regressori di bilancio
-elencati al §1.1). La sua costruzione — selezione delle componenti, normalizzazione, aggregazione
-e validazione — è documentata nella parte metodologica della tesi, a cui si rimanda per
-l'interpretazione dei suoi valori: **l'ISP non è una misura assoluta di performance ma un indice
-relativo** il cui significato dipende da quella normalizzazione.
+indicatore composito sviluppato nella tesi. Costruzione e validazione sono documentate e
+replicabili nel repository della tesi:
+**[github.com/pietroscik/tesi-magistrale](https://github.com/pietroscik/tesi-magistrale)** —
+in particolare `suddivisione_script/divisione e creazione ISP.R` (FASE 2: feature engineering e
+calcolo), `suddivisione_script/ISP validazione e inferenza.R` (FASE 3: validazione e
+finalizzazione) e gli output `03_validation/` (pesi e statistiche delle versioni ISP).
 
-Due conseguenze operative per questo repo:
+**Costruzione di base.** Le variabili di bilancio AIDA, organizzate in categorie (redditività,
+solidità, produttività, liquidità, capitale circolante, rischio finanziario), sono normalizzate
+min-max su scala 0–1000. L'ISP aggrega due sottogruppi con media ponderata:
 
-1. l'analisi esplorativa spaziale su ISP (`ISP_bn`, e la versione standardizzata `ISP_std` con
-   ritardo `lag_ISP_std` usata nello scatterplot di Moran) è **descrittiva**: l'I di Moran
-   (0,00865, p < 2,2e-16) e i cluster LISA (Anselin, 1995) dicono *dove e quanto* la performance
-   relativa è spazialmente associata, non *perché*; l'attribuzione causale richiede le
-   regressioni di §3.3 e il contesto della tesi;
-2. la costruzione composita dell'ISP segue la letteratura degli **indicatori compositi**
-   (OECD/JRC, *Handbook on Constructing Composite Indicators*, 2008) e i cluster LISA su un
-   indice composito vanno letti con la prudenza imposta dal confronto multiplo: dopo correzione
-   **FDR (Benjamini–Hochberg, 1995)** nessun cluster locale sopravvive
-   (`robustezza_finale_fdr_nazionale.txt`) — esito che limita fortemente le conclusioni
-   esplorative a livello di singola impresa e motivava la transizione al livello comunale.
+| Sottogruppo | Componenti (peso) |
+|---|---|
+| **A — Redditività/Performance** | ROE (0,2727), EBITDA_su_vendite (0,3560), ROI (0,2386), rotazione_cap_investito (0,1327) |
+| **B — Patrimoniale/Finanziario** | debt_equity_ratio (0,3162), debt_EBITDA_ratio (0,2703), totale_attivita (0,1583), PFN_EBITDA (0,2552) |
+
+con pesi di aggregazione tra gruppi 0,4311 (A) + 0,5689 (B).
+
+**Validazione.** La FASE 3 confronta strategie di pesatura per sottogruppo — pesi PCA (prima
+componente), pesi da regressione (LM) e **LASSO** (`cv.glmnet`, lambda selezionato con
+cross-validation), con i pesi tra gruppi stimati come quota di R² della regressione
+(peso_A = R²_A/(R²_A+R²_B)). La versione definitiva è l'**ISP settoriale LASSO**
+(`ISP_sett_lasso_norm`), con pesi specifici per sezione ATECO salvati in
+`03_validation/risultati_settoriali_pesi.csv` (es. C-Manifatturiero: peso A = 0,7781;
+K-Attività finanziarie: peso A = 0,5969): la performance è quindi pesata in modo diverso a
+seconda del settore di attività, coerentemente con la letteratura degli **indicatori
+compositi** (OECD/JRC, *Handbook on Constructing Composite Indicators*, 2008).
+
+**Finalizzazione.** La versione usata in questo repo è **`ISP_bn`**: trasformazione robusta di
+normalizzazione `bestNormalize`/OrderNorm (Peterson & Cavanaugh, 2019) dell'ISP settoriale
+finale, scelta per avvicinare la distribuzione alla normalità richiesto dai test spaziali;
+`ISP_std` e `lag_ISP_std` sono la standardizzazione e il ritardo spaziale usati nello
+scatterplot di Moran.
+
+**Conseguenze interpretative.** L'ISP è un **indice ordinale e relativo**: (i) i suoi valori
+dipendono dalla normalizzazione min-max sul campione osservato e dai pesi stimati, quindi non
+hanno unità di misura né lettura assoluta; (ii) confronti tra imprese di settori diversi
+ereditano i pesi settoriali; (iii) essendo funzione monotona dei componenti di bilancio, le sue
+correlazioni non aggiungono informazione causale oltre a quelle. Perciò l'analisi esplorativa
+spaziale su ISP_bn (I di Moran = 0,00865, p < 2,2e-16; cluster LISA, Anselin 1995) è
+**descrittiva**: dice *dove e quanto* la performance relativa è spazialmente associata, non
+*perché*. Due cautele operative:
+
+1. l'attribuzione causale richiede le regressioni di §3.3 (dove l'ISP è la dipendente e i
+   fondamentali di bilancio i regressori) e il contesto della tesi;
+2. i cluster LISA su un indice composito vanno letti con la prudenza imposta dal confronto
+   multiplo: dopo correzione **FDR (Benjamini–Hochberg, 1995)** nessun cluster locale
+   sopravvive (`robustezza_finale_fdr_nazionale.txt`) — esito che limita le conclusioni
+   esplorative a livello di singola impresa e motivava la transizione al livello comunale
+   (§4–5), dove la domanda di ricerca sui premi e le coperture trova risposta robusta.
 
 ### 3.3 Regressioni per subset
 

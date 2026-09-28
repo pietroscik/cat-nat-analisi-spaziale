@@ -59,6 +59,12 @@ di allineamento: 3.823 comuni × 37 colonne. Punti risolti in fase di costruzion
 ### 3.1 Livello impresa (R, `spatialreg`) — analisi di evoluzione
 
 - Campione: 30.673 imprese georeferenziate (jitter 1e-4 sui duplicati di coordinate);
+- Variabile dipendente: **ISP_bn** — Indicatore Sintetico di Performance, indicatore composito
+  costruito e validato nella tesi ([repo tesi-magistrale](https://github.com/pietroscik/tesi-magistrale)):
+  media pesata di redditività (ROE, EBITDA/vendite, ROI, rotazione del capitale investito) e
+  solidità patrimoniale-finanziaria (D/E, D/EBITDA, attivo totale, PFN/EBITDA), con pesi
+  settoriali ATECO stimati via LASSO e normalizzazione robusta OrderNorm
+  (contesto interpretativo completo in `docs/capitolo_metodologico_W_k.md`, §3.2);
 - Matrice W: KNN, **k = 77 nazionale** (criterio combinato curva k-dist + Moran), style "W";
 - 20 subset Dimensione (Micro, Piccola, Media, Grande) × Macroarea (Nord-Ovest, Nord-Est, Centro, Sud, Isole),
   con k* ottimali specifici per subset (da 16 a 74);
@@ -115,6 +121,8 @@ Cat-Nat su base provinciale/comunale.
    con Hessiana numerica per gli errori standard).
 4. Confronto modelli: SAR, SEM, SDM con AIC e LR; effetti con matrice (I − ρW)^{-1}.
 5. Analisi livello impresa: script R (`spatialreg`/`spdep`) i cui output console sono i log in
-   `data/log_R_livello_impresa/`; interpretazione guidata in `docs/log_R_livello_impresa.md`.
+   `data/log_R_livello_impresa/`; l'ISP dipende dalla pipeline della tesi
+   ([tesi-magistrale](https://github.com/pietroscik/tesi-magistrale)); interpretazione guidata
+   in `docs/log_R_livello_impresa.md`.
 
 Ambienti: R 4.x con `spdep`, `spatialreg`, `FNN`, `ggplot2`; Python 3 con `spreg`, `libpysal`.

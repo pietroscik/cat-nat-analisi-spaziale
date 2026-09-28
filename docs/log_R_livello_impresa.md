@@ -5,10 +5,15 @@ Alcuni log sono **troncati o quasi vuoti** (console R non registrata, output sol
 come CSV/PDF non versionati): qui sotto, per ciascun log, vengono riportati **scopo, contenuto
 effettivo e risultati di riferimento** necessari alla comprensione e alla riproducibilità.
 
-Campione: **30.673 imprese** georeferenziate, variabile dipendente **ISP_bn** (performance
-normalizzata), jitter 1e-4 sui duplicati di coordinate. Ordine cronologico della pipeline:
-k-nazionale → matrice W → autocorrelazione → subset → regressioni → grafici → mappe → robustezza
-→ FDR → aggregazione.
+Campione: **30.673 imprese** georeferenziate, variabile dipendente **ISP_bn** — l'Indicatore
+Sintetico di Performance composito sviluppato nella tesi
+([repo tesi-magistrale](https://github.com/pietroscik/tesi-magistrale): costruzione in
+`suddivisione_script/divisione e creazione ISP.R`, validazione e pesi settoriali LASSO in
+`ISP validazione e inferenza.R`, normalizzazione robusta OrderNorm finale). Il suo contesto
+interpretativo — indice ordinale e relativo, pesi settoriali ATECO, limiti di lettura — è in
+`docs/capitolo_metodologico_W_k.md` §3.2. Jitter 1e-4 sui duplicati di coordinate. Ordine
+cronologico della pipeline: k-nazionale → matrice W → autocorrelazione → subset → regressioni →
+grafici → mappe → robustezza → FDR → aggregazione.
 
 ---
 
