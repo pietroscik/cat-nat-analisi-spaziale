@@ -16,7 +16,7 @@ da AIDA), in due prospettive complementari: il livello di **impresa** (30.673 un
 ```
 README.md                              ← questo file (panoramica, risultati, riproducibilità)
 docs/
-  capitolo_metodologico_W_k.md         ← teoria e scelte di W e k (KNN), livello impresa e comune
+  capitolo_metodologico_W_k.md         ← matrice dati, transizioni di scala, W e k, domanda di ricerca
   risultati_sdm_comuni.md              ← risultati completi del SDM a livello comune (ML, spreg/PySAL)
   script_spreg_sdm_catnat.py           ← script definitivo della stima SDM (Python, spreg/PySAL)
   log_R_livello_impresa.md            ← guida e integrazione dei log R (spatialreg) livello impresa
@@ -34,25 +34,32 @@ data/
   log_R_livello_impresa/               ← 12 log R (spatialreg) dell'analisi a livello impresa
 ```
 
-## 2. Dati
+## 2. Dati e transizioni di scala
 
 | Sorgente | Contenuto | Unità |
 |---|---|---|
-| AIDA (Bureau van Dijk) | bilanci imprese: ROI, ROE, integrazione verticale, ricavi, patrimonio, posizione finanziaria netta, ecc. | impresa (valori grezzi in EUR) |
-| ISTAT / ISPRA | indicatori territoriali, pericolosità frane, asset esposti | comune / provincia |
-| IVASS — elaborazione Cat-Nat | tariffe premi teorici per province (110), ripartite sui comuni | comune |
-| ISTAT (georeferenziazione) | centroidi comunali | comune |
+| AIDA (Bureau van Dijk) | bilanci imprese: asset, EBITDA, ricavi, dipendenti, integrazione verticale, ISP (dalla tesi) | impresa |
+| ISTAT / ISPRA | confini e centroidi comunali, popolazione, superfici, pericolosità frana (PAI P3/P4) e idraulica (P3) | comune |
+| IVASS — elaborazione Cat-Nat | tariffe premi teorici per 110 province, per 10.000 € di asset esposto | provincia |
 
-La **matrice definitiva** (`data/Matrice_Modello_Savelli_Final.csv`) è il risultato del data pipeline
-di allineamento: 3.823 comuni × 37 colonne. Punti risolti in fase di costruzione:
+La **matrice definitiva** (`data/Matrice_Modello_Savelli_Final.csv`, 3.823 comuni × 37 colonne)
+è costruita con due transizioni di scala esplicite (dettaglio e formule verificate nel
+capitolo metodologico, §1.3):
 
-- fusioni comunali ricodificate: 024128→024103 (Sovizzo), 075098→075062 (Presicce-Acquarica),
-  048054→048052 (Figline e Incisa Valdarno), 081025→081021 (Trapani/Misiliscemi);
-- Sardegna: 70 comuni con tariffa provinciale ripartita secondo l'assetto delle province 2025
-  (flag `premio_provincia_appross`);
-- coordinate corrette per i duplicati/centroidi anomali: **Gazzo (VI), Lucignano (AR),
-  Olgiate Olona (VA), Telese Terme (BN)** — la correzione è stata verificata sensibile ai fini
-  della matrice W (vedi `docs/capitolo_metodologico_W_k.md`).
+- **impresa → comune** (bottom-up): ogni impresa AIDA è assegnata al comune via spatial join
+  sui poligoni ISTAT; poi conteggi per classe dimensione (Micro/Piccola/Media/Grande; PMI =
+  Micro+Piccola+Media), **somme** di asset (PMI/Grandi/totale), EBITDA, ricavi, dipendenti,
+  **medie** di integrazione verticale e ISP_std, **moda** del cluster LISA/Gi* d'impresa;
+- **provincia → comune** (top-down, IVASS): `Premio_Teorico_Comunale_EUR = premio_10k_prov ×
+  asset_tot_EUR / 10.000` (formula verificata su tutti i 3.823 comuni); 70 comuni sardi con
+  tariffa ripartita per l'assetto provinciale 2025 (flag `premio_provincia_appross`);
+- **rischio incrociato**: `hazard_frana_share = PAI_area_P3P4_kmq / SUP_kmq` e
+  `Risk_Frana_Asset_X = hazard_frana_share × asset_X_EUR` (X = PMI, Grandi).
+
+Correzioni di allineamento documentate: fusioni comunali ricodificate (Sovizzo,
+Presicce-Acquarica, Figline e Incisa Valdarno, Trapani/Misiliscemi) e centroidi corretti per
+**Gazzo (VI), Lucignano (AR), Olgiate Olona (VA), Telese Terme (BN)** — verifica sensibile ai
+fini della matrice W.
 
 ## 3. Le due analisi
 
@@ -108,12 +115,15 @@ PMI non ha effetto proprio rilevante, ma il suo ritardo spaziale è negativo: co
 elevata esposizione PMI sono associati a premi più bassi, coerente con una capacità attrattiva
 delle Grandi imprese nei comuni confinanti. La dipendenza spaziale (ρ ≈ 0,5) conferma che i premi
 non sono indipendenti tra comuni contigui, aspetto rilevante per il disegno della tariffazione
-Cat-Nat su base provinciale/comunale.
+Cat-Nat su base provinciale/comunale. Nota di lettura: il premio incorpora per costruzione il
+tasso provinciale e gli asset (§2), quindi il modello stima come la tariffazione lascia spazio
+a una risposta al rischio locale.
 
 ## 4. Riproducibilità
 
-1. Costruire la matrice partendo dai sorgenti (AIDA, ISTAT/ISPRA, IVASS, centroidi ISTAT) secondo
-   la pipeline descritta nel capitolo metodologico; verificare 3.823 righe × 37 colonne.
+1. Costruire la matrice partendo dai sorgenti (AIDA, ISTAT/ISPRA, IVASS, centroidi ISTAT) con le
+   regole di transizione del §2 (formule complete nel capitolo metodologico §1.3); verificare
+   3.823 righe × 37 colonne e l'identità `asset_tot = asset_PMI + asset_grandi`.
 2. Selezione di k: `scripts/step1_kdist_moran.py` (curva k-dist, Moran vs k) e
    `results/grid_results.json`.
 3. Stima SDM ML: `docs/script_spreg_sdm_catnat.py` (via `spreg`) oppure
