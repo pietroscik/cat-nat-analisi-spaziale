@@ -32,6 +32,9 @@ results/
 data/
   Matrice_Modello_Savelli_Final.csv     ← matrice definitiva: 3.823 comuni × 37 colonne
   log_R_livello_impresa/               ← 12 log R (spatialreg) dell'analisi a livello impresa
+notebook/
+  riproduce_sdm_comuni.ipynb           ← riproduzione end-to-end dell'analisi SDM k=5 (numpy, assert vs FINAL_k5)
+  README.md                            ← guida all'esecuzione del notebook e mappa cella → artefatto
 ```
 
 ## 2. Dati e transizioni di scala
@@ -129,10 +132,16 @@ a una risposta al rischio locale.
 3. Stima SDM ML: `docs/script_spreg_sdm_catnat.py` (via `spreg`) oppure
    `scripts/definitivo.js` + `scripts/se_definitivi.js` (implementazione equivalente in ML pura,
    con Hessiana numerica per gli errori standard).
-4. Confronto modelli: SAR, SEM, SDM con AIC e LR; effetti con matrice (I − ρW)^{-1}.
-5. Analisi livello impresa: script R (`spatialreg`/`spdep`) i cui output console sono i log in
+4. Riproduzione end-to-end: `notebook/riproduce_sdm_comuni.ipynb` — pipeline completa in un unico
+   notebook eseguibile (caricamento matrice e controlli, transizioni di scala §1.3, W KNN, stima ML
+   del SDM con confronto SAR/SEM, effetti LeSage–Pace, diagnostica, robustezza k=6–8), con assert
+   automatici che verificano la corrispondenza con `results/FINAL_k5.json` entro le tolleranze
+   Monte Carlo; guida all'esecuzione in `notebook/README.md`.
+5. Confronto modelli: SAR, SEM, SDM con AIC e LR; effetti con matrice (I − ρW)^{-1}.
+6. Analisi livello impresa: script R (`spatialreg`/`spdep`) i cui output console sono i log in
    `data/log_R_livello_impresa/`; l'ISP dipende dalla pipeline della tesi
    ([tesi-magistrale](https://github.com/pietroscik/tesi-magistrale)); interpretazione guidata
    in `docs/log_R_livello_impresa.md`.
 
-Ambienti: R 4.x con `spdep`, `spatialreg`, `FNN`, `ggplot2`; Python 3 con `spreg`, `libpysal`.
+Ambienti: R 4.x con `spdep`, `spatialreg`, `FNN`, `ggplot2`; Python 3 con `spreg`, `libpysal`;
+notebook: Python 3 con sola dipendenza `numpy` (≥ 1.24).
