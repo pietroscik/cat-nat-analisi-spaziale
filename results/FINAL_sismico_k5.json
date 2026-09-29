@@ -1,0 +1,362 @@
+{
+ "note": "SDM esteso con terzo hazard sismico (MPS04 INGV); y=log1p(premio EUR); X=log1p(risk)",
+ "n": 3823,
+ "medDistK": {
+  "k5": 0.08817536119574702
+ },
+ "corr": {
+  "sismPMI_franaPMI": 0.128,
+  "sismGra_franaGra": 0.607,
+  "sismPMI_sismGra": 0.097,
+  "franaPMI_franaGra": 0.353
+ },
+ "baseline_p2": {
+  "coefs": [
+   {
+    "name": "interc",
+    "est": 6.11612,
+    "se": 0.26285,
+    "z": 23.269,
+    "p": 0
+   },
+   {
+    "name": "Risk_Frana_Asset_PMI",
+    "est": 0.00613,
+    "se": 0.00499,
+    "z": 1.227,
+    "p": 0.220005
+   },
+   {
+    "name": "Risk_Frana_Asset_Grandi",
+    "est": 0.14336,
+    "se": 0.00387,
+    "z": 37.053,
+    "p": 0
+   },
+   {
+    "name": "W_Risk_Frana_Asset_PMI",
+    "est": -0.05205,
+    "se": 0.00625,
+    "z": -8.327,
+    "p": 0
+   },
+   {
+    "name": "W_Risk_Frana_Asset_Grandi",
+    "est": -0.03735,
+    "se": 0.00926,
+    "z": -4.032,
+    "p": 5.5e-05
+   },
+   {
+    "name": "rho",
+    "est": 0.4966,
+    "se": 0.02162,
+    "z": 22.973,
+    "p": 0
+   },
+   {
+    "name": "ln_sigma2",
+    "est": 0.44975,
+    "se": 0.02306,
+    "z": 19.5,
+    "p": 0
+   }
+  ],
+  "logL": -6351.7087141352085,
+  "aic": 12717.417428270417,
+  "sar": {
+   "rho": 0.4616250169970788,
+   "logL": -6417.5491587607685,
+   "aic": 12843.098317521537
+  },
+  "sem": {
+   "rho": 0.5474290058360565,
+   "logL": -6405.983183719562,
+   "aic": 12819.966367439123
+  },
+  "lrSAR": 131.68088925111988,
+  "lrSEM": 108.54893916870606,
+  "effects": {
+   "franaPMI": {
+    "direct": 0.000586510482936657,
+    "indirect": -0.09180761737532206,
+    "total": -0.0912211068923854
+   },
+   "franaGra": {
+    "direct": 0.15107181613884996,
+    "indirect": 0.05951768968946847,
+    "total": 0.21058950582831842
+   }
+  }
+ },
+ "sdm_p4": {
+  "coefs": [
+   {
+    "name": "interc",
+    "est": 5.97089,
+    "se": 0.24209,
+    "z": 24.663,
+    "p": 0
+   },
+   {
+    "name": "Risk_Frana_Asset_PMI",
+    "est": -0.00023,
+    "se": 0.00418,
+    "z": -0.054,
+    "p": 0.956775
+   },
+   {
+    "name": "Risk_Frana_Asset_Grandi",
+    "est": 0.02305,
+    "se": 0.00413,
+    "z": 5.582,
+    "p": 0
+   },
+   {
+    "name": "Risk_Sismico_Asset_PMI",
+    "est": 0.17063,
+    "se": 0.00606,
+    "z": 28.15,
+    "p": 0
+   },
+   {
+    "name": "Risk_Sismico_Asset_Grandi",
+    "est": 0.12722,
+    "se": 0.00283,
+    "z": 44.952,
+    "p": 0
+   },
+   {
+    "name": "W_Risk_Frana_Asset_PMI",
+    "est": 0.00311,
+    "se": 0.00546,
+    "z": 0.569,
+    "p": 0.56916
+   },
+   {
+    "name": "W_Risk_Frana_Asset_Grandi",
+    "est": -0.01867,
+    "se": 0.0086,
+    "z": -2.172,
+    "p": 0.029823
+   },
+   {
+    "name": "W_Risk_Sismico_Asset_PMI",
+    "est": -0.11366,
+    "se": 0.0085,
+    "z": -13.377,
+    "p": 0
+   },
+   {
+    "name": "W_Risk_Sismico_Asset_Grandi",
+    "est": -0.02213,
+    "se": 0.00651,
+    "z": -3.4,
+    "p": 0.000675
+   },
+   {
+    "name": "rho",
+    "est": 0.37953,
+    "se": 0.0232,
+    "z": 16.359,
+    "p": 0
+   },
+   {
+    "name": "ln_sigma2",
+    "est": -0.14521,
+    "se": 0.02301,
+    "z": -6.312,
+    "p": 0
+   }
+  ],
+  "logL": -5187.048233070287,
+  "aic": 10396.096466140574,
+  "sar": {
+   "rho": 0.2161602161119322,
+   "logL": -5290.70979597531,
+   "aic": 10595.41959195062
+  },
+  "sem": {
+   "rho": 0.42255884667265464,
+   "logL": -5220.125846828026,
+   "aic": 10454.251693656051
+  },
+  "lr_vs_SAR": 207.3231258100459,
+  "lr_vs_SEM": 66.15522751547724,
+  "effects": {
+   "franaPMI": {
+    "direct": 7.616459076221527e-06,
+    "indirect": 0.004635941665290127,
+    "total": 0.004643558124366349
+   },
+   "franaGra": {
+    "direct": 0.02285149926120097,
+    "indirect": -0.015807534660644846,
+    "total": 0.007043964600556126
+   },
+   "sismPMI": {
+    "direct": 0.1712051584621157,
+    "indirect": -0.07939009491881305,
+    "total": 0.09181506354330266
+   },
+   "sismGra": {
+    "direct": 0.13269263610370474,
+    "indirect": 0.0366947615728728,
+    "total": 0.16938739767657754
+   }
+  },
+  "lr_vs_baseline_p2": 2329.320962129843,
+  "moranResid": {
+   "I": -0.035487356084544654,
+   "pUp": 1,
+   "pLo": 0.002,
+   "p": 0.004
+  },
+  "reset": {
+   "F": 4.949530667088787
+  },
+  "bp": {
+   "LM": 470.1419371837074,
+   "df": 9
+  },
+  "lr_vs_SAR_p": 0.0,
+  "lr_vs_SEM_p": 5.139888514804625e-12,
+  "lr_vs_baseline_p2_p": 0.0,
+  "df_nested": 4
+ },
+ "sdm_p2_logL": -6351.7087141352085,
+ "sdm_p2_aic": 12717.417428270417,
+ "robust_hazard": {
+  "RP30": {
+   "rho": 0.38964157421656165,
+   "logL": -5133.887466206907,
+   "aic": 10289.774932413815,
+   "b_franaGra": 0.022926857224235493,
+   "b_sismGra": 0.13593425088272815,
+   "b_sismPMI": 0.19035313448336627,
+   "th_sismGra": -0.018439112559151517,
+   "th_sismPMI": 0.00527892375590879,
+   "se_sismGra": 0.0029922270656412638,
+   "se_sismPMI": 0.00635615050516776
+  },
+  "RP72": {
+   "rho": 0.38856705916073353,
+   "logL": -5146.421736247327,
+   "aic": 10314.843472494655,
+   "b_franaGra": 0.02294054612539603,
+   "b_sismGra": 0.13400175183025007,
+   "b_sismPMI": 0.18589618398249727,
+   "th_sismGra": -0.018504755430099634,
+   "th_sismPMI": 0.004855150054899689,
+   "se_sismGra": 0.0029563378472511333,
+   "se_sismPMI": 0.0062924091044961996
+  },
+  "Sa01_RP1000": {
+   "rho": 0.3769967435294209,
+   "logL": -5228.672425529273,
+   "aic": 10479.344851058546,
+   "b_franaGra": 0.023194603795240125,
+   "b_sismGra": 0.1203256814128143,
+   "b_sismPMI": 0.15538288510866688,
+   "th_sismGra": -0.01880482332513625,
+   "th_sismPMI": 0.0013231804339003494,
+   "se_sismGra": 0.0026970309732860178,
+   "se_sismPMI": 0.0058172777772737645
+  },
+  "Sa01_RP2500": {
+   "rho": 0.3748095590503062,
+   "logL": -5239.08647497996,
+   "aic": 10500.17294995992,
+   "b_franaGra": 0.023273685236306237,
+   "b_sismGra": 0.11848275602519533,
+   "b_sismPMI": 0.151427161106567,
+   "th_sismGra": -0.01871095897420279,
+   "th_sismPMI": 0.000821603547557847,
+   "se_sismGra": 0.002661587553077033,
+   "se_sismPMI": 0.005748992729786535
+  }
+ },
+ "robust_k": {
+  "6": {
+   "rho": 0.410260165249267,
+   "logL": -5176.690374437477,
+   "aic": 10375.380748874953,
+   "b_franaGra": 0.023297200177157962,
+   "b_sismGra": 0.1271420463235128,
+   "b_sismPMI": 0.17353494492175622,
+   "th_sismGra": -0.01827389304684975,
+   "th_sismPMI": 0.004094834048541018,
+   "se_sismGra": 0.0028307736785596724,
+   "se_sismPMI": 0.006087557764706227,
+   "medDistK": 0.09745625042038047
+  },
+  "7": {
+   "rho": 0.4503735115096006,
+   "logL": -5161.002080942982,
+   "aic": 10344.004161885963,
+   "b_franaGra": 0.02329405265526392,
+   "b_sismGra": 0.12701681212283297,
+   "b_sismPMI": 0.17560578375043676,
+   "th_sismGra": -0.022272004561926587,
+   "th_sismPMI": 0.006587846024237934,
+   "se_sismGra": 0.0028225747210463246,
+   "se_sismPMI": 0.006085471641010501,
+   "medDistK": 0.10606832519654232
+  },
+  "8": {
+   "rho": 0.49020068334269873,
+   "logL": -5138.81012566026,
+   "aic": 10299.62025132052,
+   "b_franaGra": 0.024265841135637845,
+   "b_sismGra": 0.126085587684115,
+   "b_sismPMI": 0.1780698646995082,
+   "th_sismGra": -0.029902388166134174,
+   "th_sismPMI": 0.010104350422706807,
+   "se_sismGra": 0.0028089615180275688,
+   "se_sismPMI": 0.006068053938730537,
+   "medDistK": 0.1142882628531902
+  }
+ },
+ "robust_noSardegna": {
+  "n": 3753,
+  "rho": 0.19974855330274044,
+  "logL": -4918.6944886949705,
+  "aic": 9859.388977389941,
+  "b_franaGra": 0.019434737642277787,
+  "b_sismGra": 0.12758625446044172,
+  "b_sismPMI": 0.19535385495841845,
+  "th_sismGra": -0.009872531879570453,
+  "th_sismPMI": 0.0006276909509181814,
+  "se_sismGra": 0.0027566165163284426,
+  "se_sismPMI": 0.006064965629177365,
+  "effects": {
+   "franaGra": {
+    "direct": 0.019727329078400642,
+    "indirect": -0.007778327546229992,
+    "total": 0.01194900153217065
+   },
+   "sismGra": {
+    "direct": 0.13152897605152436,
+    "indirect": 0.017568133514002104,
+    "total": 0.14909710956552646
+   }
+  }
+ },
+ "prov_level": {
+  "n_province": 107,
+  "corr_lograte_log1p_meanag": 0.838,
+  "corr_lograte_meanfrana": 0.175,
+  "corr_lograte_meanidraulico": 0.109,
+  "note": "Premio_Teorico_Comunale_EUR = premio_10k_prov * asset_tot_EUR / 10000 (verificato, err rel ~1e-8); la rate e costante entro provincia (107 province). Le rate tracciano fortemente la pericolosita sismica: corr log(rate)~log1p(ag medio provinciale) = 0.838, vs 0.175 frana e 0.109 idraulico. Top rate: Catanzaro 52.5, Cosenza 51.0, Reggio Calabria 48.7, L'Aquila 47.4, Rieti 44.8, Messina 44.7; bottom: Bolzano 10.8, Varese 11.2, Como 12.0, Novara 12.1, Sardegna ~12.8."
+ },
+ "note_estensione": "Terzo hazard sismico: ag RP475 (MPS04 INGV, griglia 0.02 gradi) * asset. Sardegna (70 comuni, COD_REG 20): esclusa dalla classificazione OPCM 3274 -> ag=0, flag sismico_non_classificato=1. Baseline p=2 replica esattamente results/FINAL_k5.json (rho=0.4966, beta_Grandi=0.14336, logL=-6351.71, AIC=12717.4). Nel modello p=4 beta_Frana_Grandi scende da 0.1434 a 0.0231: nel modello a due regressori l effetto frana era gonfiato dall omissione del rischio sismico (collinearita log1p frana-sismico Grandi 0.607). Attenzione interpretativa: y=log1p(premio) e X=log1p(hazard*asset) condividono la componente asset; la lettura pulita del canale hazard passa dalla correlazione provinciale rate-ag (0.838) e dalla stabilita dei beta nelle robustezze.",
+ "convenzioni": {
+  "AIC_K": {
+   "SDM": "2p+3 (11 per p=4, 7 per p=2)",
+   "SAR_SEM": "p+3 (7 per p=4, 4 per p=2)"
+  },
+  "tracce": "T=45, M=120, seed 987654321 (LCG come definitivo.js); logdet approssimato -> tolleranza MC ~1e-3 su rho/logL",
+  "effetti": "LeSage-Pace MC mrep=80, nser=120 (come definitivo.js)",
+  "SE": "Hessiana numerica finale (hf=1e-3) con formula corretta a 4 angoli f(+,+)-f(+,-)-f(-,+)+f(-,-), come se_definitivi.js. NOTA BUG: in scripts/definitivo.js la Hessiana interna usava perturbazioni errate fuori diagonale [f(0,+), f(-,0)] al posto di [f(+,-), f(-,+)]: gli SE in risultati_definitivi.json sono pertanto sottostimati; FINAL_k5.json usa correttamente se_definitivi.json. Baseline verificata: SE(rho)=0.0216, SE(beta_Grandi)=0.0039 identici a FINAL_k5."
+ }
+}
