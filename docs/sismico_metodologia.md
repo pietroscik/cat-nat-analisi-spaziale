@@ -128,3 +128,46 @@ Tutti i percorsi sono configurabili via variabili d'ambiente (`MATRICE`, `AG10_T
 `AG81_CSV`, `AG63_CSV`, `SA475`, `SA1000`, `SA2500`, `OUT`, `SISMICA`, `MATRIX`, `OUTJSON`).
 Il log-determinante è approssimato per tracce Monte Carlo: tolleranza attesa ~1e-3 su ρ e
 logL tra esecuzioni con PRNG diversi.
+
+## 7. Fonti alternative e limiti: la microzonazione sismica (Ocdpc n. 978)
+
+L'hazard sismico qui adottato è la **pericolosità di base** MPS04 (ag su suolo di
+riferimento rigido): non incorpora le **amplificazioni locali di sito**, che a scala
+comunale possono alterare l'intensità dello scuotimento anche di un ordine di grandezza.
+La fonte che catturerebbe questo livello di dettaglio è la **microzonazione sismica**
+(zonizzazioni MOPS di livello 1, aree stabili / suscettibili di amplificazione).
+
+Lo stato dell'arte al 2024, documentato dalla tabella della lettera dell'Ordinanza del
+Capo del Dipartimento della Protezione Civile **n. 978** (marzo 2024) sul programma
+nazionale di studi di microzonazione sismica (MS) e analisi della Condizione Limite per
+l'Emergenza (CLE), mostra però che la copertura non è ancora disponibile:
+
+| Indicatore (Ocdpc 978, tabella per regione) | Valore |
+|---|---|
+| Risorse destinate (totale) | 10.440.819,53 € |
+| Studi MS previsti / consegnati / validati | 92 / 0 / 0 |
+| Studi CLE previsti / consegnati / validati | 15 / 0 / 0 |
+| Regioni con programmazione "in corso di definizione" ("*") | 13 su 17 in tabella |
+
+(Sardegna, Trentino-Alto Adige e Valle d'Aosta non compaiono nella tabella della lettera;
+la Sardegna è fuori dalla classificazione sismica, mentre Trentino-Alto Adige e Valle
+d'Aosta attuano il programma con ordinanze e fondi propri: il quadro è comunque in
+evoluzione).
+
+Per la maggior parte delle regioni la programmazione è ancora in fase di definizione e
+nessuno studio risulta consegnato o validato: **non esiste oggi una fonte nazionale
+omogenea di microzonazione utilizzabile come regressore a livello comune**. Le griglie
+MPS04 INGV restano quindi l'unica base dati di pericolosità sismica omogenea sul
+territorio nazionale, e la loro adozione (con matching al punto di griglia più vicino, §3)
+è la scelta metodologicamente corretta per un modello su 3.823 comuni.
+
+Due osservazioni di contesto: (a) le risorse Ocdpc 978 si concentrano nelle regioni con
+maggiore pericolosità — Calabria (1,54 M€), Sicilia (1,51 M€), Campania (1,42 M€), dove
+l'analisi trova anche le rate premiali più alte (Catanzaro 52,5; Cosenza 51,0; Reggio
+Calabria 48,7; Messina 44,7 per 10.000 € di asset): dove il rischio è più alto si
+concentra l'investimento conoscitivo pubblico; (b) quando gli studi MS saranno consegnati
+e pubblicati (portale Web MS-CLE della Protezione Civile), la tariffazione Cat-Nat potrà
+raffinarsi **intra-comune**, differenziando il premio tra zone stabili e zone soggette ad
+amplificazione nello stesso municipio. Fonte: Protezione Civile,
+`rischi.protezionecivile.gov.it` — approfondimento "Ocdpc n. 978 - Studi di microzonazione
+sismica e analisi della CLE".
