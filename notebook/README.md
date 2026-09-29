@@ -63,3 +63,11 @@ JavaScript), le tolleranze sono quelle dell'incertezza MC (~1e-3 su ρ), ad esem
   `docs/log_R_livello_impresa.md`.
 - L'**ISP** (Indicatore Sintetico di Performance) è già studiato e documentato nella tesi
   (`pietroscik/tesi-magistrale`); qui è usato solo come variabile già costruita.
+
+## Ambito: modello a due regressori
+
+Il notebook copre il modello **definitivo a due regressori** (rischio frana, k = 5) di
+`results/FINAL_k5.json`. L'estensione con il **terzo hazard sismico** (SDM a quattro
+regressori, `results/FINAL_sismico_k5.json`) non è nel notebook: è riprodotta dalla pipeline
+dedicata `scripts/sismico/` (vedi `docs/sismico_metodologia.md` e
+`docs/risultati_sdm_sismico.md`).

@@ -7,7 +7,8 @@ a cura di **Pietro Maietta**.
 L'oggetto dell'indagine è la relazione spaziale tra il **rischio idrogeologico** (frane, da dati ISPRA
 aggregati a livello comunale) e la **dimensione economica delle imprese esposte** (PMI vs Grandi imprese,
 da AIDA), in due prospettive complementari: il livello di **impresa** (30.673 unità) e il livello di
-**comune** (3.823 unità).
+**comune** (3.823 unità). Il repository include inoltre un'estensione del modello a livello comune con un
+**terzo hazard, la pericolosità sismica** (MPS04 INGV), descritta in §3.3.
 
 ---
 
@@ -18,19 +19,26 @@ README.md                              ← questo file (panoramica, risultati, r
 docs/
   capitolo_metodologico_W_k.md         ← matrice dati, transizioni di scala, W e k, domanda di ricerca
   risultati_sdm_comuni.md              ← risultati completi del SDM a livello comune (ML, spreg/PySAL)
+  risultati_sdm_sismico.md             ← risultati del SDM esteso con il terzo hazard sismico (p=4)
+  sismico_metodologia.md               ← fonti INGV (MPS04), estrazione griglie, matching, pipeline
   script_spreg_sdm_catnat.py           ← script definitivo della stima SDM (Python, spreg/PySAL)
   log_R_livello_impresa.md            ← guida e integrazione dei log R (spatialreg) livello impresa
 scripts/
   step1_kdist_moran.py                 ← selezione k via curva k-dist + Moran (livello comune)
   sdm_grid.js, definitivo.js           ← stima ML della SDM (implementazione pura Python/JS)
   se_definitivi.js                     ← errore standard ML (Hessiana numerica, k=5..8)
+  sismico/                             ← pipeline del terzo hazard sismico (estrazione, matching, SDM p=4)
 results/
   grid_results.json                     ← griglia di selezione k (k-dist, Moran, AIC)
   risultati_definitivi.json            ← stime SDM k=5..8: coefficienti, AIC, LR, effetti
   se_definitivi.json                   ← errori standard ML definitivi (k=5..8)
   FINAL_k5.json                         ← quadro riassuntivo del modello definitivo k=5
+  FINAL_sismico_k5.json                 ← quadro riassuntivo del modello esteso con il sismico (p=4)
 data/
   Matrice_Modello_Savelli_Final.csv     ← matrice definitiva: 3.823 comuni × 37 colonne
+  Matrice_Modello_Savelli_Final_sismico.csv ← matrice estesa con le colonne sismiche: 3.823 × 53
+                                            (rigenerata con scripts/sismico/build_matrice_v2.py)
+  sismico/matrice_sismica_ingv.csv      ← matching comune → griglie INGV (ag, Sa ai vari RP)
   log_R_livello_impresa/               ← 12 log R (spatialreg) dell'analisi a livello impresa
 notebook/
   riproduce_sdm_comuni.ipynb           ← riproduzione end-to-end dell'analisi SDM k=5 (numpy, assert vs FINAL_k5)
@@ -44,6 +52,7 @@ notebook/
 | AIDA (Bureau van Dijk) | bilanci imprese: asset, EBITDA, ricavi, dipendenti, integrazione verticale, ISP (dalla tesi) | impresa |
 | ISTAT / ISPRA | confini e centroidi comunali, popolazione, superfici, pericolosità frana (PAI P3/P4) e idraulica (P3) | comune |
 | IVASS — elaborazione Cat-Nat | tariffe premi teorici per 110 province, per 10.000 € di asset esposto | provincia |
+| INGV — MPS04 | pericolosità sismica: ag (RP 475/30/72 anni) e Sa(0,10 s) (RP 475/1000/2500 anni), griglie nazionali | punto griglia → comune |
 
 La **matrice definitiva** (`data/Matrice_Modello_Savelli_Final.csv`, 3.823 comuni × 37 colonne)
 è costruita con due transizioni di scala esplicite (dettaglio e formule verificate nel
@@ -59,12 +68,19 @@ capitolo metodologico, §1.3):
 - **rischio incrociato**: `hazard_frana_share = PAI_area_P3P4_kmq / SUP_kmq` e
   `Risk_Frana_Asset_X = hazard_frana_share × asset_X_EUR` (X = PMI, Grandi).
 
+L'estensione sismica aggiunge una terza transizione **punto-griglia → comune** (matching al
+punto INGV più vicino, vedi `docs/sismico_metodologia.md`): `hazard_sismico = ag_RP475` (in g)
+e `Risk_Sismico_Asset_X = ag_RP475 × asset_X_EUR`, con la Sardegna non classificata gestita
+esplicitamente (ag = 0 + flag). Nota di unità: frana/idraulico sono quote di area (share),
+il sismico è un'accelerazione (g) — i coefficienti non sono confrontabili in magnitudine
+tra le due famiglie.
+
 Correzioni di allineamento documentate: fusioni comunali ricodificate (Sovizzo,
 Presicce-Acquarica, Figline e Incisa Valdarno, Trapani/Misiliscemi) e centroidi corretti per
 **Gazzo (VI), Lucignano (AR), Olgiate Olona (VA), Telese Terme (BN)** — verifica sensibile ai
 fini della matrice W.
 
-## 3. Le due analisi
+## 3. Le analisi
 
 ### 3.1 Livello impresa (R, `spatialreg`) — analisi di evoluzione
 
@@ -110,7 +126,7 @@ Risultati salienti (dettaglio completo in `docs/risultati_sdm_comuni.md`):
 - Robustezza su k = 6, 7, 8: β_Grandi stabile (0,142–0,144), θ_PMI stabile (−0,042/−0,050), ρ cresce
   con k (0,50→0,61) come atteso da W più densa; segni e significatività mai invertiti;
 - Diagnostica: Moran residui I = −0,0486 (p = 0,004), RESET F = 24,4 (forma funzionale da
-  approfondire), Breusch–Pagan LM = 124,4 (eteroschedasticità).
+  approfondare), Breusch–Pagan LM = 124,4 (eteroschedasticità).
 
 **Interpretazione sintetica.** Il premio teorico Cat-Nat a livello comunale cresce con l'esposizione
 delle Grandi imprese al rischio frana (elasticità diretta ~0,15, totale ~0,21); l'esposizione delle
@@ -120,7 +136,45 @@ delle Grandi imprese nei comuni confinanti. La dipendenza spaziale (ρ ≈ 0,5) 
 non sono indipendenti tra comuni contigui, aspetto rilevante per il disegno della tariffazione
 Cat-Nat su base provinciale/comunale. Nota di lettura: il premio incorpora per costruzione il
 tasso provinciale e gli asset (§2), quindi il modello stima come la tariffazione lascia spazio
-a una risposta al rischio locale.
+a una risposta al rischio locale. **Questa lettura va aggiornata alla luce del terzo hazard
+(§3.3): parte dell'effetto "frana" del modello a due regressori riflette in realtà il rischio
+sismico.**
+
+### 3.3 Terzo hazard sismico (SDM p = 4)
+
+Estensione del modello a livello comune con la pericolosità sismica INGV (MPS04, ag RP 475,
+matching al punto di griglia più vicino; `docs/sismico_metodologia.md`). Regressori aggiunti:
+`log1p(Risk_Sismico_Asset_PMI)` e `log1p(Risk_Sismico_Asset_Grandi)` (SDM p = 4, k = 5, n = 3.823;
+dettaglio completo in `docs/risultati_sdm_sismico.md`, quadro macchina in
+`results/FINAL_sismico_k5.json`):
+
+| Parametro | Stima | SE (ML) | z |
+|---|---|---|---|
+| ρ (SDM) | **0,3795** | 0,0232 | 16,36 |
+| β Sismico Grandi | **0,1272** | 0,0028 | 44,95 |
+| β Sismico PMI | **0,1706** | 0,0061 | 28,15 |
+| β Frana Grandi | 0,0231 | 0,0041 | 5,58 |
+| β Frana PMI | −0,0002 | 0,0042 | n.s. |
+| θ Sismico PMI | **−0,1137** | 0,0085 | −13,38 |
+| θ Sismico Grandi | −0,0221 | 0,0065 | −3,40 |
+| θ Frana Grandi | −0,0187 | 0,0086 | −2,17 |
+
+- AIC: SDM p=4 (**10.396,1**) < SEM p=4 (10.454,3) < SAR p=4 (10.595,4) ≪ SDM p=2 (12.717,4);
+  LR vs p=2 = 2.329,3*** (df 4);
+- Effetti LeSage–Pace: Sismico Grandi → diretto 0,133, totale 0,169; Sismico PMI → diretto 0,171,
+  totale 0,092; Frana Grandi → totale 0,007;
+- Diagnostica: Moran residui I = −0,0355 (p = 0,004); RESET F = 4,95 (scende da 24,4); BP LM = 470;
+- Robustezza: hazard alternativi (RP30/RP72/Sa RP1000/Sa RP2500) → β_Sism_Grandi 0,118–0,136;
+  k = 6/7/8 → 0,126–0,127 (ρ 0,41→0,49); esclusione Sardegna → 0,128.
+
+**Sintesi.** Il sismico è il driver dominante del premio teorico Cat-Nat: β grande e
+precisissimo, stabile in ogni robustezza. Nel modello a due regressori β_Frana_Grandi
+(0,143) era **gonfiato dall'omissione del sismico** (collinearità log1p frana–sismico Grandi
+= 0,607): con p = 4 scende a 0,023 e resta significativo. A livello provinciale — dove la
+rate dei premi è definita — la correlazione tra log-rate e log1p(ag medio) è **0,838**
+(frana 0,175, idraulico 0,109): la tariffazione traccia la pericolosità sismica molto più
+di quella idrogeologica. Reset cala da 24,4 a 4,95: gran parte della mancata linearità del
+modello a due regressori era dovuta alla variabile omessa.
 
 ## 4. Riproducibilità
 
@@ -137,11 +191,21 @@ a una risposta al rischio locale.
    del SDM con confronto SAR/SEM, effetti LeSage–Pace, diagnostica, robustezza k=6–8), con assert
    automatici che verificano la corrispondenza con `results/FINAL_k5.json` entro le tolleranze
    Monte Carlo; guida all'esecuzione in `notebook/README.md`.
-5. Confronto modelli: SAR, SEM, SDM con AIC e LR; effetti con matrice (I − ρW)^{-1}.
-6. Analisi livello impresa: script R (`spatialreg`/`spdep`) i cui output console sono i log in
+5. Estensione sismica (terzo hazard): scaricare le griglie INGV (URL in
+   `docs/sismico_metodologia.md`, §1), estrarle con `scripts/sismico/recover_sa.py` +
+   `parse_biff.py` (i `.xls` SA hanno OLE2 difettoso) e `xlsx_to_csv.py`, quindi
+   `scripts/sismico/match_sismico.py` → `data/sismico/matrice_sismica_ingv.csv` (3.823/3.823
+   abbinati, 0 respinti), `scripts/sismico/build_matrice_v2.py` → matrice estesa 53 colonne
+   (`data/Matrice_Modello_Savelli_Final_sismico.csv`, non archiviata: join deterministico
+   rigenerato dal comando) e `node scripts/sismico/definitivo_sismico.js` →
+   `results/FINAL_sismico_k5.json`
+   (include la baseline p=2 che replica FINAL_k5 e le robustezze RP/k/Sardegna).
+6. Confronto modelli: SAR, SEM, SDM con AIC e LR; effetti con matrice (I − ρW)^{-1}.
+7. Analisi livello impresa: script R (`spatialreg`/`spdep`) i cui output console sono i log in
    `data/log_R_livello_impresa/`; l'ISP dipende dalla pipeline della tesi
    ([tesi-magistrale](https://github.com/pietroscik/tesi-magistrale)); interpretazione guidata
    in `docs/log_R_livello_impresa.md`.
 
-Ambienti: R 4.x con `spdep`, `spatialreg`, `FNN`, `ggplot2`; Python 3 con `spreg`, `libpysal`;
-notebook: Python 3 con sola dipendenza `numpy` (≥ 1.24).
+Ambienti: R 4.x con `spdep`, `spatialreg`, `FNN`, `ggplot2`; Python 3 con `spreg`, `libpysal`
+(pipeline sismica: solo stdlib); Node.js per gli script ML; notebook: Python 3 con sola
+dipendenza `numpy` (≥ 1.24).
