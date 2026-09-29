@@ -37,7 +37,6 @@ results/
 data/
   Matrice_Modello_Savelli_Final.csv     ← matrice definitiva: 3.823 comuni × 37 colonne
   Matrice_Modello_Savelli_Final_sismico.csv ← matrice estesa con le colonne sismiche: 3.823 × 53
-                                            (rigenerata con scripts/sismico/build_matrice_v2.py)
   sismico/matrice_sismica_ingv.csv      ← matching comune → griglie INGV (ag, Sa ai vari RP)
   log_R_livello_impresa/               ← 12 log R (spatialreg) dell'analisi a livello impresa
 notebook/
@@ -196,8 +195,8 @@ modello a due regressori era dovuta alla variabile omessa.
    `parse_biff.py` (i `.xls` SA hanno OLE2 difettoso) e `xlsx_to_csv.py`, quindi
    `scripts/sismico/match_sismico.py` → `data/sismico/matrice_sismica_ingv.csv` (3.823/3.823
    abbinati, 0 respinti), `scripts/sismico/build_matrice_v2.py` → matrice estesa 53 colonne
-   (`data/Matrice_Modello_Savelli_Final_sismico.csv`, non archiviata: join deterministico
-   rigenerato dal comando) e `node scripts/sismico/definitivo_sismico.js` →
+   (`data/Matrice_Modello_Savelli_Final_sismico.csv`, archiviata e comunque rigenerabile al
+   byte: join deterministico dei due file dati) e `node scripts/sismico/definitivo_sismico.js` →
    `results/FINAL_sismico_k5.json`
    (include la baseline p=2 che replica FINAL_k5 e le robustezze RP/k/Sardegna).
 6. Confronto modelli: SAR, SEM, SDM con AIC e LR; effetti con matrice (I − ρW)^{-1}.

@@ -72,9 +72,9 @@ senza tentare il match — evitando abbinamenti spuri a centinaia di km. La robu
 `data/Matrice_Modello_Savelli_Final_sismico.csv`: 3.823 comuni × **53 colonne** (37 della
 matrice definitiva + 16 nuove), join su `PRO_COM` tra
 `data/Matrice_Modello_Savelli_Final.csv` e `data/sismico/matrice_sismica_ingv.csv`.
-**Il file non è archiviato nel repo** (è un join deterministico dei due file dati, verificato
-byte-identico): si rigenera con `python3 scripts/sismico/build_matrice_v2.py` (un comando,
-nessuna dipendenza). Colonne aggiunte:
+Il file è archiviato nel repo e resta comunque **rigenerabile al byte** (join deterministico
+dei due file dati) con `python3 scripts/sismico/build_matrice_v2.py` (un comando, nessuna
+dipendenza). Colonne aggiunte:
 
 - `ag_RP475` (+16°/84° perc), `ag_RP30`, `ag_RP72`, `Sa01_RP475`, `Sa01_RP1000`, `Sa01_RP2500`;
 - `sismico_non_classificato`;
