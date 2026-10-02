@@ -1,0 +1,122 @@
+{
+ "modello": "verifiche di robustezza del risultato del tessuto produttivo (beta della performance sul log peso-EBITDA)",
+ "fonti": "results/eal_comuni.csv (pricing_model.py) + matrice estesa; specifica base identica a tessuto_produttivo.py",
+ "metodo": "OLS con SE White HC1; W KNN k=5 sui centroidi (come spazializzazione.py); nessuna selezione ex post",
+ "specifiche": [
+  {
+   "specifica": "base (tessuto §5.3)",
+   "n": 3791,
+   "R2": 0.7618,
+   "misura": "ISP (indicatore della tesi)",
+   "beta_performance": -0.3751,
+   "t_rob": -21.83,
+   "beta_x_deviazione_standard": -0.2467,
+   "sd_misura": 0.6577,
+   "note": "replica di riferimento: beta_ISP = -0,375, t_rob = -21,8"
+  },
+  {
+   "specifica": "winsorizzato log-peso 1%/99%",
+   "n": 3791,
+   "R2": 0.7768,
+   "misura": "ISP (indicatore della tesi)",
+   "beta_performance": -0.3611,
+   "t_rob": -23.13,
+   "beta_x_deviazione_standard": -0.2375,
+   "sd_misura": 0.6577,
+   "note": "la coda del peso (max 70,7%) non porta il gradiente"
+  },
+  {
+   "specifica": "trim top 1% peso",
+   "n": 3754,
+   "R2": 0.7627,
+   "misura": "ISP (indicatore della tesi)",
+   "beta_performance": -0.3585,
+   "t_rob": -22.43,
+   "beta_x_deviazione_standard": -0.2333,
+   "sd_misura": 0.6507,
+   "note": "senza i comuni col peso piu' alto; stesso campione del winsorizzato"
+  },
+  {
+   "specifica": "performance = ROA comunale",
+   "n": 3791,
+   "R2": 0.8442,
+   "misura": "ROA comunale = EBITDA/asset",
+   "beta_performance": -10.5076,
+   "t_rob": -44.67,
+   "beta_x_deviazione_standard": -0.414,
+   "sd_misura": 0.0394,
+   "note": "misura indipendente dalla pipeline della tesi: regge il segno e l'ordine di grandezza?"
+  }
+ ],
+ "slx": {
+  "specifica": "SLX (regressori con ritardo spaziale, W KNN k=5)",
+  "n": 3791,
+  "R2": 0.7629,
+  "coeff": [
+   {
+    "name": "interc",
+    "beta": -5.2483,
+    "t_rob": -34.86
+   },
+   {
+    "name": "ISP (performance)",
+    "beta": -0.376,
+    "t_rob": -21.94
+   },
+   {
+    "name": "log1p(ag)",
+    "beta": 10.3317,
+    "t_rob": 10.29
+   },
+   {
+    "name": "share frana",
+    "beta": 2.5087,
+    "t_rob": 15.73
+   },
+   {
+    "name": "share idraulico",
+    "beta": 4.2188,
+    "t_rob": 23.01
+   },
+   {
+    "name": "log(asset totale)",
+    "beta": -0.0385,
+    "t_rob": -4.74
+   },
+   {
+    "name": "quota Grandi",
+    "beta": 0.082,
+    "t_rob": 2.24
+   },
+   {
+    "name": "W*ISP",
+    "beta": 0.0023,
+    "t_rob": 0.08
+   },
+   {
+    "name": "W*log1p(ag)",
+    "beta": 4.4312,
+    "t_rob": 4.26
+   },
+   {
+    "name": "W*share frana",
+    "beta": 0.3778,
+    "t_rob": 2.21
+   },
+   {
+    "name": "W*share idraulico",
+    "beta": 0.2008,
+    "t_rob": 0.95
+   }
+  ]
+ },
+ "moran_residui_base": {
+  "n": 3791,
+  "I": 0.23083,
+  "E_I": -0.00026,
+  "z_clifford": 24.56,
+  "p_perm_one_sided": 0.001,
+  "nota": "diagnostica spaziale dell'OLS: residui autocorrelati => il SLX e' la risposta dichiarata, il beta_ISP resta la lettura"
+ },
+ "correlazione_ISP_ROA": 0.5416
+}
