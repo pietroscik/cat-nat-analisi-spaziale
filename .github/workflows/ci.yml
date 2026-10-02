@@ -1,0 +1,50 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Installa dipendenze Python
+        run: pip install -r requirements.txt
+
+      - name: Sintassi Python (py_compile)
+        run: |
+          python -m py_compile \
+            scripts/step1_kdist_moran.py \
+            scripts/script_spreg_sdm_catnat.py \
+            scripts/sismico/match_sismico.py \
+            scripts/sismico/build_matrice_v2.py \
+            scripts/sismico/parse_biff.py \
+            scripts/sismico/recover_sa.py \
+            scripts/sismico/xlsx_to_csv.py
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Sintassi Node (node --check)
+        run: |
+          node --check scripts/definitivo.js
+          node --check scripts/sdm_grid.js
+          node --check scripts/se_definitivi.js
+          node --check scripts/sismico/definitivo_sismico.js
+
+      - name: Notebook end-to-end (nbconvert --execute, assert vs FINAL_k5)
+        run: |
+          jupyter nbconvert --to notebook --execute \
+            --output /tmp/riproduce_sdm_comuni_eseguito.ipynb \
+            notebook/riproduce_sdm_comuni.ipynb

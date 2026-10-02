@@ -1,0 +1,10 @@
+# Pipeline del notebook (dipendenza unica del notebook: numpy)
+numpy>=1.24
+
+# Stima di riferimento con spreg/PySAL (scripts/script_spreg_sdm_catnat.py, opzionale)
+spreg>=1.3
+libpysal>=4.7
+
+# Esecuzione del notebook in CI (.github/workflows/ci.yml)
+nbconvert>=7.0
+ipykernel>=6.0

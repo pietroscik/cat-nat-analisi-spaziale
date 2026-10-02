@@ -1,0 +1,27 @@
+cff-version: 1.2.0
+message: >-
+  Se usi questo repository nella tua ricerca, per favore citalo come indicato
+  qui sotto.
+title: >-
+  Cat-Nat — analisi spaziale dei premi assicurativi e del rischio idrogeologico
+  e sismico in Italia (3.823 comuni)
+authors:
+  - family-names: Maietta
+    given-names: Pietro
+type: software
+repository-code: "https://github.com/pietroscik/cat-nat-analisi-spaziale"
+abstract: >-
+  Elaborazione quantitativa della tesi sull'assicurazione delle calamità
+  naturali (Cat-Nat, DL 78/2025): modelli SDM/SAR/SEM a livello comune
+  (3.823 unità) su premi teorici IVASS, rischio idrogeologico ISPRA e
+  pericolosità sismica INGV MPS04, con analisi a livello impresa (R,
+  spatialreg) ed estensione al terzo hazard sismico (p = 4).
+keywords:
+  - Cat-Nat
+  - assicurazione
+  - econometria spaziale
+  - SDM
+  - pericolosità sismica
+  - rischio idrogeologico
+  - Italia
+license: MIT
