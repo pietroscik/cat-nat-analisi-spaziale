@@ -91,20 +91,27 @@ def nearest(lon, lat, pts, h):
                 d2 = (p[0] - lon) ** 2 + (p[1] - lat) ** 2
                 if d2 < bd:
                     bd, best = d2, i
-    if best is None:  # celle vuote: allarga la ricerca
+    if best is None:  # celle vuote: allarga la ricerca ad anelli quadrati successivi
         for r in range(3, 30):
-            found = []
+            # righe superiore e inferiore dell'anello (colonne complete)
             for dx in range(-r, r + 1):
                 for dy in (-r, r):
-                    found += h.get((cx + dx, cy + dy), [])
-                for dx2 in (-r, r):
-                    found += h.get((cx + dx2, cy + dy), [])
-            if found:
-                for i in found:
-                    p = pts[i]
-                    d2 = (p[0] - lon) ** 2 + (p[1] - lat) ** 2
-                    if d2 < bd:
-                        bd, best = d2, i
+                    for i in h.get((cx + dx, cy + dy), []):
+                        p = pts[i]
+                        d2 = (p[0] - lon) ** 2 + (p[1] - lat) ** 2
+                        if d2 < bd:
+                            bd, best = d2, i
+            # colonne sinistra e destra dell'anello (righe interne, angoli gia' coperti sopra)
+            for dx2 in (-r, r):
+                for dy2 in range(-r + 1, r):
+                    for i in h.get((cx + dx2, cy + dy2), []):
+                        p = pts[i]
+                        d2 = (p[0] - lon) ** 2 + (p[1] - lat) ** 2
+                        if d2 < bd:
+                            bd, best = d2, i
+            # ogni punto degli anelli successivi dista almeno (r-1)*CELL gradi:
+            # se tale bound supera la distanza del migliore trovato, la risposta e' garantita
+            if best is not None and (r - 1) * CELL >= math.sqrt(bd):
                 break
     if best is None:
         return None, None, None

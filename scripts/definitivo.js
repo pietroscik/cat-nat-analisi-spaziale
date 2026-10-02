@@ -75,9 +75,7 @@ function ols(yv,Z,nc){
   return {beta,sse}; }
 
 // ---- likelihood piena SDM: params = [b0..b4, rho, lnsigma2] ----
-function makeLL(w,Z,nc,ystar){ // ystar = y (SDM/SAR: rho su Wy) — qui Z e' gia' trasformato esternamente
-  // uso forma: e = y - rho*Wy - Z*beta  (Z contiene [1,x1,x2,Wx1,Wx2] non trasformati per SDM)
-}
+// e = y - rho*Wy - Z*beta, con Z = [1, x1, x2, Wx1, Wx2]
 function sdmFull(w){
   const Wy=new Float64Array(n),Wx1=new Float64Array(n),Wx2=new Float64Array(n);
   Wm(w,y,Wy);Wm(w,x1,Wx1);Wm(w,x2,Wx2);
@@ -125,6 +123,10 @@ function sdmFull(w){
         H[r][c2]=(fp-2*f0+fm)/(h*h); }
       else { p[c2]+=h; const fpm=nll(p); p[c2]=pc; p[r]-=h; const fmp=nll(p); p[r]=pr;
         H[r][c2]=(fpp-fpm-fmp+fmm)/(4*h*h); H[c2][r]=H[r][c2]; }
+      // NB: questa Hessiana (usata SOLO per i passi di Newton) mantiene la formula
+      // storicamente usata per non alterare la traiettoria di ottimizzazione e quindi
+      // le stime pubblicate; gli SE definitivi vengono dalla Hessiana finale a 4 angoli
+      // (piu' sotto) e da scripts/se_definitivi.js.
     } }
     // step: p -= H^-1 grad
     const M=H.map((r,ii)=>Float64Array.from([...Array.from(r),-grad[ii]]));
@@ -149,7 +151,10 @@ function sdmFull(w){
     p[r]+=hf;p[c2]+=hf; const fpp=nll(p); p[r]=pr;p[c2]=pc;
     p[r]-=hf;p[c2]-=hf; const fmm=nll(p); p[r]=pr;p[c2]=pc;
     if(r===c2){ p[r]+=hf;const fp=nll(p);p[r]=pr;p[r]-=hf;const fm=nll(p);p[r]=pr;H[r][c2]=(fp-2*f0+fm)/(hf*hf);}
-    else { p[c2]+=hf;const fpm=nll(p);p[c2]=pc;p[r]-=hf;const fmp=nll(p);p[r]=pr;H[r][c2]=(fpp-fpm-fmp+fmm)/(4*hf*hf);H[c2][r]=H[r][c2];} } }
+    else { // 4 angoli: f(+,+) - f(+,-) - f(-,+) + f(-,-) (formula corretta, vedi se_definitivi.js)
+      p[r]=pr+hf;p[c2]=pc-hf;const fpm=nll(p);p[r]=pr;p[c2]=pc;
+      p[r]=pr-hf;p[c2]=pc+hf;const fmp=nll(p);p[r]=pr;p[c2]=pc;
+      H[r][c2]=(fpp-fpm-fmp+fmm)/(4*hf*hf);H[c2][r]=H[r][c2];} } }
   // inv(H)
   const A2=H.map(r=>Float64Array.from(Array.from(r)));
   const I=Array.from({length:7},(_,i2)=>Float64Array.from({length:7},(_,j)=>i2===j?1:0));
@@ -266,7 +271,6 @@ function chi2cdf(x,df){ // df=1 o 2: uso Wilson-Hilferty o esatto
 
 // ============================ RUN ============================
 const out={n, note:'coord corrette; y=log1p(premio EUR); X=log1p(risk)'};
-const zP=(se)=> se>0 ? 2*(1-chi2cdf((Math.abs(se))**0,0)) : 0; // non usato
 
 for(const k of [5,6,7,8]){
   const w=buildW(k);
@@ -274,7 +278,8 @@ for(const k of [5,6,7,8]){
   const sar=fitSARSEM(w,'sar'), sem=fitSARSEM(w,'sem');
   const lrSAR=2*(sdm.logL-sar.logL), lrSEM=2*(sdm.logL-sem.logL);
   const mr=moranPerm(sdm.resid,w,499);
-  const aicSDM=-2*sdm.logL+2*7, aicSAR=-2*sar.logL+2*4, aicSEM=-2*sem.logL+2*4;
+  // AIC con convenzione uniforme: K = 2p+3 per SDM, K = p+3 per SAR/SEM (sigma^2 inclusa; p=2 -> 7/5)
+  const aicSDM=-2*sdm.logL+2*7, aicSAR=-2*sar.logL+2*5, aicSEM=-2*sem.logL+2*5;
   // test z / p per coefficienti
   const pval=(z)=>2*(1-(()=>{const t=Math.abs(z);const tt=1/(1+0.2316419*t);
     const d=0.3989423*Math.exp(-t*t/2);

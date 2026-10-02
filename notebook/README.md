@@ -50,10 +50,11 @@ JavaScript), le tolleranze sono quelle dell'incertezza MC (~1e-3 su ρ), ad esem
 ## Percorsi equivalenti per la riproduzione
 
 1. **Script JavaScript** (`scripts/definitivo.js`, `scripts/se_definitivi.js`, `scripts/sdm_grid.js`):
-   verificati rigenerare byte-per-byte `results/risultati_definitivi.json` e `results/se_definitivi.json`.
+   verificati rigenerare byte-per-byte le stime di `results/risultati_definitivi.json` (i cui SE, dopo il
+   fix dell'Hessiana, coincidono con `results/se_definitivi.json`).
 2. **Notebook Python** (questa sezione): stesso algoritmo, stessa matrice, stessi valori di
    riferimento entro la tolleranza MC.
-3. **Stima `spreg`** di riferimento in `docs/script_spreg_sdm_catnat.py` (convenzione K diversa:
+3. **Stima `spreg`** di riferimento in `scripts/script_spreg_sdm_catnat.py` (convenzione K diversa:
    K=8 per SDM, K=5 per SAR/SEM).
 
 ## Limiti
