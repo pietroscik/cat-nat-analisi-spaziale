@@ -33,6 +33,7 @@ docs/
   pricing_coerenza.md                  ← benchmark EAL, loss ratio vs tariffe IVASS, coerenza asset, esposizione del tessuto
   mappa_loss.svg                       ← mappa di loss: EAL attesa e loss ratio per comune
   mappa_lisa_tariffa.svg                ← cluster LISA della coerenza tariffaria (HH/LL del loss ratio)
+  grafici_pricing.svg                   ← quadro grafico dei risultati: EP, quartili ISP, chi paga, robustezza, Moran
   log_R_livello_impresa.md            ← guida e integrazione dei log R (spatialreg) livello impresa
 scripts/
   step1_kdist_moran.py                 ← selezione k via curva k-dist + Moran (livello comune)
@@ -45,6 +46,7 @@ scripts/
   pricing/chi_paga.py                  ← ripartizione del premio per classe dimensionale (PMI vs Grandi)
   pricing/spazializzazione.py          ← Moran e LISA della coerenza tariffaria + mappa dei cluster
   pricing/robustezza_tessuto.py        ← verifiche del risultato del tessuto (winsorizzato, ROA, SLX)
+  pricing/grafici.py                    ← quadro grafico SVG dei risultati (6 pannelli dai JSON)
   sismico/                             ← pipeline del terzo hazard sismico (estrazione, matching, SDM p=4)
 results/
   grid_results.json                     ← griglia di selezione k (k-dist, Moran, AIC)
@@ -309,7 +311,8 @@ di pricing operativo.
    scripts/pricing/spazializzazione.py` → `results/spazializzazione_tariffa.json` +
    `docs/mappa_lisa_tariffa.svg` (Moran/LISA del loss ratio, permutazioni a seed fisso);
    `python3 scripts/pricing/robustezza_tessuto.py` → `results/robustezza_tessuto.json`
-   (winsorizzato, trim, ROA, SLX, Moran sui residui).
+   (winsorizzato, trim, ROA, SLX, Moran sui residui); `python3 scripts/pricing/grafici.py` →
+   `docs/grafici_pricing.svg` (quadro grafico a 6 pannelli, legge i JSON dei risultati).
 
 Ambienti: R 4.x con `spdep`, `spatialreg`, `FNN`, `ggplot2`; Python 3 con `spreg`, `libpysal`
 (pipeline sismica: solo stdlib); Node.js per gli script ML; notebook: Python 3 con sola

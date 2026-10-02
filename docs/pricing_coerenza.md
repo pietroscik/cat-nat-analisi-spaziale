@@ -20,7 +20,11 @@ sul tessuto produttivo, §5), `results/ep_curve.json` (AAL numerico e curva EP, 
 `results/chi_paga.json` (ripartizione del premio, §5.4),
 `results/spazializzazione_tariffa.json` + `docs/mappa_lisa_tariffa.svg` (Moran e
 LISA della coerenza tariffaria, §6), `results/robustezza_tessuto.json` (verifiche
-di robustezza, §5.5). Tutto si rigenera con la sequenza di comandi della §9 (solo
+di robustezza, §5.5). **Quadro grafico**: `docs/grafici_pricing.svg` — sei pannelli
+che visualizzano tutti i risultati precedenti (curva EP, quartili ISP, chi paga,
+province estreme, robustezza, Moran), generato da `scripts/pricing/grafici.py`
+leggendo i JSON: una vista dei dati, non un'origine. Tutto si rigenera con la
+sequenza di comandi della §9 (solo
 stdlib, deterministici).
 
 ## 1. Struttura del premio comunale
@@ -365,6 +369,8 @@ python3 scripts/pricing/spazializzazione.py
 # output: results/spazializzazione_tariffa.json + docs/mappa_lisa_tariffa.svg (§6)
 python3 scripts/pricing/robustezza_tessuto.py
 # output: results/robustezza_tessuto.json (verifiche §5.5; richiede i due script sopra)
+python3 scripts/pricing/grafici.py
+# output: docs/grafici_pricing.svg (quadro grafico; richiede tutti i JSON sopra)
 ```
 
 Script deterministici (nessun campionamento; le permutazioni di Moran/LISA usano
