@@ -94,9 +94,9 @@ comune usa come chiave l'asset aggregato dalla transizione (a):
 Premio_Teorico_Comunale_EUR = premio_10k_prov × asset_tot_EUR / 10.000
 ```
 
-Formula verificata su tutti i 3.823 comuni della matrice definitiva. Per i **70 comuni sardi**
+Formula verificata su tutti i 3.823 comuni della matrice definitiva (errore relativo < 1e-5). Per i **70 comuni sardi**
 la tariffa provinciale è ripartita secondo l'assetto provinciale 2025 (flag
-`premio_provincia_appross` = "yes"): il premio comunale resta una *quantità approssimata*.
+`premio_provincia_appross` = "si"): il premio comunale resta una *quantità approssimata*.
 
 #### c) Il rischio a livello comune (incrocio delle due fonti)
 
@@ -108,9 +108,9 @@ hazard_frana_share    = PAI_area_P3P4_kmq / SUP_kmq        (quota di superficie 
 Risk_Frana_Asset_X    = hazard_frana_share × asset_X_EUR   (X = PMI, Grandi; idem per l'idraulico con IDR_area_P3)
 ```
 
-*Esempio verificato* (Milano): `PAI_area_P3P4_kmq = 4,801891` su `SUP_kmq = 181,6727` →
-`hazard_idraulico_share = 0,026432`; `Risk_Idraulico_Asset_PMI = 0,026432 × 43.788.803.521 =
-1.157.405.937 €`; `premio_10k_prov = 15,05` su `asset_tot = 234.669.494.797` →
+*Esempio verificato* (Milano): `IDR_area_P3_kmq = 4,801891` su `SUP_kmq = 181,6727` →
+`hazard_idraulico_share = 0,026432`; `Risk_Idraulico_Asset_PMI = 0,026432 × 43.788.803.521 ≈
+1.157.425.655 €`; `premio_10k_prov = 15,05` su `asset_tot = 234.669.494.797` →
 `Premio_Teorico_Comunale_EUR = 353.177.637,63`.
 
 #### d) Conseguenza metodologica: MAUP e tracciabilità
