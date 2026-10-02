@@ -57,8 +57,15 @@ controlli di completezza.
 
 ## 3. Matching comune → griglia (`match_sismico.py`)
 
-- **Hash spaziale** con celle di 0,2° per restringere la ricerca, poi punto di griglia più
-  vicino a ciascun comune (raggio massimo ammesso **5 km**, controllo di qualità);
+- **Hash spaziale** con celle di 0,2° per restringere la ricerca (finestra 5×5 celle attorno al
+  comune), poi punto di griglia più vicino a ciascun comune (raggio massimo ammesso **5 km**,
+  controllo di qualità). Se la finestra è vuota (comuni costieri o di confine), la ricerca si
+  allarga ad **anelli quadrati successivi** enumerando l'anello completo (righe superiore e
+  inferiore + colonne laterali interne): il ciclo si arresta quando il bound di distanza
+  `(r−1) × CELL` raggiunge la distanza del migliore trovato — nessun anello successivo può
+  contenere punti più vicini, quindi il match restituito è **garantito ottimo** e non
+  semplicemente il primo non vuoto (verificato con test sintetici: buco ampio, colonne
+  laterali, zona completamente vuota);
 - griglia ag RP475 a passo 0,02°: distanza massima osservata **1,91 km**; griglie
   Sa/ag 16.852 punti (passo ~0,05°): distanza massima ~4,2 km;
 - esito: **3.823/3.823 comuni abbinati, 0 respinti**;

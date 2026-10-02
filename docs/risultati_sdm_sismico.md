@@ -135,14 +135,20 @@ pericolosità sismica in misura molto maggiore di quella idrogeologica.
    provinciale rate–ag (0,838) e dalla stabilità dei β nelle robustezze, che escludono
    che il risultato sia un artefatto della componente comune.
 
-## Nota bug: Hessiana off-diagonale in `scripts/definitivo.js`
+## Nota bug (corretta): Hessiana off-diagonale in `scripts/definitivo.js`
 
 Durante la verifica della pipeline sismica è stato individuato un bug nella Hessiana
 numerica interna di `scripts/definitivo.js`: i termini fuori diagonale usavano le
 perturbazioni errate `f(+,+) − f(0,+) − f(−,0) + f(−,−)` al posto dei quattro angoli
-`f(+,+) − f(+,−) − f(−,+) + f(−,−)`. Conseguenza: gli SE in `results/risultati_definitivi.json`
-sono sottostimati (es. SE(ρ) = 0,0019 contro il corretto 0,0216). **I valori definitivi del
-repo non sono affected**: `results/FINAL_k5.json` usa correttamente gli SE di
-`results/se_definitivi.json` (formula corretta, qui confermata: la baseline p = 2 riproduce
-SE(ρ) = 0,02162 e SE(β_Grandi) = 0,00387). Lo script `scripts/sismico/definitivo_sismico.js`
-usa la formula corretta a 4 angoli in tutte le Hessianiane.
+`f(+,+) − f(+,−) − f(−,+) + f(−,−)`, con SE fortemente sottostimati come conseguenza
+(es. SE(ρ) = 0,0019 contro il corretto 0,0216). **Il bug è stato corretto nel repo**: la
+Hessiana finale ora usa la formula a 4 angoli e `results/risultati_definitivi.json` è stato
+rigenerato (SE/z/p aggiornati, es. SE(ρ) = 0,02162, ora identici a
+`results/se_definitivi.json`); il loop di Newton interno conserva la formula storica per
+non alterare la traiettoria di ottimizzazione e quindi le stime pubblicate — stime, logL,
+Moran ed effetti di `results/FINAL_k5.json` non cambiano (FINAL_k5 ha sempre usato gli SE
+corretti di `se_definitivi.json`). Anche il notebook
+`notebook/riproduce_sdm_comuni.ipynb` riproduceva la formula errata ed è stato corretto
+(SE(ρ) 0,0019 → 0,0217). `scripts/sismico/definitivo_sismico.js` ha sempre usato la
+formula corretta a 4 angoli: la baseline p = 2 di `results/FINAL_sismico_k5.json` ne è la
+conferma (SE(ρ) = 0,02162, SE(β_Grandi) = 0,00387).

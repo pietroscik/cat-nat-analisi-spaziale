@@ -16,17 +16,23 @@ da AIDA), in due prospettive complementari: il livello di **impresa** (30.673 un
 
 ```
 README.md                              ← questo file (panoramica, risultati, riproducibilità)
+LICENSE                                ← MIT (codice); i dati terzi restano dei rispettivi titolari
+CITATION.cff                           ← metadati di citazione (GitHub li espone in sidebar)
+requirements.txt                       ← dipendenze Python (notebook: solo numpy; CI: nbconvert)
+package.json                           ← script Node della pipeline ML (definitivo, SE, grid, sismico)
+.github/workflows/ci.yml                ← CI: sintassi JS/Python + esecuzione integrale del notebook
 docs/
   capitolo_metodologico_W_k.md         ← matrice dati, transizioni di scala, W e k, domanda di ricerca
+  dizionario_dati.md                    ← dizionario delle 37 (+16 sismiche) colonne delle matrici
   risultati_sdm_comuni.md              ← risultati completi del SDM a livello comune (ML, spreg/PySAL)
   risultati_sdm_sismico.md             ← risultati del SDM esteso con il terzo hazard sismico (p=4)
   sismico_metodologia.md               ← fonti INGV (MPS04), estrazione griglie, matching, pipeline
-  script_spreg_sdm_catnat.py           ← script definitivo della stima SDM (Python, spreg/PySAL)
   log_R_livello_impresa.md            ← guida e integrazione dei log R (spatialreg) livello impresa
 scripts/
   step1_kdist_moran.py                 ← selezione k via curva k-dist + Moran (livello comune)
   sdm_grid.js, definitivo.js           ← stima ML della SDM (implementazione pura Python/JS)
   se_definitivi.js                     ← errore standard ML (Hessiana numerica, k=5..8)
+  script_spreg_sdm_catnat.py           ← stima di riferimento con spreg/PySAL (CSV_PATH = data/…)
   sismico/                             ← pipeline del terzo hazard sismico (estrazione, matching, SDM p=4)
 results/
   grid_results.json                     ← griglia di selezione k (k-dist, Moran, AIC)
@@ -119,7 +125,12 @@ Risultati salienti (dettaglio completo in `docs/risultati_sdm_comuni.md`):
 | θ PMI (lag spaziale) | **−0,0520** | 0,0063 | −8,33 |
 | θ Grandi (lag spaziale) | −0,0374 | 0,0093 | −4,03 |
 
-- LR vs SAR = 126,71***, LR vs SEM = 109,64***, AIC: SDM (12.717,4) < SEM (12.821,1) < SAR (12.838,1);
+- LR vs SAR = 126,71***, LR vs SEM = 109,64***, AIC: SDM (12.717,4) < SEM (12.823,1) < SAR (12.840,1)
+  (convenzione uniforme K = 2p+3 per SDM, K = p+3 per SAR/SEM, σ² inclusa);
+- Nota di identificazione: `Risk_Frana_Asset_Grandi` = 0 in 3.216 comuni su 3.823 → con
+  `log1p(0) = 0` questi comuni formano un gruppo di riferimento e β_Grandi è identificato sui
+  607 comuni con esposizione positiva (2.147 per la PMI; dettaglio in
+  `docs/risultati_sdm_comuni.md`, §2);
 - Effetti LeSage–Pace: Grandi → diretto +0,151, totale +0,211; PMI → diretto ~0, totale −0,091
   (effetto indiretto negativo dominante);
 - Robustezza su k = 6, 7, 8: β_Grandi stabile (0,142–0,144), θ_PMI stabile (−0,042/−0,050), ρ cresce
@@ -182,7 +193,7 @@ modello a due regressori era dovuta alla variabile omessa.
    3.823 righe × 37 colonne e l'identità `asset_tot = asset_PMI + asset_grandi`.
 2. Selezione di k: `scripts/step1_kdist_moran.py` (curva k-dist, Moran vs k) e
    `results/grid_results.json`.
-3. Stima SDM ML: `docs/script_spreg_sdm_catnat.py` (via `spreg`) oppure
+3. Stima SDM ML: `scripts/script_spreg_sdm_catnat.py` (via `spreg`) oppure
    `scripts/definitivo.js` + `scripts/se_definitivi.js` (implementazione equivalente in ML pura,
    con Hessiana numerica per gli errori standard).
 4. Riproduzione end-to-end: `notebook/riproduce_sdm_comuni.ipynb` — pipeline completa in un unico
@@ -207,4 +218,21 @@ modello a due regressori era dovuta alla variabile omessa.
 
 Ambienti: R 4.x con `spdep`, `spatialreg`, `FNN`, `ggplot2`; Python 3 con `spreg`, `libpysal`
 (pipeline sismica: solo stdlib); Node.js per gli script ML; notebook: Python 3 con sola
-dipendenza `numpy` (≥ 1.24).
+dipendenza `numpy` (≥ 1.24). A ogni push la GitHub Actions (`.github/workflows/ci.yml`)
+verifica la sintassi di tutti gli script ed esegue il notebook per intero: la riproducibilità
+è parte del repository, non una dichiarazione.
+
+## 5. Licenza e citazione
+
+Codice e documentazione sono rilasciati sotto licenza **MIT** (`LICENSE`, Copyright © 2026
+Pietro Maietta). I **dati** restano dei rispettivi titolari e sono soggetti alle loro
+condizioni: AIDA/Bureau van Dijk (asset aziendali), ISTAT (confini e demografia), ISPRA
+(pericolosità idrogeologica), INGV (pericolosità sismica MPS04), IVASS (tariffe dei premi
+teorici). Il repo ne archivia solo elaborazioni aggregate a livello comunale per
+riproducibilità scientifica; per usi commerciali dei dati fare riferimento ai titolari.
+
+Se usi questo lavoro, cita come da `CITATION.cff`:
+
+> Pietro Maietta (2026). *Cat-Nat — analisi spaziale dei premi assicurativi e del rischio
+> idrogeologico e sismico in Italia (3.823 comuni)*. GitHub repository,
+> https://github.com/pietroscik/cat-nat-analisi-spaziale

@@ -24,15 +24,26 @@ log-likelihood SDM = −6.351,71.
 
 | Modello | logL | AIC |
 |---|---|---|
-| SAR | −6.415,06 (ρ = 0,464) | 12.838,1 |
-| SEM | −6.406,53 (λ = 0,547) | 12.821,1 |
+| SAR | −6.415,06 (ρ = 0,464) | 12.840,1 |
+| SEM | −6.406,53 (λ = 0,547) | 12.823,1 |
 | **SDM** | **−6.351,71** | **12.717,4** |
+
+*Convenzione AIC uniforme* (K = 2p+3 per la SDM, K = p+3 per SAR/SEM, con σ² sempre
+contata; p = 2 → K = 7/5), la stessa usata dalla pipeline sismica
+(`docs/risultati_sdm_sismico.md`). I valori SAR/SEM aggiornano le versioni precedenti
+(12.838,1 e 12.821,1, calcolate con K = 4 senza σ²): la gerarchia è invariata.
 
 - **LR SDM vs SAR** (H0: θ = 0): 126,71, p < 0,001 → i ritardi spaziali WX sono congiuntamente
   necessari;
 - **LR SDM vs SEM** (H0: comune radice): 109,64, p < 0,001 → la SDM non collassa in una SEM;
 - l'AIC conferma la SDM come modello preferito; l'interpretazione degli effetti usa la
   decomposizione di LeSage–Pace.
+
+**Nota su identificazione e corner solution.** `Risk_Frana_Asset_Grandi` è pari a 0 in
+3.216 comuni su 3.823 (nessuna Grande impresa esposta e/o quota di area in pericolosità
+frana nulla): `log1p(0) = 0` fa di questi comuni un gruppo di riferimento omogeneo, e il
+β_Grandi è di fatto identificato sui 607 comuni con esposizione positiva (2.147 per la
+PMI).
 
 ## 3. Effetti diretti, indiretti e totali (LeSage–Pace)
 
