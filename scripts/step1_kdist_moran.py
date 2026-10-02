@@ -1,7 +1,7 @@
-import csv, math
+import csv, math, os
 
 # --- carica dati ---
-rows = list(csv.DictReader(open('tool-results/data-analysis/scelta-k/matrice.csv')))
+rows = list(csv.DictReader(open(os.environ.get('MATRIX', 'data/Matrice_Modello_Savelli_Final.csv'))))
 def f(s):
     try: return float(s)
     except: return None
@@ -69,5 +69,5 @@ for k in [3,4,5,6,7,8,9,10,12,15,18,20,25,30,35,40]:
 # salva indici per step2
 import pickle
 pickle.dump({'nn_idx': nn_idx, 'y': y, 'x1': x1, 'x2': x2, 'n': n},
-            open('tool-results/data-analysis/scelta-k/data.pkl','wb'))
+            open(os.environ.get('OUTP', 'results/knn_data.pkl'),'wb'))
 print('\nOK salvato')

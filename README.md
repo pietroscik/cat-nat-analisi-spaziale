@@ -50,8 +50,8 @@ notebook/
 |---|---|---|
 | AIDA (Bureau van Dijk) | bilanci imprese: asset, EBITDA, ricavi, dipendenti, integrazione verticale, ISP (dalla tesi) | impresa |
 | ISTAT / ISPRA | confini e centroidi comunali, popolazione, superfici, pericolosità frana (PAI P3/P4) e idraulica (P3) | comune |
-| IVASS — elaborazione Cat-Nat | tariffe premi teorici per 110 province, per 10.000 € di asset esposto | provincia |
-| INGV — MPS04 | pericolosità sismica: ag (RP 475/30/72 anni) e Sa(0,10 s) (RP 475/1000/2500 anni), griglie nazionali | punto griglia → comune |
+| IVASS — elaborazione Cat-Nat | tariffe premi teorici per 110 province riconciliate (107 presenti in matrice), per 10.000 € di asset esposto | provincia |
+| INGV — MPS04 | pericolosità sismica: ag (RP 475/30/50 anni) e Sa(0,10 s) (RP 475/1000/2500 anni), griglie nazionali | punto griglia → comune |
 
 La **matrice definitiva** (`data/Matrice_Modello_Savelli_Final.csv`, 3.823 comuni × 37 colonne)
 è costruita con due transizioni di scala esplicite (dettaglio e formule verificate nel
@@ -62,7 +62,7 @@ capitolo metodologico, §1.3):
   Micro+Piccola+Media), **somme** di asset (PMI/Grandi/totale), EBITDA, ricavi, dipendenti,
   **medie** di integrazione verticale e ISP_std, **moda** del cluster LISA/Gi* d'impresa;
 - **provincia → comune** (top-down, IVASS): `Premio_Teorico_Comunale_EUR = premio_10k_prov ×
-  asset_tot_EUR / 10.000` (formula verificata su tutti i 3.823 comuni); 70 comuni sardi con
+  asset_tot_EUR / 10.000` (formula verificata su tutti i 3.823 comuni, errore relativo < 1e-5); 70 comuni sardi con
   tariffa ripartita per l'assetto provinciale 2025 (flag `premio_provincia_appross`);
 - **rischio incrociato**: `hazard_frana_share = PAI_area_P3P4_kmq / SUP_kmq` e
   `Risk_Frana_Asset_X = hazard_frana_share × asset_X_EUR` (X = PMI, Grandi).
@@ -163,7 +163,7 @@ dettaglio completo in `docs/risultati_sdm_sismico.md`, quadro macchina in
 - Effetti LeSage–Pace: Sismico Grandi → diretto 0,133, totale 0,169; Sismico PMI → diretto 0,171,
   totale 0,092; Frana Grandi → totale 0,007;
 - Diagnostica: Moran residui I = −0,0355 (p = 0,004); RESET F = 4,95 (scende da 24,4); BP LM = 470;
-- Robustezza: hazard alternativi (RP30/RP72/Sa RP1000/Sa RP2500) → β_Sism_Grandi 0,118–0,136;
+- Robustezza: hazard alternativi (RP30/RP50/Sa RP1000/Sa RP2500) → β_Sism_Grandi 0,118–0,136;
   k = 6/7/8 → 0,126–0,127 (ρ 0,41→0,49); esclusione Sardegna → 0,128.
 
 **Sintesi.** Il sismico è il driver dominante del premio teorico Cat-Nat: β grande e

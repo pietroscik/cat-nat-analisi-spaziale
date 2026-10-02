@@ -6,7 +6,7 @@
 const fs = require('fs');
 
 // ---- dati ----
-const raw = fs.readFileSync('tool-results/data-analysis/scelta-k/matrice.csv','utf8');
+const raw = fs.readFileSync(process.env.MATRIX || 'data/Matrice_Modello_Savelli_Final.csv','utf8');
 const recs=[]; let cur='', inq=false;
 for(const ch of raw){ if(inq){cur+=ch; if(ch==='"')inq=false;} else if(ch==='"'){inq=true;} else if(ch==='\n'){recs.push(cur);cur='';} else if(ch!=='\r')cur+=ch; }
 recs.push(cur);
@@ -324,5 +324,5 @@ for(const k of [5,6,7,8]){
     out[k].reset={F}, out[k].bp={LM};
   }
 }
-fs.writeFileSync('tool-results/data-analysis/scelta-k/risultati_definitivi.json',JSON.stringify(out,null,1));
+fs.writeFileSync(process.env.OUTJSON || 'results/risultati_definitivi.json',JSON.stringify(out,null,1));
 console.log('\nOK salvato risultati_definitivi.json');

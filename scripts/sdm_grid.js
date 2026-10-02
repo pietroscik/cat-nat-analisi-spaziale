@@ -2,7 +2,7 @@
 const fs = require('fs');
 
 // ---- CSV parse ----
-const raw = fs.readFileSync('tool-results/data-analysis/scelta-k/matrice.csv','utf8');
+const raw = fs.readFileSync(process.env.MATRIX || 'data/Matrice_Modello_Savelli_Final.csv','utf8');
 const recs = []; let cur = '', inq = false;
 for (const ch of raw) {
   if (inq) { cur += ch; if (ch === '"') inq = false; }
@@ -202,5 +202,5 @@ for(const k of grid){
     `SAR ${sar.rho.toFixed(4)} ${sar.logL.toFixed(2)} ${sar.aic.toFixed(1)}\t`+
     `SEM ${sem.rho.toFixed(4)} ${sem.logL.toFixed(2)} ${sem.aic.toFixed(1)}\tLR(SDM/SAR)=${LR.toFixed(2)}`);
 }
-fs.writeFileSync('tool-results/data-analysis/scelta-k/grid_results.json',JSON.stringify(results,null,1));
+fs.writeFileSync(process.env.OUTJSON || 'results/grid_results.json',JSON.stringify(results,null,1));
 console.log('OK');

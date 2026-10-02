@@ -1,5 +1,5 @@
 const fs=require('fs');
-const src=fs.readFileSync('tool-results/data-analysis/scelta-k/definitivo.js','utf8');
+const src=fs.readFileSync(process.env.DEFINITIVO || 'scripts/definitivo.js','utf8');
 const mod=src.split('// ============================ RUN ============================')[0];
 eval(mod+`
 const res={};
@@ -44,5 +44,5 @@ for(const k of [5,6,7,8]){
   names.forEach((nm,j)=>console.log('  '+nm+'  est='+p0[j].toFixed(5)+'  se='+se[j].toFixed(5)+'  z='+(p0[j]/se[j]).toFixed(3)));
   res[k]={p:Array.from(p0),se,names};
 }
-fs.writeFileSync('tool-results/data-analysis/scelta-k/se_definitivi.json',JSON.stringify(res,null,1));
+fs.writeFileSync(process.env.OUTJSON || 'results/se_definitivi.json',JSON.stringify(res,null,1));
 `);

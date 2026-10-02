@@ -13,18 +13,22 @@ Le mappe di pericolosità sismica di riferimento per l'Italia sono le elaborazio
 
 | Griglia | Contenuto | Formato | Punti |
 |---|---|---|---|
-| `italia_ag_002` | **ag** (accelerazione massima del suolo, g), RP 475 anni (10% in 50), con 16°/84° percentile | testo, passo 0,02° | 104.564 |
+| `italia_ag_002` | **ag** (accelerazione massima del suolo, g), RP 475 anni (10% in 50), con 16°/84° percentile | testo, passo 0,02° | 104.565 |
 | `SA_0475` | **Sa(T=0,10 s)**, RP 475 (10% in 50), fogli al 16°/50°/84° percentile | `.xls` (BIFF8) | 16.852 |
-| `SA_1000` | Sa(T=0,10 s), RP 1.000 anni (5% in 100) | `.xls` (BIFF8) | 16.852 |
+| `SA_1000` | Sa(T=0,10 s), RP 1.000 anni (5% in 50) | `.xls` (BIFF8) | 16.852 |
 | `SA_2500` | Sa(T=0,10 s), RP 2.500 anni (2% in 50) | `.xls` (BIFF8) | 16.852 |
-| ag "81%" | ag RP ~30 anni, con 16°/84° percentile | `.xlsx` fornito in elaborazione | 16.852 |
-| ag "63%" | ag RP ~72 anni, con 16°/84° percentile | `.xlsx` fornito in elaborazione | 16.852 |
+| ag "81%" | ag RP ~30 anni (81% in 50), con 16°/84° percentile | `.xlsx` fornito in elaborazione | 16.852 |
+| ag "63%" | ag RP ~50 anni (63% in 50), con 16°/84° percentile | `.xlsx` fornito in elaborazione | 16.852 |
 
 URL di download (griglie non archiviate nel repo, ~12 MB l'una):
 
 - ag RP475: `https://zonesismiche.mi.ingv.it/elaborazioni/dati/italia_ag_002_txt.zip`
 - Sa RP475/RP1000/RP2500: `https://esse1.mi.ingv.it/data/SA_0475.zip`,
   `https://esse1.mi.ingv.it/data/SA_1000.zip`, `https://esse1.mi.ingv.it/data/SA_2500.zip`
+  (se `https` non risponde, usare `http://esse1.mi.ingv.it/data/...`);
+- le griglie ag "81%"/"63%" (`.xlsx`) **non hanno un URL pubblico documentato**: sono
+  fornite in elaborazione; i CSV convertiti (`ag_81_RP30.csv`, `ag_63_RP72.csv`) si
+  ottengono col passo 2 della pipeline (§6).
 
 Verifiche di coerenza eseguite sulle griglie: L'Aquila Sa(0,10 s) RP475 (50° perc) = 0,533,
 Milano = 0,116; rapporto Sa(0,10 s)/ag ≈ 2 coerente tra i punti; griglie 16.852 punti con
@@ -76,7 +80,8 @@ Il file è archiviato nel repo e resta comunque **rigenerabile al byte** (join d
 dei due file dati) con `python3 scripts/sismico/build_matrice_v2.py` (un comando, nessuna
 dipendenza). Colonne aggiunte:
 
-- `ag_RP475` (+16°/84° perc), `ag_RP30`, `ag_RP72`, `Sa01_RP475`, `Sa01_RP1000`, `Sa01_RP2500`;
+- `ag_RP475` (+16°/84° perc), `ag_RP30`, `ag_RP72` (denominazione d'archivio della griglia
+  63% in 50 anni, RP ≈ 50), `Sa01_RP475`, `Sa01_RP1000`, `Sa01_RP2500`;
 - `sismico_non_classificato`;
 - `hazard_sismico = ag_RP475` (in g);
 - `Risk_Sismico_Asset_PMI = ag_RP475 × asset_PMI_EUR` e
@@ -86,7 +91,7 @@ dipendenza). Colonne aggiunte:
 area comunale** (share, adimensionale 0–1); per il sismico è un'**accelerazione** (g).
 Le due famiglie di regressori hanno quindi scale diverse: i β non sono confrontabili in
 magnitudine tra hazard, mentre segni, significatività e stabilità nelle robustezze sono
-confrontabili. Le robustezze sui tempi di ritorno (RP30/RP72/Sa RP1000/Sa RP2500) testano
+confrontabili. Le robustezze sui tempi di ritorno (RP30/RP50/Sa RP1000/Sa RP2500) testano
 la sensibilità alla scelta dell'intensità.
 
 ## 5. Stima (`definitivo_sismico.js`)
@@ -98,7 +103,7 @@ SAR/SEM; effetti LeSage–Pace via matrice (I−ρW)^{-1}), con:
 - **baseline p = 2** come controllo di riproduzione (replica esatta di
   `results/FINAL_k5.json`, §1 di `docs/risultati_sdm_sismico.md`);
 - **SDM p = 4** con i quattro regressori Frana/Sismico × PMI/Grandi e confronto SAR/SEM;
-- robustezze: hazard alternativi (RP30, RP72, Sa RP1000, Sa RP2500), k = 6/7/8,
+- robustezze: hazard alternativi (RP30, RP50, Sa RP1000, Sa RP2500), k = 6/7/8,
   esclusione Sardegna;
 - errori standard via Hessiana numerica finale con la **formula corretta a 4 angoli**
   (vedi la nota bug in `docs/risultati_sdm_sismico.md`: la Hessiana interna di
@@ -106,18 +111,23 @@ SAR/SEM; effetti LeSage–Pace via matrice (I−ρW)^{-1}), con:
 
 ## 6. Pipeline di rigenerazione completa
 
+Tutti i comandi si lanciano **dalla root del repo**.
+
 ```bash
 # 1. scaricare e scompattare le griglie (URL del §1) in data/sismico/griglie/
-cd data/sismico/griglie
+#    (per i .zip SA_*: se https://esse1.mi.ingv.it non risponde, usare http://)
 
-# 2. estrarre i fogli SA (recovery) e convertire le griglie ag .xlsx
-python3 scripts/sismico/recover_sa.py SA_0475.xls sa0475    # idem SA_1000, SA_2500
-python3 scripts/sismico/xlsx_to_csv.py ag_81percento.xlsx ag_81_RP30.csv
+# 2. estrarre i fogli SA (recovery), copiare il 50° percentile col nome atteso dal
+#    matching e convertire le griglie ag .xlsx (fornite in elaborazione, §1)
+python3 scripts/sismico/recover_sa.py data/sismico/griglie/SA_0475.xls data/sismico/griglie/sa0475   # idem SA_1000 -> sa1000, SA_2500 -> sa2500
+cp data/sismico/griglie/sa0475_SA_475_50percentile.csv data/sismico/griglie/sa0475_50perc.csv        # idem sa1000, sa2500
+python3 scripts/sismico/xlsx_to_csv.py ag_81percento.xlsx data/sismico/griglie/ag_81_RP30.csv        # griglia "81%" (RP ~30)
+python3 scripts/sismico/xlsx_to_csv.py ag_63percento.xlsx data/sismico/griglie/ag_63_RP72.csv       # griglia "63%" (RP ~50; nome file d'archivio)
 
-# 3. matching comune → griglia
+# 3. matching comune → griglia (output: data/sismico/matrice_sismica_ingv.csv)
 python3 scripts/sismico/match_sismico.py
 
-# 4. matrice estesa 53 colonne
+# 4. matrice estesa 53 colonne (output: data/Matrice_Modello_Savelli_Final_sismico.csv)
 python3 scripts/sismico/build_matrice_v2.py
 
 # 5. stima SDM p=4 (baseline p=2 inclusa come controllo) -> results/FINAL_sismico_k5.json

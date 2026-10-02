@@ -5,7 +5,7 @@
 // ML full-likelihood, tracce MC T=45 M=120 (come definitivo.js),
 // Hessian numerico, effetti LeSage-Pace (MC mrep=80, nser=120),
 // Moran residui (permutazione), RESET, BP.
-// Robustezza: RP30/RP72/Sa01_RP1000/Sa01_RP2500, esclusione Sardegna, k=6,7,8.
+// Robustezza: RP30/RP50/Sa01_RP1000/Sa01_RP2500, esclusione Sardegna, k=6,7,8.
 // Convenzioni AIC: SDM K=2p+3, SAR/SEM K=p+3.
 // =============================================================
 const fs = require('fs');
@@ -41,7 +41,7 @@ function loadAll(subset) {
   xi = {
     franaPMI: mk(), franaGra: mk(), sismPMI: mk(), sismGra: mk(),
     sismPMI_RP30: mk(), sismGra_RP30: mk(),
-    sismPMI_RP72: mk(), sismGra_RP72: mk(),
+    sismPMI_RP50: mk(), sismGra_RP50: mk(),
     sismPMI_Sa1000: mk(), sismGra_Sa1000: mk(),
     sismPMI_Sa2500: mk(), sismGra_Sa2500: mk(),
   };
@@ -60,8 +60,8 @@ function loadAll(subset) {
     xi.sismGra[a] = Math.log1p(ag * aGra);
     xi.sismPMI_RP30[a] = Math.log1p(parseFloat(rows[i][col['ag_RP30']]) * aPMI);
     xi.sismGra_RP30[a] = Math.log1p(parseFloat(rows[i][col['ag_RP30']]) * aGra);
-    xi.sismPMI_RP72[a] = Math.log1p(parseFloat(rows[i][col['ag_RP72']]) * aPMI);
-    xi.sismGra_RP72[a] = Math.log1p(parseFloat(rows[i][col['ag_RP72']]) * aGra);
+    xi.sismPMI_RP50[a] = Math.log1p(parseFloat(rows[i][col['ag_RP72']]) * aPMI);
+    xi.sismGra_RP50[a] = Math.log1p(parseFloat(rows[i][col['ag_RP72']]) * aGra);
     xi.sismPMI_Sa1000[a] = Math.log1p(parseFloat(rows[i][col['Sa01_RP1000']]) * aPMI);
     xi.sismGra_Sa1000[a] = Math.log1p(parseFloat(rows[i][col['Sa01_RP1000']]) * aGra);
     xi.sismPMI_Sa2500[a] = Math.log1p(parseFloat(rows[i][col['Sa01_RP2500']]) * aPMI);
@@ -438,7 +438,7 @@ out.sdm_p4.moranResid = mr4;
 out.robust_hazard = {};
 const variants = [
   ['RP30', xi.sismPMI_RP30, xi.sismGra_RP30],
-  ['RP72', xi.sismPMI_RP72, xi.sismGra_RP72],
+  ['RP50', xi.sismPMI_RP50, xi.sismGra_RP50],
   ['Sa01_RP1000', xi.sismPMI_Sa1000, xi.sismGra_Sa1000],
   ['Sa01_RP2500', xi.sismPMI_Sa2500, xi.sismGra_Sa2500],
 ];

@@ -4,10 +4,11 @@
 Griglie richieste (vedi docs/sismico_metodologia.md per gli URL di download e la
 conversione dei formati; non archiviate nel repo per dimensioni):
 
-- ag RP475 (10%/50 anni): griglia testo italia_ag_002 (passo 0.02 gradi, 104.564 punti,
+- ag RP475 (10%/50 anni): griglia testo italia_ag_002 (passo 0.02 gradi, 104.565 punti,
   colonne: id lon lat ag 16perc 84perc);
-- ag RP30 (81% in 30 anni) e ag RP72 (63% in 50 anni): CSV (ID,Lon,Lat,ag,84perc,16perc;
-  16.852 punti) convertiti dagli .xls/.xlsx INGV;
+- ag RP30 (81% in 50 anni) e ag RP~50 (63% in 50 anni): CSV (ID,Lon,Lat,ag,84perc,16perc;
+  16.852 punti) convertiti dagli .xls/.xlsx INGV (il nome file ag_63_RP72.csv e' la
+  denominazione d'archivio della griglia 63% in 50 anni);
 - Sa(T=0.10s) 50o percentile, RP 475/1000/2500: CSV (ID,Lon,Lat,SA_0.10,...,SA_2.00)
   estratti dagli .xls SA_*.xls INGV (parser BIFF8 incluso: parse_biff.py + recover_sa.py).
 
@@ -131,7 +132,7 @@ def main():
     gsa475 = load_sa(SA475)
     gsa1000 = load_sa(SA1000)
     gsa2500 = load_sa(SA2500)
-    print(f'griglia RP475: {len(g10)} punti | RP30: {len(g81)} | RP72: {len(g63)} | '
+    print(f'griglia RP475: {len(g10)} punti | RP30: {len(g81)} | RP50: {len(g63)} | '
           f'SA475: {len(gsa475)} | SA1000: {len(gsa1000)} | SA2500: {len(gsa2500)}', file=sys.stderr)
 
     h10, h81, h63 = build_hash(g10), build_hash(g81), build_hash(g63)
