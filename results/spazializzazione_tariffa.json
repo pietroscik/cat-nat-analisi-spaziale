@@ -1,0 +1,206 @@
+{
+ "modello": "autocorrelazione spaziale e cluster LISA della coerenza tariffaria (loss ratio)",
+ "fonti": "results/eal_comuni.csv (pricing_model.py), centroidi comunali; EBITDA dalla matrice estesa",
+ "metodo": {
+  "W": "KNN k=5 sui centroidi, pesi di riga standardizzati, tie-break su (distanza, PRO_COM)",
+  "moran_globale": "statistica analitica Cliff-Ord (normalita') + permutazioni 999 (seed 42)",
+  "lisa": "randomizzazione condizionata, 499 permutazioni (seed 42), pseudo-p bilatero, soglia p<0.05"
+ },
+ "moran_globale": [
+  {
+   "n": 3820,
+   "I": 0.00118,
+   "E_I": -0.00026,
+   "z_clifford": 6.62,
+   "p_perm_one_sided": 0.007,
+   "variabile": "loss_ratio (grezzo)",
+   "nota": "tariffa/benchmark: pilotato dalla coda (max ~13.429), riportato per completezza"
+  },
+  {
+   "n": 3820,
+   "I": 0.64861,
+   "E_I": -0.00026,
+   "z_clifford": 69.15,
+   "p_perm_one_sided": 0.001,
+   "variabile": "log loss_ratio",
+   "nota": "log(tariffa/benchmark): trasformazione dichiarata per la skewness — lettura primaria"
+  },
+  {
+   "n": 3815,
+   "I": 0.66943,
+   "E_I": -0.00026,
+   "z_clifford": 71.29,
+   "p_perm_one_sided": 0.001,
+   "variabile": "log peso-EBITDA",
+   "nota": "log(EAL/EBITDA): autocorrelazione del peso della loss sul tessuto"
+  },
+  {
+   "n": 3823,
+   "I": 0.76293,
+   "E_I": -0.00026,
+   "z_clifford": 81.35,
+   "p_perm_one_sided": 0.001,
+   "variabile": "rate_bmk",
+   "nota": "rate benchmark calibrata per 10.000 EUR di asset"
+  }
+ ],
+ "lisa_loss_ratio": {
+  "variabile": "log(loss_ratio) (trasformazione dichiarata per la skewness)",
+  "conteggio_cluster": {
+   "HH": 630,
+   "n.s.": 2695,
+   "LL": 426,
+   "LH": 58,
+   "HL": 11
+  },
+  "nota_interpretazione": "HH = cluster di sovraprezzo (tariffa sopra il rischio modellato); LL = cluster di sottoprezzo (tariffa sotto il rischio modellato)",
+  "cluster_HH": [
+   {
+    "comune": "Soleminis",
+    "provincia": "Sud Sardegna",
+    "loss_ratio": 13429.32,
+    "p": 0.002
+   },
+   {
+    "comune": "Sinnai",
+    "provincia": "Cagliari",
+    "loss_ratio": 16.37,
+    "p": 0.002
+   },
+   {
+    "comune": "Dolianova",
+    "provincia": "Sud Sardegna",
+    "loss_ratio": 17.44,
+    "p": 0.002
+   },
+   {
+    "comune": "Serdiana",
+    "provincia": "Sud Sardegna",
+    "loss_ratio": 16.25,
+    "p": 0.002
+   },
+   {
+    "comune": "Santa Giusta",
+    "provincia": "Oristano",
+    "loss_ratio": 38.89,
+    "p": 0.002
+   },
+   {
+    "comune": "Macomer",
+    "provincia": "Nuoro",
+    "loss_ratio": 20.5,
+    "p": 0.002
+   },
+   {
+    "comune": "Benna",
+    "provincia": "Biella",
+    "loss_ratio": 12.43,
+    "p": 0.002
+   },
+   {
+    "comune": "Dairago",
+    "provincia": "Milano",
+    "loss_ratio": 10.54,
+    "p": 0.002
+   },
+   {
+    "comune": "Arconate",
+    "provincia": "Milano",
+    "loss_ratio": 10.48,
+    "p": 0.002
+   },
+   {
+    "comune": "Busto Garolfo",
+    "provincia": "Milano",
+    "loss_ratio": 10.32,
+    "p": 0.002
+   },
+   {
+    "comune": "Abbasanta",
+    "provincia": "Oristano",
+    "loss_ratio": 24.6,
+    "p": 0.002
+   },
+   {
+    "comune": "Casorezzo",
+    "provincia": "Milano",
+    "loss_ratio": 10.27,
+    "p": 0.002
+   }
+  ],
+  "cluster_LL": [
+   {
+    "comune": "La Thuile",
+    "provincia": "Valle d'Aosta/Vallée d'Aoste",
+    "loss_ratio": 0.2,
+    "p": 0.002
+   },
+   {
+    "comune": "Châtillon",
+    "provincia": "Valle d'Aosta/Vallée d'Aoste",
+    "loss_ratio": 0.24,
+    "p": 0.002
+   },
+   {
+    "comune": "Morgex",
+    "provincia": "Valle d'Aosta/Vallée d'Aoste",
+    "loss_ratio": 0.27,
+    "p": 0.002
+   },
+   {
+    "comune": "Verrès",
+    "provincia": "Valle d'Aosta/Vallée d'Aoste",
+    "loss_ratio": 0.3,
+    "p": 0.002
+   },
+   {
+    "comune": "Osoppo",
+    "provincia": "Udine",
+    "loss_ratio": 0.3,
+    "p": 0.002
+   },
+   {
+    "comune": "Artegna",
+    "provincia": "Udine",
+    "loss_ratio": 0.3,
+    "p": 0.002
+   },
+   {
+    "comune": "Venzone",
+    "provincia": "Udine",
+    "loss_ratio": 0.3,
+    "p": 0.002
+   },
+   {
+    "comune": "Gardone Riviera",
+    "provincia": "Brescia",
+    "loss_ratio": 0.34,
+    "p": 0.002
+   },
+   {
+    "comune": "Forgaria nel Friuli",
+    "provincia": "Udine",
+    "loss_ratio": 0.34,
+    "p": 0.002
+   },
+   {
+    "comune": "Colloredo di Monte Albano",
+    "provincia": "Udine",
+    "loss_ratio": 0.38,
+    "p": 0.002
+   },
+   {
+    "comune": "Moriago della Battaglia",
+    "provincia": "Treviso",
+    "loss_ratio": 0.38,
+    "p": 0.002
+   },
+   {
+    "comune": "Santarcangelo di Romagna",
+    "provincia": "Rimini",
+    "loss_ratio": 0.47,
+    "p": 0.002
+   }
+  ]
+ }
+}
