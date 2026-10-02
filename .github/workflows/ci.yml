@@ -27,6 +27,10 @@ jobs:
             scripts/script_spreg_sdm_catnat.py \
             scripts/pricing/pricing_model.py \
             scripts/pricing/tessuto_produttivo.py \
+            scripts/pricing/ep_curve.py \
+            scripts/pricing/chi_paga.py \
+            scripts/pricing/spazializzazione.py \
+            scripts/pricing/robustezza_tessuto.py \
             scripts/sismico/match_sismico.py \
             scripts/sismico/build_matrice_v2.py \
             scripts/sismico/parse_biff.py \
@@ -44,6 +48,17 @@ jobs:
           python scripts/pricing/tessuto_produttivo.py
           git diff --quiet -- results/esposizione_tessuto.json || \
             { echo "ERRORE: esposizione_tessuto.json non riproducibile (git diff)"; git diff --stat; exit 1; }
+
+      - name: Approfondimenti attuariali (deterministici, rigenerano JSON/SVG)
+        run: |
+          python scripts/pricing/ep_curve.py
+          python scripts/pricing/chi_paga.py
+          python scripts/pricing/spazializzazione.py
+          python scripts/pricing/robustezza_tessuto.py
+          git diff --quiet -- results/ep_curve.json results/chi_paga.json \
+            results/spazializzazione_tariffa.json results/robustezza_tessuto.json \
+            docs/mappa_lisa_tariffa.svg || \
+            { echo "ERRORE: output approfondimenti non riproducibile (git diff)"; git diff --stat; exit 1; }
 
       - name: Setup Node
         uses: actions/setup-node@v4

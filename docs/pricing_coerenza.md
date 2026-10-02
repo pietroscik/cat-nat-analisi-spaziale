@@ -7,7 +7,7 @@ annual loss)** a tre hazard per comune, confrontato con la tariffa IVASS per mis
 dalla parte meccanica del premio (asset × rate).
 
 **Avvertenza di metodo.** Il benchmark usa parametri fisici *illustrativi* (ordini di
-grandezza della letteratura tecnica, dichiarati in §2 e perturbati in §7): **non è un
+grandezza della letteratura tecnica, dichiarati in §2 e perturbati in §8): **non è un
 modello di pricing operativo** e non sostituisce un cat model. Ciò che misura è la
 coerenza **relativa** della tariffazione: dove la tariffa segue il rischio modellato e
 dove no. Il loss ratio va letto come indicatore di adeguatezza relativa, non come
@@ -16,9 +16,12 @@ economic loss ratio di portafoglio.
 Output macchina: `results/pricing_benchmark.json` (parametri, calibrazione, tabella
 province, regressione), `results/eal_comuni.csv` (3.823 righe), `docs/mappa_loss.svg`
 (mappa di loss a due pannelli), `results/esposizione_tessuto.json` (peso della loss
-sul tessuto produttivo, §5). Tutto si rigenera con
-`python3 scripts/pricing/pricing_model.py` seguito da
-`python3 scripts/pricing/tessuto_produttivo.py` (solo stdlib, deterministici).
+sul tessuto produttivo, §5), `results/ep_curve.json` (AAL numerico e curva EP, §2.1),
+`results/chi_paga.json` (ripartizione del premio, §5.4),
+`results/spazializzazione_tariffa.json` + `docs/mappa_lisa_tariffa.svg` (Moran e
+LISA della coerenza tariffaria, §6), `results/robustezza_tessuto.json` (verifiche
+di robustezza, §5.5). Tutto si rigenera con la sequenza di comandi della §9 (solo
+stdlib, deterministici).
 
 ## 1. Struttura del premio comunale
 
@@ -53,6 +56,27 @@ Mix nazionale del benchmark (pesato per asset): **sismico 60,8%, idraulico 28,1%
 frana 11,2%** — l'ordine atteso per l'Italia, con il sismico dominante come nel modello
 econometrico (§3.3 del README: l'omissione del sismico gonfiava β_Frana).
 
+### 2.1 AAL numerico dalla curva di hazard e curva di eccedenza
+
+Il fattore `CURVE = 4` è un'ipotesi; la matrice estesa porta tre punti della curva
+MPS04 per comune (ag a RP30, RP72, RP475), così il contributo dell'integrazione si
+**stima empiricamente** (`scripts/pricing/ep_curve.py`, `results/ep_curve.json`):
+
+- **sulla banda RP30–RP475 l'ipotesi è confermata**: CURVE_eff mediana **4,53**
+  (p10–p90: 3,98–5,36; trapezoid sui punti noti, nessuna assunzione aggiuntiva)
+  contro il 4 assunto — il benchmark era ben calibrato su quella banda;
+- **gli eventi più frequenti di RP30** (non in matrice) aggiungono un contributo
+  comparabile: con pendenza dichiarata λ(ag) ∝ ag^−k, k = 3 (sensibilità k = 2,5/3,5),
+  l'AAL numerico sale a **2,30 mld €/anno** contro 1,03 del sismico di benchmark —
+  **2,2× il benchmark** (range 2,0–3,1). Non è un errore del benchmark (che si
+  calibra comunque sull'aggregato con c = 1,917, e la geografia del loss ratio è
+  robusta a CURVE ×0,5/×2, §8.1): è la misura di quanto il design point unico
+  lascia fuori la frequenza;
+- **curva EP nazionale** (sismico puro, non calibrato): loss a scenario
+  RP30 = 11,7 mld €, RP72 = 19,1, RP475 = **122,9 mld €** (banda epistemica 16/84:
+  82–154 mld €): l'evento 1-in-475 vale **53 anni di AAL numerico** — il numero che
+  dimensiona il rischio di coda rispetto al costo annuo atteso.
+
 Aggregato nazionale: **EAL benchmark = 1,70 mld €/anno** su 1,43 mld € di asset
 (rate media pesata 11,9 per 10.000 €), contro un premio teorico di 3,26 mld €/anno
 (22,8 per 10.000 €): un fattore ~1,9 che assorbe insieme caricamenti, perils non
@@ -65,7 +89,7 @@ benchmark a quella IVASS (22,8 per 10.000 €): il benchmark calibrato e la tari
 hanno lo stesso aggregato, e il confronto diventa puramente **relativo**.
 
 `loss_ratio = rate_IVASS / rate_benchmark_calibrato` per comune
-(1.920 comuni con ratio definito; 3 comuni sardi senza rischio modellato sono n/d):
+(3.820 comuni con ratio definito; 3 comuni sardi senza rischio modellato sono n/d):
 
 | Statistica | Valore |
 |---|---|
@@ -78,7 +102,7 @@ hanno lo stesso aggregato, e il confronto diventa puramente **relativo**.
 La distribuzione è right-skewed per costruzione: nei comuni a basso hazard modellato
 il benchmark tende a 0 mentre la tariffa ha un pavimento (~11 per 10.000 €), quindi
 il ratio esplode — non è inefficienza, è il perimetro tariffario più ampio
-(documentato in §7).
+(documentato in §8).
 
 **Province estreme** (aggregato asset-weighted; tabella completa nel JSON):
 
@@ -206,7 +230,95 @@ Brindisi (0,41%)** (tabella completa delle 107 province nel JSON, con la EAL per
 addetto). Lo Spearman ISP–peso a livello comunale è −0,18: la relazione negativa
 esiste ed è robusta, ma è un gradiente, non una legge.
 
-## 6. Mappa di loss
+### 5.4 Chi paga il premio: PMI vs Grandi imprese
+
+La rate è costante entro provincia e si applica all'asset esposto, quindi la
+ripartizione del premio segue gli asset (`scripts/pricing/chi_paga.py`,
+`results/chi_paga.json`):
+
+| Indicatore nazionale | Valore |
+|---|---|
+| Grandi imprese: quota delle imprese / quota del premio | 10,5% (3.648) / **63,7%** (2,08 mld €) |
+| PMI: quota delle imprese / quota del premio | 89,5% (27.026) / 36,3% (1,18 mld €) |
+| premio medio per impresa PMI | 43.884 €/anno |
+| premio medio per impresa Grande | 569.617 €/anno (**×13** la PMI) |
+| EAL calibrata su asset PMI / Grandi | 39,9% / 60,1% |
+| incidenza comunale mediana: premio/EBITDA · premio/ricavi | 2,33% · 0,22% |
+
+**Il 67% dei comuni (2.564 su 3.823) non ha Grandi imprese**: nei terzili di
+quota_grandi dei comuni che le hanno, l'incidenza mediana non condizionata scende
+da 2,41% (senza Grandi) a 2,15% (terzile alto) — i comuni dominati da Grandi
+producono più EBITDA per asset e diluiscono l'incidenza. Nota di metodo: è una
+media non condizionata, complementare al coefficiente **condizionato** +0,08 della
+regressione del §5.3 (a parità di hazard, asset e dimensione la quota Grandi ha un
+piccolo premio di esposizione): i due fatti convivono perché descrivono cose
+diverse — il livello medio dell'incidenza e il suo gradiente marginale. L'incidenza
+per classe non è calcolabile (EBITDA e ricavi in matrice sono totali di comune):
+limite dichiarato.
+
+### 5.5 Robustezza del risultato: il β della performance sopravvive a tutto
+
+Cinque verifiche della specifica base, senza selezioni ex post
+(`scripts/pricing/robustezza_tessuto.py`, `results/robustezza_tessuto.json`):
+
+| Specifica | n | R² | β performance | t robusto |
+|---|---|---|---|---|
+| base (§5.3, ISP) | 3.791 | 0,762 | **−0,375** | −21,8 |
+| winsorizzato log-peso 1%/99% | 3.791 | 0,777 | −0,361 | −23,1 |
+| trim top 1% del peso | 3.754 | 0,763 | −0,359 | −22,4 |
+| performance = ROA comunale (EBITDA/asset) | 3.791 | 0,844 | −10,51 (−0,41 per SD) | −44,7 |
+| SLX (base + regressori col ritardo spaziale W) | 3.791 | 0,763 | −0,376 | −21,9 |
+
+- il gradiente **non è portato dalla coda** del peso-EBITDA (winsorizzato e trim
+  danno lo stesso β del base);
+- **non è un fatto dell'ISP in sé**: con il ROA comunale — una misura di
+  performance che non dipende dalla pipeline della tesi (correlazione con ISP:
+  0,54) — segno e ordine di grandezza per deviazione standard reggono (−0,41 vs
+  −0,25 per SD dell'ISP), con R² ancora più alto;
+- **l'effetto è tutto locale**: nel SLX il ritardo spaziale della performance
+  (W×ISP) è nullo (t = +0,1) — niente effetto di contesto, il peso della loss di un
+  comune dipende dalla performance delle *sue* imprese, non da quelle dei vicini;
+- i residui della specifica base sono autocorrelati (Moran I = 0,231, z = +24,6):
+  l'OLS trascura una componente spaziale dell'hazard (geografia liscia), che però
+  non sposta il coefficiente della performance (SLX: β invariato). Diagnostica
+  documentata, non risolta con un SAR: la lettura sostantiva non cambia.
+
+## 6. Spazializzazione della coerenza tariffaria: Moran e LISA del loss ratio
+
+Il ponte tra i due mondi del repo: la geografia dell'adeguatezza tariffaria letta
+con gli strumenti spaziali del SDM (`scripts/pricing/spazializzazione.py`,
+`results/spazializzazione_tariffa.json`, mappa `docs/mappa_lisa_tariffa.svg`).
+W: KNN k = 5 sui centroidi (come il SDM comunale), pesi di riga standardizzati;
+Moran globale con statistica analitica Cliff–Ord **e** permutazioni (999, seed
+fisso: deterministico); LISA con randomizzazione condizionata (499, p < 0,05).
+
+| Variabile | n | Moran I | z | p (perm) |
+|---|---|---|---|---|
+| log loss ratio | 3.820 | **+0,649** | +69,2 | 0,001 |
+| loss ratio grezzo | 3.820 | +0,0012 | +6,6 | 0,007 |
+| log peso-EBITDA | 3.815 | +0,669 | +71,3 | 0,001 |
+| rate benchmark calibrata | 3.823 | +0,763 | +81,3 | 0,001 |
+
+- **l'adeguatezza tariffaria è fortemente clusterizzata** (I = 0,649 sul log): la
+  distanza dal rischio modellato non è rumore comunale indipendente — è una
+  struttura spaziale, coerente con il fatto che la rate è decisa a livello
+  provinciale: comuni vicini condividono lo stesso errore di tariffazione. Il
+  Moran del ratio grezzo (+0,001) è invece pilotato dalla coda (max 13.429,
+  Soleminis): la trasformazione log è dichiarata ed è la lettura corretta;
+- i cluster LISA significativi confermano la lettura della §3: **630 comuni HH**
+  (sovraprezzo in cluster di sovraprezzo: Sardegna — dove il benchmark ≈ 0 e il
+  ratio esplode — e Nord a basso sismico, effetto pavimento tariffario) contro
+  **426 comuni LL** (sottoprezzo in cluster di sottoprezzo: Valle d'Aosta,
+  Udine, Brescia, Treviso — l'idrogeologico non riflette in tariffa);
+- la rate benchmark è più autocorrelata del loss ratio (0,76 vs 0,65): il rischio
+  fisico è più liscio nello spazio dell'errore tariffario — la differenza è
+  esattamente il disallineamento che la §4 misura con l'elasticità.
+
+La mappa `docs/mappa_lisa_tariffa.svg` mostra i 3.820 comuni classificati per
+cluster (HH rosso, LL blu, outliers spaziali arancio/celeste, non significativi
+grigio).
+
+## 7. Mappa di loss
 
 `docs/mappa_loss.svg` — due pannelli sugli stessi 3.823 centroidi comunali:
 
@@ -219,7 +331,7 @@ esiste ed è robusta, ma è un gradiente, non una legge.
 Generata dallo stesso script (nessuna dipendenza); visualizzabile direttamente su
 GitHub.
 
-## 7. Limiti e sensibilità
+## 8. Limiti e sensibilità
 
 1. **Parametri illustrativi**: MDR, fattore curva e frequenze-danno sono ordini di
    grandezza dichiarati, non stime. La sensibilità (ogni parametro ×0,5 e ×2, più tutti
@@ -237,17 +349,26 @@ GitHub.
    hazard con un moltiplicatore costante; un cat model userebbe le percentili 16/84
    (già in matrice) per l'incertezza.
 
-## 8. Riproducibilità
+## 9. Riproducibilità
 
 ```bash
-# dalla root del repo (solo stdlib; ~2 + ~1 secondi)
+# dalla root del repo (solo stdlib; ~2 + ~1 + ~1 + ~1 + ~1 minuti)
 python3 scripts/pricing/pricing_model.py
 # output: results/pricing_benchmark.json, results/eal_comuni.csv, docs/mappa_loss.svg
 python3 scripts/pricing/tessuto_produttivo.py
 # output: results/esposizione_tessuto.json (richiede results/eal_comuni.csv)
+python3 scripts/pricing/ep_curve.py
+# output: results/ep_curve.json (AAL numerico e curva EP §2.1)
+python3 scripts/pricing/chi_paga.py
+# output: results/chi_paga.json (ripartizione del premio §5.4)
+python3 scripts/pricing/spazializzazione.py
+# output: results/spazializzazione_tariffa.json + docs/mappa_lisa_tariffa.svg (§6)
+python3 scripts/pricing/robustezza_tessuto.py
+# output: results/robustezza_tessuto.json (verifiche §5.5; richiede i due script sopra)
 ```
 
-Script deterministici (nessun campionamento), percorsi configurabili via env
-(`MATRICE`, `OUT_CSV`, `OUT_JSON`, `OUT_SVG` per pricing_model.py). Fonti: IVASS
-(tariffe provinciali), INGV MPS04 (ag RP475), ISPRA (aree PAI P3/P4 e P3), AIDA
-(asset per classe dimensione, aggregati a comune).
+Script deterministici (nessun campionamento; le permutazioni di Moran/LISA usano
+un seed fisso, §6), percorsi configurabili via env (`MATRICE`, `OUT_CSV`,
+`OUT_JSON`, `OUT_SVG` per pricing_model.py). Fonti: IVASS (tariffe provinciali),
+INGV MPS04 (ag RP475/72/30 + percentili, Sa(0,10 s)), ISPRA (aree PAI P3/P4 e P3),
+AIDA (asset per classe dimensione, aggregati a comune).

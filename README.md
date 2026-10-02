@@ -32,6 +32,7 @@ docs/
   sismico_metodologia.md               ← fonti INGV (MPS04), estrazione griglie, matching, pipeline
   pricing_coerenza.md                  ← benchmark EAL, loss ratio vs tariffe IVASS, coerenza asset, esposizione del tessuto
   mappa_loss.svg                       ← mappa di loss: EAL attesa e loss ratio per comune
+  mappa_lisa_tariffa.svg                ← cluster LISA della coerenza tariffaria (HH/LL del loss ratio)
   log_R_livello_impresa.md            ← guida e integrazione dei log R (spatialreg) livello impresa
 scripts/
   step1_kdist_moran.py                 ← selezione k via curva k-dist + Moran (livello comune)
@@ -40,6 +41,10 @@ scripts/
   script_spreg_sdm_catnat.py           ← stima di riferimento con spreg/PySAL (CSV_PATH = data/…)
   pricing/pricing_model.py             ← benchmark EAL 3-hazard, loss ratio vs IVASS, mappa di loss
   pricing/tessuto_produttivo.py        ← peso della loss sul tessuto: esposizione per performance ISP
+  pricing/ep_curve.py                  ← AAL numerico dalla curva MPS04 (RP30/72/475) e curva EP nazionale
+  pricing/chi_paga.py                  ← ripartizione del premio per classe dimensionale (PMI vs Grandi)
+  pricing/spazializzazione.py          ← Moran e LISA della coerenza tariffaria + mappa dei cluster
+  pricing/robustezza_tessuto.py        ← verifiche del risultato del tessuto (winsorizzato, ROA, SLX)
   sismico/                             ← pipeline del terzo hazard sismico (estrazione, matching, SDM p=4)
 results/
   grid_results.json                     ← griglia di selezione k (k-dist, Moran, AIC)
@@ -50,6 +55,10 @@ results/
   eal_comuni.csv                        ← EAL benchmark e loss ratio per comune (3.823 righe)
   pricing_benchmark.json                ← parametri, calibrazione, tabella province, regressione rate
   esposizione_tessuto.json             ← peso EAL/EBITDA, quartili ISP, regressione peso, province
+  ep_curve.json                        ← AAL numerico (trapezoid RP30-475 + coda) e curva EP nazionale
+  chi_paga.json                        ← premio PMI vs Grandi: quote, premio medio, incidenze
+  spazializzazione_tariffa.json       ← Moran globale e LISA del loss ratio
+  robustezza_tessuto.json             ← specifiche di robustezza del beta della performance
 data/
   Matrice_Modello_Savelli_Final.csv     ← matrice definitiva: 3.823 comuni × 37 colonne
   Matrice_Modello_Savelli_Final_sismico.csv ← matrice estesa con le colonne sismiche: 3.823 × 53
@@ -235,7 +244,23 @@ Estensione al tessuto produttivo (`scripts/pricing/tessuto_produttivo.py`, outpu
   di ISP riduce il peso della loss del ~31%** (β = −0,375, t = −21,8); quota di
   imprese Grandi con un piccolo premio di esposizione (+0,08, t = 2,2 — concentration
   risk comunale); province estreme Vibo Valentia 8,3% / Isernia 8,2% / Avellino
-  8,1% contro Monza-Brianza 0,38% / Lecce 0,40%.
+  8,1% contro Monza-Brianza 0,38% / Lecce 0,40%;
+- **chi paga** (`results/chi_paga.json`): le Grandi imprese sono il 10,5% delle unità
+  ma pagano il **63,7% del premio** (premio medio 569.617 € vs 43.884 € della PMI,
+  ×13); il 67% dei comuni non ha Grandi imprese;
+- **AAL numerico dalla curva MPS04** (`results/ep_curve.json`): il fattore CURVE=4
+  del benchmark è confermato sulla banda RP30–475 (CURVE_eff mediana 4,53); gli
+  eventi più frequenti di RP30 portano l'AAL numerico a 2,30 mld € (2,2×); l'evento
+  1-in-475 vale 122,9 mld € = **53 anni di AAL** (banda 16/84: 82–154);
+- **spazializzazione della coerenza tariffaria**
+  (`results/spazializzazione_tariffa.json`, `docs/mappa_lisa_tariffa.svg`): il log
+  loss ratio ha **Moran I = 0,649** (z = 69) — l'inadeguatezza tariffaria è un fatto
+  spaziale, coerente con la rate provinciale; LISA: 630 comuni HH (Sardegna + Nord
+  a basso sismico) vs 426 LL (VdA, Udine, Brescia);
+- **robustezza** (`results/robustezza_tessuto.json`): il β della performance
+  sopravvive a winsorizzazione (−0,361), trimming (−0,359), misura alternativa ROA
+  comunale (−0,41 per SD, t = −44,7) e SLX (−0,376, con W×ISP nullo: effetto tutto
+  locale).
 
 **Avvertenza**: il benchmark usa parametri fisici illustrativi e modella solo i 3
 hazard della matrice: misura coerenza relativa della tariffazione, non è un modello
@@ -277,6 +302,14 @@ di pricing operativo.
 9. Peso della loss sul tessuto produttivo: `python3 scripts/pricing/tessuto_produttivo.py`
    → `results/esposizione_tessuto.json` (richiede il passo 8; deterministico); quartili di
    esposizione per performance ISP, regressione del peso-EBITDA e tabella provinciale.
+10. Approfondimenti attuariali del pricing (tutti deterministici, solo stdlib, richiedono il
+   passo 8): `python3 scripts/pricing/ep_curve.py` → `results/ep_curve.json` (AAL numerico
+   dalla curva MPS04 e curva EP nazionale); `python3 scripts/pricing/chi_paga.py` →
+   `results/chi_paga.json` (ripartizione del premio PMI vs Grandi); `python3
+   scripts/pricing/spazializzazione.py` → `results/spazializzazione_tariffa.json` +
+   `docs/mappa_lisa_tariffa.svg` (Moran/LISA del loss ratio, permutazioni a seed fisso);
+   `python3 scripts/pricing/robustezza_tessuto.py` → `results/robustezza_tessuto.json`
+   (winsorizzato, trim, ROA, SLX, Moran sui residui).
 
 Ambienti: R 4.x con `spdep`, `spatialreg`, `FNN`, `ggplot2`; Python 3 con `spreg`, `libpysal`
 (pipeline sismica: solo stdlib); Node.js per gli script ML; notebook: Python 3 con sola
