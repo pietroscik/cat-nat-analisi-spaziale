@@ -1,0 +1,78 @@
+{
+ "modello": "ripartizione del premio teorico Cat-Nat e incidenza per classe dimensionale (PMI vs Grandi)",
+ "fonti": "asset_PMI/grandi, n_imprese per classe, EBITDA e ricavi dalla matrice estesa; rate IVASS e EAL calibrata da results/eal_comuni.csv (pricing_model.py)",
+ "nazionale": {
+  "premio_teorico_EUR": 3263967907.0,
+  "quota_premio_PMI": 0.3634,
+  "quota_premio_grandi": 0.6366,
+  "premio_medio_impresa_PMI_EUR": 43884.0,
+  "premio_medio_impresa_grande_EUR": 569617.0,
+  "eal_calibrata_per_classe": {
+   "PMI_EUR": 1303419711.0,
+   "grandi_EUR": 1960544118.0,
+   "quota_eal_PMI": 0.3993
+  },
+  "n_imprese": {
+   "PMI": 27026,
+   "grandi": 3648
+  },
+  "incidenza_comunale": {
+   "nota": "EBITDA e ricavi sono totali di comune: l'incidenza non e' splittabile per classe",
+   "premio_su_EBITDA_mediana": 0.0233,
+   "premio_su_ricavi_mediana": 0.0022
+  }
+ },
+ "gruppi_struttura_dimensionale": {
+  "nota": "67% dei comuni non ha Grandi imprese: i quartili di quota_grandi sarebbero degeneri; gruppi = senza Grandi vs terzili di quota_grandi tra i comuni che le hanno",
+  "senza_grandi": {
+   "n_comuni": 2564,
+   "quota_grandi_asset_range": [
+    0.0,
+    0.0
+   ],
+   "quota_premio_nazionale": 0.103,
+   "premio_medio_PMI_EUR": 41913.0,
+   "premio_medio_grande_EUR": null,
+   "premio_su_EBITDA_mediano": 0.0241,
+   "premio_su_ricavi_mediano": 0.0022
+  },
+  "con_grandi_terzili_quota": [
+   {
+    "n_comuni": 420,
+    "quota_grandi_asset_range": [
+     0.0136,
+     0.5191
+    ],
+    "quota_premio_nazionale": 0.1446,
+    "premio_medio_PMI_EUR": 48340.0,
+    "premio_medio_grande_EUR": 218606.0,
+    "premio_su_EBITDA_mediano": 0.0229,
+    "premio_su_ricavi_mediano": 0.0021
+   },
+   {
+    "n_comuni": 420,
+    "quota_grandi_asset_range": [
+     0.5193,
+     0.7642
+    ],
+    "quota_premio_nazionale": 0.2485,
+    "premio_medio_PMI_EUR": 43291.0,
+    "premio_medio_grande_EUR": 419135.0,
+    "premio_su_EBITDA_mediano": 0.0229,
+    "premio_su_ricavi_mediano": 0.0021
+   },
+   {
+    "n_comuni": 419,
+    "quota_grandi_asset_range": [
+     0.7646,
+     1.0
+    ],
+    "quota_premio_nazionale": 0.5039,
+    "premio_medio_PMI_EUR": 42412.0,
+    "premio_medio_grande_EUR": 842027.0,
+    "premio_su_EBITDA_mediano": 0.0215,
+    "premio_su_ricavi_mediano": 0.0024
+   }
+  ]
+ }
+}
