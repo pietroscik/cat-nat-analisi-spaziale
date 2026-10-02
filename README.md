@@ -46,6 +46,7 @@ scripts/
   pricing/chi_paga.py                  ← ripartizione del premio per classe dimensionale (PMI vs Grandi)
   pricing/spazializzazione.py          ← Moran e LISA della coerenza tariffaria + mappa dei cluster
   pricing/robustezza_tessuto.py        ← verifiche del risultato del tessuto (winsorizzato, ROA, SLX)
+  pricing/validazione_assunzioni.py     ← validazione formale delle assunzioni (curve, OLS, W, seed)
   pricing/grafici.py                    ← quadro grafico SVG dei risultati (6 pannelli dai JSON)
   sismico/                             ← pipeline del terzo hazard sismico (estrazione, matching, SDM p=4)
 results/
@@ -61,6 +62,7 @@ results/
   chi_paga.json                        ← premio PMI vs Grandi: quote, premio medio, incidenze
   spazializzazione_tariffa.json       ← Moran globale e LISA del loss ratio
   robustezza_tessuto.json             ← specifiche di robustezza del beta della performance
+  validazione_assunzioni.json          ← validazione delle assunzioni: correzione coda, OLS, Moran, seed
 data/
   Matrice_Modello_Savelli_Final.csv     ← matrice definitiva: 3.823 comuni × 37 colonne
   Matrice_Modello_Savelli_Final_sismico.csv ← matrice estesa con le colonne sismiche: 3.823 × 53
@@ -250,10 +252,16 @@ Estensione al tessuto produttivo (`scripts/pricing/tessuto_produttivo.py`, outpu
 - **chi paga** (`results/chi_paga.json`): le Grandi imprese sono il 10,5% delle unità
   ma pagano il **63,7% del premio** (premio medio 569.617 € vs 43.884 € della PMI,
   ×13); il 67% dei comuni non ha Grandi imprese;
-- **AAL numerico dalla curva MPS04** (`results/ep_curve.json`): il fattore CURVE=4
-  del benchmark è confermato sulla banda RP30–475 (CURVE_eff mediana 4,53); gli
-  eventi più frequenti di RP30 portano l'AAL numerico a 2,30 mld € (2,2×); l'evento
-  1-in-475 vale 122,9 mld € = **53 anni di AAL** (banda 16/84: 82–154);
+- **AAL numerico dalla curva MPS04** (`results/ep_curve.json`): la banda RP30–475
+  vale 4,53× il design point (moltiplicatore totale identificabile 6,88); l'AAL
+  numerico RP≥30 è **1,71 mld €/anno = 1,66× il benchmark**, limite inferiore
+  dichiarato (la coda RP<30 non è stimabile dai tre punti); l'evento 1-in-475 vale
+  122,9 mld € = **72 anni di AAL** (banda 16/84: 82–154);
+- **validazione delle assunzioni** (`results/validazione_assunzioni.json`): diagnostica
+  formale di tutto il modello — ha corretto un errore di forma chiusa nella coda della
+  v1 (doppio conteggio della banda RP30–475, 2,30 mld ritirati → 1,71) e valida OLS
+  (JB/BP/VIF/Cook/RESET), trasformazione log (skewness 61,8→1,07), matrice W (I
+  stabile su k=3–10, replica esatta) e seed delle permutazioni;
 - **spazializzazione della coerenza tariffaria**
   (`results/spazializzazione_tariffa.json`, `docs/mappa_lisa_tariffa.svg`): il log
   loss ratio ha **Moran I = 0,649** (z = 69) — l'inadeguatezza tariffaria è un fatto
@@ -311,7 +319,10 @@ di pricing operativo.
    scripts/pricing/spazializzazione.py` → `results/spazializzazione_tariffa.json` +
    `docs/mappa_lisa_tariffa.svg` (Moran/LISA del loss ratio, permutazioni a seed fisso);
    `python3 scripts/pricing/robustezza_tessuto.py` → `results/robustezza_tessuto.json`
-   (winsorizzato, trim, ROA, SLX, Moran sui residui); `python3 scripts/pricing/grafici.py` →
+   (winsorizzato, trim, ROA, SLX, Moran sui residui); `python3
+   scripts/pricing/validazione_assunzioni.py` → `results/validazione_assunzioni.json`
+   (validazione formale delle assunzioni: correzione della coda, diagnostica OLS,
+   trasformazione log, matrice W, seed); `python3 scripts/pricing/grafici.py` →
    `docs/grafici_pricing.svg` (quadro grafico a 6 pannelli, legge i JSON dei risultati).
 
 Ambienti: R 4.x con `spdep`, `spatialreg`, `FNN`, `ggplot2`; Python 3 con `spreg`, `libpysal`

@@ -9,8 +9,8 @@ Pannelli (docs/pricing_coerenza.md: §2.1 EP, §5.2 quartili, §5.4 chi paga, §
 province, §5.5 robustezza, §6 Moran):
 
 1. CURVA EP SISMICA NAZIONALE (log-log): loss a scenario RP30/72/475 con banda
-   epistemica 16/84 al RP475, e le linee di riferimento AAL numerico (2,30 mld)
-   e sismico di benchmark CURVE=4 (1,03 mld);
+   epistemica 16/84 al RP475, e le linee di riferimento AAL numerico (1,71 mld,
+   limite inferiore RP>=30) e sismico di benchmark CURVE=4 (1,03 mld);
 2. PESO DELLA LOSS PER QUARTILE ISP: barre del peso-EBITDA (Q1 3,91% -> Q4 2,06%)
    con l'intensita' di esposizione (quota EAL / quota EBITDA) dentro le barre;
 3. CHI PAGA: quote di imprese, premio ed EAL per PMI vs Grandi (le Grandi sono
@@ -119,7 +119,7 @@ def p_ep(x0, y0, ep):
                  % (bx, ly(band['p84'] / 1e9), bx, ly(band['p16'] / 1e9), ROSSO))
     parts.append(txt(bx - 7, ly(band['p16'] / 1e9) + 3, '16-84 perc.', 8, MUT, anchor='end'))
     parts.append(line(px, ly(aal), px + pw, ly(aal), BLU, '4,3'))
-    parts.append(txt(px + pw - 3, ly(aal) - 4, 'AAL numerico %s' % fmt_it(aal, 2), 8.4, BLU, anchor='end'))
+    parts.append(txt(px + pw - 3, ly(aal) - 4, 'AAL numerico (RP≥30) %s' % fmt_it(aal, 2), 8.4, BLU, anchor='end'))
     parts.append(line(px, ly(bmk), px + pw, ly(bmk), VERDE, '4,3'))
     parts.append(txt(px + pw - 3, ly(bmk) + 10, 'sismico benchmark (CURVE=4) %s' % fmt_it(bmk, 2), 8.4, VERDE, anchor='end'))
     return parts

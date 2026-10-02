@@ -1,0 +1,332 @@
+{
+ "modello": "validazione formale delle assunzioni dichiarate del modello di pricing",
+ "fonti": "matrice estesa (ag RP30/72/475 MPS04), results/eal_comuni.csv, results/pricing_benchmark.json, results/ep_curve.json, results/spazializzazione_tariffa.json; replica della specifica base §5.3",
+ "metodo": "solo stdlib, deterministico; quadrature log-spaziate; permutazioni a seed fisso (999, come §6); nessuna nuova ipotesi, verdetti riportati come vengono",
+ "1_chiusa_coda_rara": {
+  "verifica_forma_chiusa_v2": [
+   {
+    "comune_rappresentativo": "p10 ag475",
+    "ag475": 0.0439,
+    "chiusa": 6.78e-05,
+    "quadratura": 6.78e-05,
+    "err_rel": 0.0
+   },
+   {
+    "comune_rappresentativo": "p50 ag475",
+    "ag475": 0.1181,
+    "chiusa": 0.00042661,
+    "quadratura": 0.00042661,
+    "err_rel": 0.0
+   },
+   {
+    "comune_rappresentativo": "p90 ag475",
+    "ag475": 0.206,
+    "chiusa": 0.00106714,
+    "quadratura": 0.00106714,
+    "err_rel": 0.0
+   },
+   {
+    "comune_rappresentativo": "max ag475",
+    "ag475": 0.2764,
+    "chiusa": 0.00158834,
+    "quadratura": 0.00158834,
+    "err_rel": 0.0
+   }
+  ],
+  "esito": "la chiusa col cap riproduce la quadratura (err rel <= 1e-4)"
+ },
+ "2_diagnosi_v1": {
+  "forma_chiusa_v1": "(k/(k-2)) * MDR(ag30)/30",
+  "ipotesi_dichiarata_v1": "coda frequente RP<30 (lambda > 1/30)",
+  "integrale_reale": "coda RARA da RP30 a infinito, SENZA cap di MDR",
+  "verifica_quadratura": {
+   "ag30_rappresentativo": 0.0355,
+   "quadratura": 0.00075615,
+   "chiusa_attesa": 0.00075615,
+   "err_rel": 0.0
+  },
+  "conseguenza": "sommandola al trapezoid RP30-475 la banda veniva contata due volte: totale v1 (2,30 mld) ritirato"
+ },
+ "3_coda_frequente_identificabilita": {
+  "pendenze_locali": {
+   "RP30_72": {
+    "n": 3753,
+    "mediana": 3.695,
+    "p10": 2.974,
+    "p90": 4.459,
+    "quota_k_minore_uguale_2": 0.0
+   },
+   "RP72_475": {
+    "n": 3753,
+    "mediana": 2.111,
+    "p10": 1.766,
+    "p90": 2.688,
+    "quota_k_minore_uguale_2": 0.3885
+   },
+   "RP30_475_ols_3punti": {
+    "n": 3753,
+    "mediana": 2.356,
+    "p10": 1.968,
+    "p90": 2.935,
+    "quota_k_minore_uguale_2": 0.1465
+   }
+  },
+  "divergenza_coda_frequente_k3_comune_mediano": [
+   {
+    "lambda_max": 1.0,
+    "contribuzione": 0.001593,
+    "x_MDR30_su_30": 6.3
+   },
+   {
+    "lambda_max": 10.0,
+    "contribuzione": 0.004306,
+    "x_MDR30_su_30": 17.1
+   },
+   {
+    "lambda_max": 100.0,
+    "contribuzione": 0.010149,
+    "x_MDR30_su_30": 40.3
+   },
+   {
+    "lambda_max": 1000.0,
+    "contribuzione": 0.022739,
+    "x_MDR30_su_30": 90.2
+   },
+   {
+    "lambda_max": 1000000.0,
+    "contribuzione": 0.234197,
+    "x_MDR30_su_30": 929.2
+   },
+   {
+    "lambda_max": 1000000000.0,
+    "contribuzione": 2.348779,
+    "x_MDR30_su_30": 9318.7
+   }
+  ],
+  "limite_matematico": "con lambda(ag) ~ ag^(-k) l'integrale della coda frequente converge solo per k < 2: la pendenza osservata del tratto RP30-72 (mediana 3,70) e' ben oltre il confine, quindi l'estrapolazione e' dominata dal punto (non osservato) in cui la curva reale si appiattisce",
+  "verdetto": "NON stimabile dai tre punti disponibili: dichiarata, l'AAL numerico di ep_curve.json e' un limite inferiore della parte RP>=30"
+ },
+ "4_coda_rara_k3": {
+  "totale_k3_EUR": 1712535014.0,
+  "sensibilita": {
+   "k2.5_EUR": 1796705894.0,
+   "k3.5_EUR": 1653462557.0
+  },
+  "variazione_k2.5_k3.5": 0.084,
+  "rp_saturazione_cap_mediano": 19621.0,
+  "rp_saturazione_cap_p90": 382009.0,
+  "nota": "il cap di MDR taglia l'estrapolazione oltre RP ~19621 anni (mediana): per questo la sensibilita' k=2,5/3,5 resta contenuta sul totale",
+  "confronto_pendenza_osservata": "il tratto RP72-475 osservato e' piu' piatto di k=3 (mediana 2,11): la direzione del bias dell'assunzione e' al ribasso (k piu' basso = coda piu' grande), ma sotto k=2 la chiusa non esiste: dichiarata, non risolta"
+ },
+ "5_mdr_quadratico": {
+  "comuni_con_MDR_saturato_a_RP475": 0,
+  "elasticita_implementata_loglog": {
+   "beta": 2.0,
+   "attesa": 2.0,
+   "R2": 1.0,
+   "n": 3753,
+   "nota": "coerenza interna: rate = 4*min(1,6ag^2)/475 e' esattamente lineare in log con pendenza 2 (nessuna saturazione a RP475)"
+  },
+  "elasticita_ivass_osservata": {
+   "beta": 5.385,
+   "t_rob": 16.7,
+   "fonte": "results/pricing_benchmark.json (§4: la tariffa traccia l'ag piu' che quadraticamente)"
+  },
+  "verdetto": "l'implementazione realizza esattamente l'assunzione dichiarata; la quadratica e' conservativa rispetto al comportamento della tariffa (5,4), ma la vulnerabilita' reale resta non osservata (parametro illustrativo, §9.1)"
+ },
+ "6_diagnostica_ols_tessuto": {
+  "specifica": "replica esatta della base §5.3: n=3791, R2=0.762, beta_ISP=-0.3751 (t_rob=-21.8)",
+  "jarque_bera": {
+   "skewness": -0.912,
+   "excess_kurtosis": 12.114,
+   "JB": 23704.8,
+   "p": 0.0,
+   "esito": "residui non normali (coda pesante: il peso-EBITDA resta skew anche in log): dichiarato, i SE robusti non lo richiedono"
+  },
+  "breusch_pagan": {
+   "LM": 133.3,
+   "df": 6,
+   "p": 0.0,
+   "esito": "eteroschedasticita' presente: coerente con i SE robusti White HC1 gia' adottati in §5.3"
+  },
+  "vif": {
+   "ISP (performance)": 1.01,
+   "log1p(ag)": 1.03,
+   "share frana": 1.04,
+   "share idraulico": 1.02,
+   "log(asset totale)": 1.78,
+   "quota Grandi": 1.73
+  },
+  "cook": {
+   "soglia_4suN": 0.001055,
+   "n_osservazioni_influenti": 234,
+   "beta_ISP_senza_influenti": -0.3714,
+   "t_rob_senza_influenti": -31.9,
+   "esito": "il beta della performance non e' portato dalle osservazioni influenti"
+  },
+  "reset_isp2_isp3": {
+   "F": 6.03,
+   "p": 0.0024,
+   "esito": "non-linearita' dell'ISP statisticamente rilevabile (p<0,05): il gradiente resta negativo su tutti i quartili, il beta lineare va letto come riassunto medio"
+  },
+  "quartili_isp_dummy": {
+   "tagli": {
+    "q25": -0.377,
+    "q50": -0.017,
+    "q75": 0.327
+   },
+   "beta_vs_Q1": [
+    {
+     "quartile": "Q2",
+     "beta": -0.3108,
+     "t_rob": -10.4
+    },
+    {
+     "quartile": "Q3",
+     "beta": -0.0638,
+     "t_rob": -2.6
+    },
+    {
+     "quartile": "Q4",
+     "beta": -0.2433,
+     "t_rob": -9.1
+    }
+   ],
+   "R2": 0.753,
+   "esito": "tutti i quartili sotto Q1 (il peso scende con la performance), ma il gradiente non e' perfettamente monotono (Q3 meno negativo di Q2): coerente col RESET, il beta lineare resta il riassunto corretto"
+  }
+ },
+ "7_trasformazione_log": {
+  "n": 3820,
+  "max_grezzo": 13429.3,
+  "grezzo": {
+   "skewness": 61.76,
+   "excess_kurtosis": 3813.3,
+   "JB": 2316902205.0,
+   "p": 0.0
+  },
+  "log": {
+   "skewness": 1.07,
+   "excess_kurtosis": 4.11,
+   "JB": 3409.2,
+   "p": 0.0
+  },
+  "esito": "la log elimina la skewness estrema (max ~13.429): la lettura dichiarata in §6 e' quantificata formalmente; il confronto Moran (grezzo +0,001 vs log +0,649) era gia' la conferma sostantiva"
+ },
+ "8_matrice_pesi_knn": {
+  "moran_log_loss_ratio_per_k": {
+   "k3": {
+    "n": 3820,
+    "I": 0.67976,
+    "E_I": -0.00026,
+    "z_clifford": 57.02,
+    "nota": "z analitico Cliff-Ord; permutazioni solo per k=5 (replica §6 sotto)"
+   },
+   "k5": {
+    "n": 3820,
+    "I": 0.64861,
+    "E_I": -0.00026,
+    "z_clifford": 69.15,
+    "nota": "k di §6"
+   },
+   "k7": {
+    "n": 3820,
+    "I": 0.63079,
+    "E_I": -0.00026,
+    "z_clifford": 79.07,
+    "nota": "z analitico Cliff-Ord; permutazioni solo per k=5 (replica §6 sotto)"
+   },
+   "k10": {
+    "n": 3820,
+    "I": 0.60329,
+    "E_I": -0.00026,
+    "z_clifford": 89.88,
+    "nota": "z analitico Cliff-Ord; permutazioni solo per k=5 (replica §6 sotto)"
+   }
+  },
+  "replica_k5": {
+   "k5_seed42_999perm": {
+    "n": 3820,
+    "I": 0.64861,
+    "E_I": -0.00026,
+    "z_clifford": 69.15,
+    "p_perm_one_sided": 0.001,
+    "I_perm_max": 0.03072,
+    "n_perm": 999,
+    "seed": 42
+   },
+   "valore_sezione_6": {
+    "I": 0.64861,
+    "z_clifford": 69.15,
+    "p_perm_one_sided": 0.001
+   },
+   "delta_I": 0.0,
+   "esito": "replica esatta (stesso algoritmo, stesso seed): delta_I = 0"
+  },
+  "stabilita": {
+   "esito": "autocorrelazione strutturale, non un artefatto della specifica della matrice dei pesi: I resta nell'intorno per ogni k provato"
+  }
+ },
+ "9_stabilita_seed": {
+  "per_seed": [
+   {
+    "seed": 42,
+    "p_perm": 0.001,
+    "I_perm_max": 0.03072
+   },
+   {
+    "seed": 123,
+    "p_perm": 0.001,
+    "I_perm_max": 0.03081
+   },
+   {
+    "seed": 2024,
+    "p_perm": 0.001,
+    "I_perm_max": 0.03772
+   }
+  ],
+  "esito": "p = 0,001 (floor di risoluzione con 999 permutazioni) per ogni seed: l'inferenza permutativa non dipende dal seed"
+ },
+ "sintesi": [
+  {
+   "assunzione": "CURVE = 4 (benchmark §2)",
+   "esito": "RICALIBRATA",
+   "dettaglio": "vale quanto \"design point + coda rara k=3\"; il moltiplicatore totale identificabile e' 6,88 mediana (banda 4,53 + coda rara): il livello e' assorbito dalla calibrazione c=1,917 e la geografia del loss ratio e' robusta (§9.1)"
+  },
+  {
+   "assunzione": "coda rara lambda(ag) ~ ag^-k, k=3 (§2.1)",
+   "esito": "DICHIARATA, BIAS DOCUMENTATO",
+   "dettaglio": "chiusa verificata contro quadratura; pendenza osservata del tratto RP72-475 piu' piatta (2,11): direzione del bias al ribasso; sensibilita' k=2,5/3,5 sul totale 1,65-1,80 mld (+-5%, il cap di MDR taglia)"
+  },
+  {
+   "assunzione": "coda frequente RP<30 con k=3 (v1 di §2.1)",
+   "esito": "RITIRATA (ERRORE DI FORMA CHIUSA)",
+   "dettaglio": "(k/(k-2))*m30/30 era la coda RARA da RP30 senza cap: doppio conteggio della banda (2,30 mld ritirato); la coda frequente vera non e' stimabile (divergenza k>=2): AAL numerico = limite inferiore"
+  },
+  {
+   "assunzione": "MDR(ag) = min(1, 6*ag^2) (§2)",
+   "esito": "COERENZA INTERNA VERIFICATA",
+   "dettaglio": "elasticita' implementata = 2,000 (R2=1), nessuna saturazione a RP475; resta illustrativa (nessuna vulnerabilita' reale nei dati)"
+  },
+  {
+   "assunzione": "OLS del tessuto (§5.3): linearita' dell'ISP, residui",
+   "esito": "VALIDATA CON DIAGNOSTICA",
+   "dettaglio": "residui non normali (JB p~0) ed eteroschedastici (BP p~0: atteso, SE HC1), VIF contenuti (max 1,8), beta_ISP senza le 234 osservazioni influenti resta -0,371; RESET p=0,002 e quartili non perfettamente monotoni: il beta lineare e' il riassunto medio, non una legge"
+  },
+  {
+   "assunzione": "trasformazione log del loss ratio (§6)",
+   "esito": "VALIDATA",
+   "dettaglio": "skewness del grezzo ~62 ridotta a ~1 dalla log: la lettura dichiarata e' quantificata formalmente"
+  },
+  {
+   "assunzione": "W KNN k=5 (§6)",
+   "esito": "VALIDATA",
+   "dettaglio": "I del log loss ratio stabile su k=3/5/7/10; replica esatta di §6 (k=5, seed 42): delta_I = 0"
+  },
+  {
+   "assunzione": "seed delle permutazioni (§6)",
+   "esito": "VALIDATA",
+   "dettaglio": "p=0,001 per i seed 42/123/2024: l'inferenza non dipende dal seed"
+  }
+ ]
+}

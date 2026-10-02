@@ -31,6 +31,7 @@ jobs:
             scripts/pricing/chi_paga.py \
             scripts/pricing/spazializzazione.py \
             scripts/pricing/robustezza_tessuto.py \
+            scripts/pricing/validazione_assunzioni.py \
             scripts/pricing/grafici.py \
             scripts/sismico/match_sismico.py \
             scripts/sismico/build_matrice_v2.py \
@@ -56,9 +57,11 @@ jobs:
           python scripts/pricing/chi_paga.py
           python scripts/pricing/spazializzazione.py
           python scripts/pricing/robustezza_tessuto.py
+          python scripts/pricing/validazione_assunzioni.py
           python scripts/pricing/grafici.py
           git diff --quiet -- results/ep_curve.json results/chi_paga.json \
             results/spazializzazione_tariffa.json results/robustezza_tessuto.json \
+            results/validazione_assunzioni.json \
             docs/mappa_lisa_tariffa.svg docs/grafici_pricing.svg || \
             { echo "ERRORE: output approfondimenti non riproducibile (git diff)"; git diff --stat; exit 1; }
 

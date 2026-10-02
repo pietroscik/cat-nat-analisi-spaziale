@@ -20,11 +20,12 @@ sul tessuto produttivo, §5), `results/ep_curve.json` (AAL numerico e curva EP, 
 `results/chi_paga.json` (ripartizione del premio, §5.4),
 `results/spazializzazione_tariffa.json` + `docs/mappa_lisa_tariffa.svg` (Moran e
 LISA della coerenza tariffaria, §6), `results/robustezza_tessuto.json` (verifiche
-di robustezza, §5.5). **Quadro grafico**: `docs/grafici_pricing.svg` — sei pannelli
+di robustezza, §5.5), `results/validazione_assunzioni.json` (validazione formale delle
+assunzioni dichiarate, §8). **Quadro grafico**: `docs/grafici_pricing.svg` — sei pannelli
 che visualizzano tutti i risultati precedenti (curva EP, quartili ISP, chi paga,
 province estreme, robustezza, Moran), generato da `scripts/pricing/grafici.py`
 leggendo i JSON: una vista dei dati, non un'origine. Tutto si rigenera con la
-sequenza di comandi della §9 (solo
+sequenza di comandi della §10 (solo
 stdlib, deterministici).
 
 ## 1. Struttura del premio comunale
@@ -51,8 +52,8 @@ IVASS, così confrontabili):
 - **sismico**: `EAL_rate(ag) = CURVE × min(1, MDR(ag)) / T`, con `T = 475` anni (design
   point 10% in 50), `MDR(ag) = min(1, 6·ag²)` (6,7% di danno al design point alla media
   nazionale pesata per asset, ag = 0,106; 37% a ag = 0,25 in Calabria) e `CURVE = 4`
-  (l'integrazione della curva di hazard sotto il design point: con danno ∝ ag², il solo
-  punto RP475 sottostima l'AAL di ~4 volte);
+  (punto di design + coda oltre il design point: con λ(ag) ∝ ag^−k, k = 3, il
+  moltiplicatore è 1 + k/(k−2) = 4; la banda RP30–475 non è nel benchmark — §2.1 e §8);
 - **frana**: `EAL_rate = 0,4% · share P3/P4` (damage-rate annuo atteso su area esposta);
 - **idraulico**: `EAL_rate = 0,6% · share P3`.
 
@@ -62,23 +63,31 @@ econometrico (§3.3 del README: l'omissione del sismico gonfiava β_Frana).
 
 ### 2.1 AAL numerico dalla curva di hazard e curva di eccedenza
 
-Il fattore `CURVE = 4` è un'ipotesi; la matrice estesa porta tre punti della curva
-MPS04 per comune (ag a RP30, RP72, RP475), così il contributo dell'integrazione si
-**stima empiricamente** (`scripts/pricing/ep_curve.py`, `results/ep_curve.json`):
+Il fattore `CURVE = 4` vale quanto "punto di design + coda rara con k = 3"
+(1 + k/(k−2) = 4): il benchmark integra gli eventi oltre il design point e lascia
+fuori la banda RP30–475. La matrice estesa porta tre punti della curva MPS04 per
+comune (ag a RP30, RP72, RP475), così l'AAL si stima per integrazione numerica
+(`scripts/pricing/ep_curve.py`, `results/ep_curve.json`; correzione documentata in §8.1):
 
-- **sulla banda RP30–RP475 l'ipotesi è confermata**: CURVE_eff mediana **4,53**
-  (p10–p90: 3,98–5,36; trapezoid sui punti noti, nessuna assunzione aggiuntiva)
-  contro il 4 assunto — il benchmark era ben calibrato su quella banda;
-- **gli eventi più frequenti di RP30** (non in matrice) aggiungono un contributo
-  comparabile: con pendenza dichiarata λ(ag) ∝ ag^−k, k = 3 (sensibilità k = 2,5/3,5),
-  l'AAL numerico sale a **2,30 mld €/anno** contro 1,03 del sismico di benchmark —
-  **2,2× il benchmark** (range 2,0–3,1). Non è un errore del benchmark (che si
-  calibra comunque sull'aggregato con c = 1,917, e la geografia del loss ratio è
-  robusta a CURVE ×0,5/×2, §8.1): è la misura di quanto il design point unico
-  lascia fuori la frequenza;
+- **la banda RP30–RP475 vale da sola 4,53× il design point** (mediana per comune,
+  p10–p90: 3,98–5,36; trapezoid sui punti noti, nessuna assunzione aggiuntiva): il 4
+  assunto è numericamente vicino al moltiplicatore di banda, ma il moltiplicatore
+  totale identificabile è **6,88** (banda + coda rara k = 3 con cap, p10–p90: 6,07–8,12);
+- **AAL numerico sismico (RP≥30) = 1,71 mld €/anno** (trapezoid 1,14 + coda rara 0,58)
+  contro 1,03 del sismico di benchmark: **1,66×** (sensibilità k = 2,5/3,5: 1,80/1,65
+  mld, ratio 1,74/1,60). Il livello è assorbito dalla calibrazione c = 1,917 (§3) e la
+  geografia del loss ratio è robusta a CURVE ×0,5/×2 (§9.1): è la misura di quanto il
+  design point unico lascia fuori la banda RP30–475;
+- **la coda frequente (RP<30) non è stimabile dai tre punti disponibili**: con qualunque
+  legge di potenza λ(ag) ∝ ag^−k, k ≥ 2 l'integrale diverge, e la pendenza osservata del
+  tratto RP30–RP72 è 3,70 (mediana) — ben oltre il confine di convergenza (§8.2). L'AAL
+  numerico è quindi un **limite inferiore dichiarato** della parte RP≥30. La v1 di
+  questa sezione riportava 2,30 mld € (2,2×) da una forma chiusa che era in realtà la
+  coda rara da RP30 senza cap, col doppio conteggio della banda: valore ritirato,
+  diagnosi completa in §8.1;
 - **curva EP nazionale** (sismico puro, non calibrato): loss a scenario
   RP30 = 11,7 mld €, RP72 = 19,1, RP475 = **122,9 mld €** (banda epistemica 16/84:
-  82–154 mld €): l'evento 1-in-475 vale **53 anni di AAL numerico** — il numero che
+  82–154 mld €): l'evento 1-in-475 vale **72 anni di AAL numerico** — il numero che
   dimensiona il rischio di coda rispetto al costo annuo atteso.
 
 Aggregato nazionale: **EAL benchmark = 1,70 mld €/anno** su 1,43 mld € di asset
@@ -106,7 +115,7 @@ hanno lo stesso aggregato, e il confronto diventa puramente **relativo**.
 La distribuzione è right-skewed per costruzione: nei comuni a basso hazard modellato
 il benchmark tende a 0 mentre la tariffa ha un pavimento (~11 per 10.000 €), quindi
 il ratio esplode — non è inefficienza, è il perimetro tariffario più ampio
-(documentato in §8).
+(documentato in §9).
 
 **Province estreme** (aggregato asset-weighted; tabella completa nel JSON):
 
@@ -335,7 +344,93 @@ grigio).
 Generata dallo stesso script (nessuna dipendenza); visualizzabile direttamente su
 GitHub.
 
-## 8. Limiti e sensibilità
+## 8. Validazione delle assunzioni
+
+`scripts/pricing/validazione_assunzioni.py` (`results/validazione_assunzioni.json`)
+sottopone ogni assunzione dichiarata a verifica empirica o di coerenza interna:
+nessuna nuova ipotesi, verdetti riportati come vengono (solo stdlib, deterministico).
+
+### 8.1 Correzione della coda: diagnosi di un errore di forma chiusa
+
+La v1 della §2.1 stimava la "coda frequente" (RP<30) con la forma chiusa
+`(k/(k−2))·MDR(ag30)/30`. La quadratura numerica dimostra (err 4·10⁻¹⁰) che
+quell'integrale **non è la coda frequente: è la coda rara da RP30 a infinito, senza
+cap di MDR** — sommata al trapezoid ricontava la banda RP30–475 già integrata. Il
+totale v1 (2,30 mld €/anno, "2,2×") è **ritirato**. La forma chiusa corretta (coda
+rara da RP475, cap attivo: `k/(k−2)·m475/475 − (2/(k−2))·λ_cap`) è verificata contro
+quadratura su comuni rappresentativi (p10/p50/p90/max di ag): errore relativo ≤ 10⁻⁶.
+
+### 8.2 Identificabilità della coda frequente (RP<30)
+
+Con `λ(ag) ∝ ag^−k` l'integrale della coda frequente converge solo per **k < 2**. Le
+pendenze locali osservate della curva MPS04 (n = 3.753 comuni con hazard):
+
+| Tratto | k mediana | p10–p90 | comuni con k ≤ 2 |
+|---|---|---|---|
+| RP30–RP72 | 3,70 | 2,97–4,59 | 0,0% |
+| RP72–RP475 | 2,11 | 1,77–2,69 | 38,9% |
+| RP30–RP475 (OLS su 3 punti) | 2,36 | 1,97–2,94 | 14,7% |
+
+La quadratura della coda frequente col k = 3 dichiarato cresce senza limite al
+crescere del cutoff di λ (×6,3 a λ = 1/anno, ×40 a λ = 100, ×929 a λ = 10⁶, e oltre):
+l'estrapolazione è dominata dal punto — non osservato — in cui la curva reale si
+appiattisce. **Verdetto: non stimabile dai tre punti; dichiarata. L'AAL numerico è
+un limite inferiore della parte RP≥30.**
+
+### 8.3 Coda rara k=3
+
+Assunzione dichiarata, non risolta dai dati: la pendenza del tratto RP72–475
+osservato è più piatta di 3 (2,11 mediana), quindi la direzione del bias è al ribasso
+(k più basso → coda più grande), ma sotto k=2 la chiusa non esiste. La sensibilità
+k = 2,5/3,5 sul totale resta contenuta (**1,80/1,65 mld**, ±5%) perché il cap di MDR
+taglia l'estrapolazione oltre RP ~19.600 anni (mediana di saturazione).
+
+### 8.4 MDR quadratico
+
+L'elasticità implementata è esattamente **2,000** (R² = 1: l'implementazione realizza
+l'assunzione dichiarata, nessun comune saturo a RP475); l'elasticità IVASS osservata è
+**+5,4** (§4): la quadratica è conservativa rispetto a come la tariffa traccia l'ag,
+ma la vulnerabilità reale resta non osservata (parametro illustrativo, §9.1).
+
+### 8.5 Diagnostica OLS del tessuto (replica della §5.3)
+
+| Test | Risultato | Lettura |
+|---|---|---|
+| Jarque-Bera | p ≈ 0 | residui non normali (coda pesante): dichiarato |
+| Breusch-Pagan | p ≈ 0 | eteroschedasticità: SE robusti HC1 già in uso |
+| VIF | max 1,8 | nessuna collinearità rilevante |
+| Cook (D > 4/n) | 234 osservazioni | β_ISP −0,375 → −0,371 senza le influenti |
+| RESET (ISP²+ISP³) | p = 0,002 | non-linearità lieve statisticamente rilevabile |
+| Dummies quartili ISP | Q2 −0,31, Q3 −0,06, Q4 −0,24 | tutti sotto Q1, non perfettamente monotoni |
+
+Il β della performance sopravvive a tutta la diagnostica; la forma non è
+perfettamente lineare (RESET e quartili), quindi il β va letto come riassunto medio —
+coerente con la sua presentazione in §5.3 e con la robustezza della §5.5.
+
+### 8.6 Trasformazione log, matrice W e seed
+
+- **log del loss ratio**: skewness 61,8 (grezzo) → 1,07 (log): la trasformazione
+  dichiarata della §6 è quantificata formalmente;
+- **W KNN**: Moran del log loss ratio stabile su k = 3/5/7/10 (I = 0,68/0,65/0,63/0,60,
+  z = 57/69/79/90): la clusterizzazione non è un artefatto della specifica della W.
+  La replica esatta della §6 (k=5, 999 permutazioni, seed 42) dà delta_I = 0;
+- **seed**: p = 0,001 per i seed 42/123/2024 (floor di risoluzione con 999
+  permutazioni): l'inferenza permutativa non dipende dal seed.
+
+### 8.7 Sintesi dei verdetti
+
+| Assunzione | Esito |
+|---|---|
+| `CURVE = 4` | RICALIBRATA: moltiplicatore totale identificabile 6,88 (banda 4,53 + coda rara); livello assorbito da c = 1,917, geografia robusta (§9.1) |
+| coda rara k = 3 | DICHIARATA: chiusa verificata contro quadratura; bias al ribasso documentato; sensibilità ±5% |
+| coda frequente k = 3 (v1) | RITIRATA: errore di forma chiusa (doppio conteggio della banda); non stimabile → AAL = limite inferiore |
+| MDR = 6·ag² | COERENZA INTERNA VERIFICATA (elasticità 2,000, R² = 1); illustrativa |
+| OLS §5.3 | VALIDATA CON DIAGNOSTICA: β non portato da coda/influenti; non-linearità lieve dichiarata |
+| log del ratio | VALIDATA (skewness 61,8 → 1,07) |
+| W KNN k = 5 | VALIDATA (I stabile su k 3–10; replica esatta di §6) |
+| seed permutazioni | VALIDATA (p = 0,001 su tre seed) |
+
+## 9. Limiti e sensibilità
 
 1. **Parametri illustrativi**: MDR, fattore curva e frequenze-danno sono ordini di
    grandezza dichiarati, non stime. La sensibilità (ogni parametro ×0,5 e ×2, più tutti
@@ -349,14 +444,15 @@ GitHub.
 3. **Niente vulnerabilità reale**: MDR uniforme per ag (niente microzonazione — vedi
    `docs/sismico_metodologia.md` §7 — né vulnerabilità per tipologia edilizia);
    Sardegna: benchmark ≈ 0, ratio non interpretabile (mediana 2,5 solo come ordine).
-4. **Curva a un punto**: il fattore CURVE approssima l'integrazione della curva di
-   hazard con un moltiplicatore costante; un cat model userebbe le percentili 16/84
-   (già in matrice) per l'incertezza.
+4. **Coda e moltiplicatore**: CURVE=4 copre design point + coda rara k=3 e lascia
+   fuori la banda RP30–475 (4,53×), ora stimata separatamente (§2.1); la coda frequente
+   RP<30 resta non identificabile dai tre punti (§8.2): l'AAL numerico è un limite
+   inferiore; un cat model userebbe le percentili 16/84 (già in matrice) per l'incertezza.
 
-## 9. Riproducibilità
+## 10. Riproducibilità
 
 ```bash
-# dalla root del repo (solo stdlib; ~2 + ~1 + ~1 + ~1 + ~1 minuti)
+# dalla root del repo (solo stdlib; ~2 + ~1 + ~1 + ~1 + ~1 + ~2 minuti)
 python3 scripts/pricing/pricing_model.py
 # output: results/pricing_benchmark.json, results/eal_comuni.csv, docs/mappa_loss.svg
 python3 scripts/pricing/tessuto_produttivo.py
@@ -369,6 +465,9 @@ python3 scripts/pricing/spazializzazione.py
 # output: results/spazializzazione_tariffa.json + docs/mappa_lisa_tariffa.svg (§6)
 python3 scripts/pricing/robustezza_tessuto.py
 # output: results/robustezza_tessuto.json (verifiche §5.5; richiede i due script sopra)
+python3 scripts/pricing/validazione_assunzioni.py
+# output: results/validazione_assunzioni.json (validazione delle assunzioni §8; richiede
+# ep_curve.py, chi_paga.py e spazializzazione.py sopra)
 python3 scripts/pricing/grafici.py
 # output: docs/grafici_pricing.svg (quadro grafico; richiede tutti i JSON sopra)
 ```
