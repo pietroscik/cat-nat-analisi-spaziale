@@ -1,0 +1,996 @@
+{
+ "modello": "benchmark EAL 3-hazard (parametri illustrativi) + calibrazione aggregata IVASS",
+ "parametri": {
+  "T_design_anni": 475.0,
+  "MDR_coeff": 6.0,
+  "curve_factor": 4.0,
+  "f_frana": 0.004,
+  "f_idraulico": 0.006
+ },
+ "calibrazione": {
+  "rate_ivass_media_pesata_asset": 22.78,
+  "rate_bmk_raw_media_pesata_asset": 11.88,
+  "fattore_calibrazione": 1.917
+ },
+ "nazionale": {
+  "n_comuni": 3823,
+  "n_province": 107,
+  "asset_tot_EUR": 1432668355231.0,
+  "eal_raw_tot_EUR": 1702453597.69114,
+  "premio_teorico_tot_EUR": 3263967906.743796,
+  "eal_raw_su_premio": 0.522,
+  "contributi_eal_raw": {
+   "sismico_pct": 60.8,
+   "frana_pct": 11.2,
+   "idraulico_pct": 28.1
+  }
+ },
+ "loss_ratio": {
+  "mediana": 1.009,
+  "p10": 0.477,
+  "p90": 4.127,
+  "min": 0.167,
+  "max": 13429.32,
+  "distribuzione_classi": {
+   "0-0.6": 706,
+   "0.6-0.8": 680,
+   "0.8-1": 506,
+   "1-1.2": 365,
+   "1.2-1.5": 339,
+   "1.5-inf": 1222
+  },
+  "n_sovra_sottoprezzo": {
+   "ratio_gt_1": 1928,
+   "ratio_lt_1": 1892
+  }
+ },
+ "decomposizione_log_premio": {
+  "var_log_premio": 2.5619,
+  "var_log_asset": 2.491,
+  "var_log_rate": 0.138,
+  "2cov_asset_rate": -0.0672,
+  "quota_asset": 0.9592,
+  "quota_rate": 0.0408,
+  "cor_log_asset_log_rate": -0.0573
+ },
+ "regressione_provinciale": {
+  "n": 107,
+  "R2": 0.7077,
+  "coeff": [
+   {
+    "name": "interc",
+    "beta": 2.4817144283617893,
+    "se": 0.05361482680418124,
+    "t": 46.28783820240279,
+    "se_rob": 0.05391428589087277,
+    "t_rob": 46.030739114026225
+   },
+   {
+    "name": "log1p(ag aw)",
+    "beta": 5.384738569477861,
+    "se": 0.34714960971153436,
+    "t": 15.511290863764287,
+    "se_rob": 0.32281290502007093,
+    "t_rob": 16.68067938344368
+   },
+   {
+    "name": "log1p(frana aw)",
+    "beta": 0.20255895294873424,
+    "se": 0.3082042620894805,
+    "t": 0.657223075292598,
+    "se_rob": 0.304392649668511,
+    "t_rob": 0.6654528391842726
+   },
+   {
+    "name": "log1p(idraulico aw)",
+    "beta": 0.9871179061531161,
+    "se": 0.40474754513226613,
+    "t": 2.4388484081615345,
+    "se_rob": 0.3835640915174446,
+    "t_rob": 2.5735409752459106
+   }
+  ]
+ },
+ "province": [
+  {
+   "provincia": "Agrigento",
+   "n": 13,
+   "rate_ivass": 20.1,
+   "bmk_calibrato": 4.38,
+   "loss_ratio": 4.586,
+   "eal_raw_M EUR": 0.2
+  },
+  {
+   "provincia": "Alessandria",
+   "n": 49,
+   "rate_ivass": 20.84,
+   "bmk_calibrato": 17.77,
+   "loss_ratio": 1.173,
+   "eal_raw_M EUR": 10.4
+  },
+  {
+   "provincia": "Ancona",
+   "n": 36,
+   "rate_ivass": 27.78,
+   "bmk_calibrato": 37.88,
+   "loss_ratio": 0.733,
+   "eal_raw_M EUR": 13.9
+  },
+  {
+   "provincia": "Arezzo",
+   "n": 27,
+   "rate_ivass": 29.52,
+   "bmk_calibrato": 35.77,
+   "loss_ratio": 0.825,
+   "eal_raw_M EUR": 10.6
+  },
+  {
+   "provincia": "Ascoli Piceno",
+   "n": 16,
+   "rate_ivass": 32.83,
+   "bmk_calibrato": 39.48,
+   "loss_ratio": 0.832,
+   "eal_raw_M EUR": 6.4
+  },
+  {
+   "provincia": "Asti",
+   "n": 30,
+   "rate_ivass": 21.75,
+   "bmk_calibrato": 7.61,
+   "loss_ratio": 2.856,
+   "eal_raw_M EUR": 0.7
+  },
+  {
+   "provincia": "Avellino",
+   "n": 41,
+   "rate_ivass": 37.74,
+   "bmk_calibrato": 66.87,
+   "loss_ratio": 0.564,
+   "eal_raw_M EUR": 13.1
+  },
+  {
+   "provincia": "Bari",
+   "n": 39,
+   "rate_ivass": 14.16,
+   "bmk_calibrato": 10.63,
+   "loss_ratio": 1.332,
+   "eal_raw_M EUR": 8.3
+  },
+  {
+   "provincia": "Barletta-Andria-Trani",
+   "n": 10,
+   "rate_ivass": 22.25,
+   "bmk_calibrato": 29.61,
+   "loss_ratio": 0.751,
+   "eal_raw_M EUR": 2.7
+  },
+  {
+   "provincia": "Belluno",
+   "n": 23,
+   "rate_ivass": 17.92,
+   "bmk_calibrato": 31.27,
+   "loss_ratio": 0.573,
+   "eal_raw_M EUR": 7.8
+  },
+  {
+   "provincia": "Benevento",
+   "n": 23,
+   "rate_ivass": 40.94,
+   "bmk_calibrato": 71.83,
+   "loss_ratio": 0.57,
+   "eal_raw_M EUR": 3.9
+  },
+  {
+   "provincia": "Bergamo",
+   "n": 162,
+   "rate_ivass": 21.2,
+   "bmk_calibrato": 17.96,
+   "loss_ratio": 1.181,
+   "eal_raw_M EUR": 39.3
+  },
+  {
+   "provincia": "Biella",
+   "n": 26,
+   "rate_ivass": 19.07,
+   "bmk_calibrato": 6.11,
+   "loss_ratio": 3.122,
+   "eal_raw_M EUR": 0.8
+  },
+  {
+   "provincia": "Bologna",
+   "n": 45,
+   "rate_ivass": 38.82,
+   "bmk_calibrato": 48.15,
+   "loss_ratio": 0.806,
+   "eal_raw_M EUR": 119.5
+  },
+  {
+   "provincia": "Bolzano/Bozen",
+   "n": 75,
+   "rate_ivass": 10.81,
+   "bmk_calibrato": 12.03,
+   "loss_ratio": 0.899,
+   "eal_raw_M EUR": 15.0
+  },
+  {
+   "provincia": "Brescia",
+   "n": 151,
+   "rate_ivass": 20.48,
+   "bmk_calibrato": 26.26,
+   "loss_ratio": 0.78,
+   "eal_raw_M EUR": 69.3
+  },
+  {
+   "provincia": "Brindisi",
+   "n": 15,
+   "rate_ivass": 13.24,
+   "bmk_calibrato": 5.34,
+   "loss_ratio": 2.482,
+   "eal_raw_M EUR": 0.5
+  },
+  {
+   "provincia": "Cagliari",
+   "n": 12,
+   "rate_ivass": 12.81,
+   "bmk_calibrato": 24.3,
+   "loss_ratio": 0.527,
+   "eal_raw_M EUR": 7.0
+  },
+  {
+   "provincia": "Caltanissetta",
+   "n": 9,
+   "rate_ivass": 20.3,
+   "bmk_calibrato": 7.85,
+   "loss_ratio": 2.586,
+   "eal_raw_M EUR": 0.5
+  },
+  {
+   "provincia": "Campobasso",
+   "n": 14,
+   "rate_ivass": 35.85,
+   "bmk_calibrato": 50.79,
+   "loss_ratio": 0.706,
+   "eal_raw_M EUR": 1.8
+  },
+  {
+   "provincia": "Caserta",
+   "n": 51,
+   "rate_ivass": 28.44,
+   "bmk_calibrato": 29.03,
+   "loss_ratio": 0.979,
+   "eal_raw_M EUR": 9.7
+  },
+  {
+   "provincia": "Catania",
+   "n": 40,
+   "rate_ivass": 36.83,
+   "bmk_calibrato": 53.66,
+   "loss_ratio": 0.686,
+   "eal_raw_M EUR": 18.4
+  },
+  {
+   "provincia": "Catanzaro",
+   "n": 21,
+   "rate_ivass": 52.45,
+   "bmk_calibrato": 77.36,
+   "loss_ratio": 0.678,
+   "eal_raw_M EUR": 8.6
+  },
+  {
+   "provincia": "Chieti",
+   "n": 34,
+   "rate_ivass": 28.12,
+   "bmk_calibrato": 29.66,
+   "loss_ratio": 0.948,
+   "eal_raw_M EUR": 11.4
+  },
+  {
+   "provincia": "Como",
+   "n": 65,
+   "rate_ivass": 12.03,
+   "bmk_calibrato": 5.74,
+   "loss_ratio": 2.096,
+   "eal_raw_M EUR": 3.4
+  },
+  {
+   "provincia": "Cosenza",
+   "n": 32,
+   "rate_ivass": 51.0,
+   "bmk_calibrato": 72.77,
+   "loss_ratio": 0.701,
+   "eal_raw_M EUR": 5.5
+  },
+  {
+   "provincia": "Cremona",
+   "n": 62,
+   "rate_ivass": 21.21,
+   "bmk_calibrato": 15.47,
+   "loss_ratio": 1.371,
+   "eal_raw_M EUR": 7.2
+  },
+  {
+   "provincia": "Crotone",
+   "n": 4,
+   "rate_ivass": 41.92,
+   "bmk_calibrato": 48.96,
+   "loss_ratio": 0.856,
+   "eal_raw_M EUR": 0.8
+  },
+  {
+   "provincia": "Cuneo",
+   "n": 108,
+   "rate_ivass": 16.4,
+   "bmk_calibrato": 14.49,
+   "loss_ratio": 1.132,
+   "eal_raw_M EUR": 16.7
+  },
+  {
+   "provincia": "Enna",
+   "n": 9,
+   "rate_ivass": 34.39,
+   "bmk_calibrato": 9.79,
+   "loss_ratio": 3.513,
+   "eal_raw_M EUR": 0.5
+  },
+  {
+   "provincia": "Fermo",
+   "n": 19,
+   "rate_ivass": 25.23,
+   "bmk_calibrato": 34.44,
+   "loss_ratio": 0.733,
+   "eal_raw_M EUR": 2.9
+  },
+  {
+   "provincia": "Ferrara",
+   "n": 15,
+   "rate_ivass": 39.91,
+   "bmk_calibrato": 50.68,
+   "loss_ratio": 0.787,
+   "eal_raw_M EUR": 6.5
+  },
+  {
+   "provincia": "Firenze",
+   "n": 35,
+   "rate_ivass": 35.05,
+   "bmk_calibrato": 29.0,
+   "loss_ratio": 1.209,
+   "eal_raw_M EUR": 48.8
+  },
+  {
+   "provincia": "Foggia",
+   "n": 23,
+   "rate_ivass": 37.63,
+   "bmk_calibrato": 36.46,
+   "loss_ratio": 1.032,
+   "eal_raw_M EUR": 3.3
+  },
+  {
+   "provincia": "Forlì-Cesena",
+   "n": 23,
+   "rate_ivass": 31.15,
+   "bmk_calibrato": 63.21,
+   "loss_ratio": 0.493,
+   "eal_raw_M EUR": 36.6
+  },
+  {
+   "provincia": "Frosinone",
+   "n": 35,
+   "rate_ivass": 34.19,
+   "bmk_calibrato": 40.59,
+   "loss_ratio": 0.842,
+   "eal_raw_M EUR": 8.2
+  },
+  {
+   "provincia": "Genova",
+   "n": 21,
+   "rate_ivass": 24.5,
+   "bmk_calibrato": 32.22,
+   "loss_ratio": 0.761,
+   "eal_raw_M EUR": 45.5
+  },
+  {
+   "provincia": "Gorizia",
+   "n": 16,
+   "rate_ivass": 23.34,
+   "bmk_calibrato": 42.81,
+   "loss_ratio": 0.545,
+   "eal_raw_M EUR": 4.1
+  },
+  {
+   "provincia": "Grosseto",
+   "n": 13,
+   "rate_ivass": 19.8,
+   "bmk_calibrato": 39.0,
+   "loss_ratio": 0.508,
+   "eal_raw_M EUR": 2.8
+  },
+  {
+   "provincia": "Imperia",
+   "n": 10,
+   "rate_ivass": 29.47,
+   "bmk_calibrato": 33.04,
+   "loss_ratio": 0.892,
+   "eal_raw_M EUR": 3.7
+  },
+  {
+   "provincia": "Isernia",
+   "n": 12,
+   "rate_ivass": 43.9,
+   "bmk_calibrato": 77.85,
+   "loss_ratio": 0.564,
+   "eal_raw_M EUR": 5.1
+  },
+  {
+   "provincia": "L'Aquila",
+   "n": 14,
+   "rate_ivass": 47.4,
+   "bmk_calibrato": 66.28,
+   "loss_ratio": 0.715,
+   "eal_raw_M EUR": 4.5
+  },
+  {
+   "provincia": "La Spezia",
+   "n": 10,
+   "rate_ivass": 28.21,
+   "bmk_calibrato": 36.53,
+   "loss_ratio": 0.772,
+   "eal_raw_M EUR": 6.4
+  },
+  {
+   "provincia": "Latina",
+   "n": 18,
+   "rate_ivass": 21.48,
+   "bmk_calibrato": 13.27,
+   "loss_ratio": 1.618,
+   "eal_raw_M EUR": 3.8
+  },
+  {
+   "provincia": "Lecce",
+   "n": 47,
+   "rate_ivass": 14.11,
+   "bmk_calibrato": 4.0,
+   "loss_ratio": 3.526,
+   "eal_raw_M EUR": 0.7
+  },
+  {
+   "provincia": "Lecco",
+   "n": 58,
+   "rate_ivass": 14.43,
+   "bmk_calibrato": 18.76,
+   "loss_ratio": 0.769,
+   "eal_raw_M EUR": 10.6
+  },
+  {
+   "provincia": "Livorno",
+   "n": 12,
+   "rate_ivass": 23.71,
+   "bmk_calibrato": 15.0,
+   "loss_ratio": 1.58,
+   "eal_raw_M EUR": 3.2
+  },
+  {
+   "provincia": "Lodi",
+   "n": 32,
+   "rate_ivass": 19.57,
+   "bmk_calibrato": 14.13,
+   "loss_ratio": 1.385,
+   "eal_raw_M EUR": 2.2
+  },
+  {
+   "provincia": "Lucca",
+   "n": 20,
+   "rate_ivass": 29.46,
+   "bmk_calibrato": 49.22,
+   "loss_ratio": 0.599,
+   "eal_raw_M EUR": 17.9
+  },
+  {
+   "provincia": "Macerata",
+   "n": 39,
+   "rate_ivass": 27.74,
+   "bmk_calibrato": 36.09,
+   "loss_ratio": 0.769,
+   "eal_raw_M EUR": 10.8
+  },
+  {
+   "provincia": "Mantova",
+   "n": 54,
+   "rate_ivass": 21.04,
+   "bmk_calibrato": 21.79,
+   "loss_ratio": 0.966,
+   "eal_raw_M EUR": 17.2
+  },
+  {
+   "provincia": "Massa-Carrara",
+   "n": 7,
+   "rate_ivass": 30.75,
+   "bmk_calibrato": 39.42,
+   "loss_ratio": 0.78,
+   "eal_raw_M EUR": 4.3
+  },
+  {
+   "provincia": "Matera",
+   "n": 11,
+   "rate_ivass": 22.97,
+   "bmk_calibrato": 21.56,
+   "loss_ratio": 1.066,
+   "eal_raw_M EUR": 1.6
+  },
+  {
+   "provincia": "Messina",
+   "n": 26,
+   "rate_ivass": 44.66,
+   "bmk_calibrato": 43.35,
+   "loss_ratio": 1.03,
+   "eal_raw_M EUR": 5.1
+  },
+  {
+   "provincia": "Milano",
+   "n": 124,
+   "rate_ivass": 15.05,
+   "bmk_calibrato": 5.36,
+   "loss_ratio": 2.809,
+   "eal_raw_M EUR": 88.3
+  },
+  {
+   "provincia": "Modena",
+   "n": 38,
+   "rate_ivass": 36.54,
+   "bmk_calibrato": 33.39,
+   "loss_ratio": 1.094,
+   "eal_raw_M EUR": 47.1
+  },
+  {
+   "provincia": "Monza e della Brianza",
+   "n": 55,
+   "rate_ivass": 13.28,
+   "bmk_calibrato": 3.89,
+   "loss_ratio": 3.412,
+   "eal_raw_M EUR": 6.1
+  },
+  {
+   "provincia": "Napoli",
+   "n": 75,
+   "rate_ivass": 35.75,
+   "bmk_calibrato": 37.46,
+   "loss_ratio": 0.954,
+   "eal_raw_M EUR": 60.7
+  },
+  {
+   "provincia": "Novara",
+   "n": 58,
+   "rate_ivass": 12.09,
+   "bmk_calibrato": 6.55,
+   "loss_ratio": 1.845,
+   "eal_raw_M EUR": 3.4
+  },
+  {
+   "provincia": "Nuoro",
+   "n": 9,
+   "rate_ivass": 14.34,
+   "bmk_calibrato": 14.68,
+   "loss_ratio": 0.977,
+   "eal_raw_M EUR": 1.4
+  },
+  {
+   "provincia": "Oristano",
+   "n": 8,
+   "rate_ivass": 13.76,
+   "bmk_calibrato": 6.67,
+   "loss_ratio": 2.062,
+   "eal_raw_M EUR": 0.2
+  },
+  {
+   "provincia": "Padova",
+   "n": 79,
+   "rate_ivass": 17.8,
+   "bmk_calibrato": 27.19,
+   "loss_ratio": 0.655,
+   "eal_raw_M EUR": 41.8
+  },
+  {
+   "provincia": "Palermo",
+   "n": 26,
+   "rate_ivass": 29.58,
+   "bmk_calibrato": 39.27,
+   "loss_ratio": 0.753,
+   "eal_raw_M EUR": 17.5
+  },
+  {
+   "provincia": "Parma",
+   "n": 31,
+   "rate_ivass": 33.48,
+   "bmk_calibrato": 36.66,
+   "loss_ratio": 0.913,
+   "eal_raw_M EUR": 43.5
+  },
+  {
+   "provincia": "Pavia",
+   "n": 67,
+   "rate_ivass": 18.96,
+   "bmk_calibrato": 14.13,
+   "loss_ratio": 1.342,
+   "eal_raw_M EUR": 3.9
+  },
+  {
+   "provincia": "Perugia",
+   "n": 39,
+   "rate_ivass": 38.92,
+   "bmk_calibrato": 46.86,
+   "loss_ratio": 0.831,
+   "eal_raw_M EUR": 31.7
+  },
+  {
+   "provincia": "Pesaro e Urbino",
+   "n": 31,
+   "rate_ivass": 24.62,
+   "bmk_calibrato": 35.92,
+   "loss_ratio": 0.685,
+   "eal_raw_M EUR": 10.7
+  },
+  {
+   "provincia": "Pescara",
+   "n": 21,
+   "rate_ivass": 27.53,
+   "bmk_calibrato": 48.06,
+   "loss_ratio": 0.573,
+   "eal_raw_M EUR": 8.2
+  },
+  {
+   "provincia": "Piacenza",
+   "n": 29,
+   "rate_ivass": 28.26,
+   "bmk_calibrato": 25.7,
+   "loss_ratio": 1.1,
+   "eal_raw_M EUR": 10.9
+  },
+  {
+   "provincia": "Pisa",
+   "n": 23,
+   "rate_ivass": 28.11,
+   "bmk_calibrato": 35.24,
+   "loss_ratio": 0.798,
+   "eal_raw_M EUR": 12.2
+  },
+  {
+   "provincia": "Pistoia",
+   "n": 15,
+   "rate_ivass": 29.71,
+   "bmk_calibrato": 45.44,
+   "loss_ratio": 0.654,
+   "eal_raw_M EUR": 5.1
+  },
+  {
+   "provincia": "Pordenone",
+   "n": 34,
+   "rate_ivass": 22.31,
+   "bmk_calibrato": 47.17,
+   "loss_ratio": 0.473,
+   "eal_raw_M EUR": 20.4
+  },
+  {
+   "provincia": "Potenza",
+   "n": 28,
+   "rate_ivass": 40.91,
+   "bmk_calibrato": 48.56,
+   "loss_ratio": 0.842,
+   "eal_raw_M EUR": 5.1
+  },
+  {
+   "provincia": "Prato",
+   "n": 6,
+   "rate_ivass": 30.89,
+   "bmk_calibrato": 42.43,
+   "loss_ratio": 0.728,
+   "eal_raw_M EUR": 7.8
+  },
+  {
+   "provincia": "Ragusa",
+   "n": 10,
+   "rate_ivass": 23.45,
+   "bmk_calibrato": 37.45,
+   "loss_ratio": 0.626,
+   "eal_raw_M EUR": 5.1
+  },
+  {
+   "provincia": "Ravenna",
+   "n": 17,
+   "rate_ivass": 37.88,
+   "bmk_calibrato": 62.1,
+   "loss_ratio": 0.61,
+   "eal_raw_M EUR": 30.2
+  },
+  {
+   "provincia": "Reggio di Calabria",
+   "n": 27,
+   "rate_ivass": 48.65,
+   "bmk_calibrato": 65.51,
+   "loss_ratio": 0.743,
+   "eal_raw_M EUR": 3.6
+  },
+  {
+   "provincia": "Reggio nell'Emilia",
+   "n": 39,
+   "rate_ivass": 36.62,
+   "bmk_calibrato": 32.24,
+   "loss_ratio": 1.136,
+   "eal_raw_M EUR": 27.3
+  },
+  {
+   "provincia": "Rieti",
+   "n": 6,
+   "rate_ivass": 44.77,
+   "bmk_calibrato": 51.89,
+   "loss_ratio": 0.863,
+   "eal_raw_M EUR": 1.9
+  },
+  {
+   "provincia": "Rimini",
+   "n": 19,
+   "rate_ivass": 28.76,
+   "bmk_calibrato": 58.93,
+   "loss_ratio": 0.488,
+   "eal_raw_M EUR": 27.7
+  },
+  {
+   "provincia": "Roma",
+   "n": 43,
+   "rate_ivass": 29.69,
+   "bmk_calibrato": 21.97,
+   "loss_ratio": 1.352,
+   "eal_raw_M EUR": 143.8
+  },
+  {
+   "provincia": "Rovigo",
+   "n": 30,
+   "rate_ivass": 24.85,
+   "bmk_calibrato": 7.55,
+   "loss_ratio": 3.291,
+   "eal_raw_M EUR": 1.0
+  },
+  {
+   "provincia": "Salerno",
+   "n": 65,
+   "rate_ivass": 25.59,
+   "bmk_calibrato": 37.8,
+   "loss_ratio": 0.677,
+   "eal_raw_M EUR": 22.4
+  },
+  {
+   "provincia": "Sassari",
+   "n": 16,
+   "rate_ivass": 12.84,
+   "bmk_calibrato": 5.97,
+   "loss_ratio": 2.149,
+   "eal_raw_M EUR": 0.9
+  },
+  {
+   "provincia": "Savona",
+   "n": 21,
+   "rate_ivass": 24.79,
+   "bmk_calibrato": 12.91,
+   "loss_ratio": 1.921,
+   "eal_raw_M EUR": 1.0
+  },
+  {
+   "provincia": "Siena",
+   "n": 22,
+   "rate_ivass": 24.09,
+   "bmk_calibrato": 35.26,
+   "loss_ratio": 0.683,
+   "eal_raw_M EUR": 5.5
+  },
+  {
+   "provincia": "Siracusa",
+   "n": 10,
+   "rate_ivass": 32.51,
+   "bmk_calibrato": 57.33,
+   "loss_ratio": 0.567,
+   "eal_raw_M EUR": 4.4
+  },
+  {
+   "provincia": "Sondrio",
+   "n": 36,
+   "rate_ivass": 12.78,
+   "bmk_calibrato": 15.89,
+   "loss_ratio": 0.804,
+   "eal_raw_M EUR": 2.5
+  },
+  {
+   "provincia": "Sud Sardegna",
+   "n": 25,
+   "rate_ivass": 15.45,
+   "bmk_calibrato": 11.31,
+   "loss_ratio": 1.365,
+   "eal_raw_M EUR": 0.8
+  },
+  {
+   "provincia": "Taranto",
+   "n": 19,
+   "rate_ivass": 15.19,
+   "bmk_calibrato": 17.41,
+   "loss_ratio": 0.873,
+   "eal_raw_M EUR": 2.4
+  },
+  {
+   "provincia": "Teramo",
+   "n": 30,
+   "rate_ivass": 27.38,
+   "bmk_calibrato": 45.9,
+   "loss_ratio": 0.597,
+   "eal_raw_M EUR": 11.5
+  },
+  {
+   "provincia": "Terni",
+   "n": 12,
+   "rate_ivass": 34.83,
+   "bmk_calibrato": 30.55,
+   "loss_ratio": 1.14,
+   "eal_raw_M EUR": 4.9
+  },
+  {
+   "provincia": "Torino",
+   "n": 132,
+   "rate_ivass": 20.59,
+   "bmk_calibrato": 9.61,
+   "loss_ratio": 2.142,
+   "eal_raw_M EUR": 24.3
+  },
+  {
+   "provincia": "Trapani",
+   "n": 14,
+   "rate_ivass": 16.86,
+   "bmk_calibrato": 5.38,
+   "loss_ratio": 3.136,
+   "eal_raw_M EUR": 0.4
+  },
+  {
+   "provincia": "Trento",
+   "n": 57,
+   "rate_ivass": 14.83,
+   "bmk_calibrato": 25.53,
+   "loss_ratio": 0.581,
+   "eal_raw_M EUR": 20.5
+  },
+  {
+   "provincia": "Treviso",
+   "n": 89,
+   "rate_ivass": 21.14,
+   "bmk_calibrato": 40.61,
+   "loss_ratio": 0.521,
+   "eal_raw_M EUR": 59.3
+  },
+  {
+   "provincia": "Trieste",
+   "n": 6,
+   "rate_ivass": 23.18,
+   "bmk_calibrato": 14.14,
+   "loss_ratio": 1.64,
+   "eal_raw_M EUR": 11.4
+  },
+  {
+   "provincia": "Udine",
+   "n": 78,
+   "rate_ivass": 22.91,
+   "bmk_calibrato": 44.55,
+   "loss_ratio": 0.514,
+   "eal_raw_M EUR": 39.5
+  },
+  {
+   "provincia": "Valle d'Aosta/Vallée d'Aoste",
+   "n": 19,
+   "rate_ivass": 17.57,
+   "bmk_calibrato": 61.59,
+   "loss_ratio": 0.285,
+   "eal_raw_M EUR": 5.2
+  },
+  {
+   "provincia": "Varese",
+   "n": 80,
+   "rate_ivass": 11.23,
+   "bmk_calibrato": 7.96,
+   "loss_ratio": 1.411,
+   "eal_raw_M EUR": 7.1
+  },
+  {
+   "provincia": "Venezia",
+   "n": 42,
+   "rate_ivass": 17.53,
+   "bmk_calibrato": 14.26,
+   "loss_ratio": 1.229,
+   "eal_raw_M EUR": 12.3
+  },
+  {
+   "provincia": "Verbano-Cusio-Ossola",
+   "n": 16,
+   "rate_ivass": 17.58,
+   "bmk_calibrato": 27.29,
+   "loss_ratio": 0.644,
+   "eal_raw_M EUR": 1.6
+  },
+  {
+   "provincia": "Vercelli",
+   "n": 31,
+   "rate_ivass": 17.18,
+   "bmk_calibrato": 11.88,
+   "loss_ratio": 1.446,
+   "eal_raw_M EUR": 4.0
+  },
+  {
+   "provincia": "Verona",
+   "n": 81,
+   "rate_ivass": 20.17,
+   "bmk_calibrato": 34.63,
+   "loss_ratio": 0.582,
+   "eal_raw_M EUR": 61.2
+  },
+  {
+   "provincia": "Vibo Valentia",
+   "n": 7,
+   "rate_ivass": 39.82,
+   "bmk_calibrato": 88.76,
+   "loss_ratio": 0.449,
+   "eal_raw_M EUR": 1.6
+  },
+  {
+   "provincia": "Vicenza",
+   "n": 92,
+   "rate_ivass": 21.32,
+   "bmk_calibrato": 28.68,
+   "loss_ratio": 0.743,
+   "eal_raw_M EUR": 60.1
+  },
+  {
+   "provincia": "Viterbo",
+   "n": 24,
+   "rate_ivass": 19.09,
+   "bmk_calibrato": 18.12,
+   "loss_ratio": 1.053,
+   "eal_raw_M EUR": 1.5
+  }
+ ],
+ "sensibilita": [
+  {
+   "variante": "MDR sismico x0.5",
+   "spearman_loss_ratio": 0.9582
+  },
+  {
+   "variante": "MDR sismico x2",
+   "spearman_loss_ratio": 0.9617
+  },
+  {
+   "variante": "fattore curva x0.5",
+   "spearman_loss_ratio": 0.9582
+  },
+  {
+   "variante": "fattore curva x2",
+   "spearman_loss_ratio": 0.9617
+  },
+  {
+   "variante": "frequenza frana x0.5",
+   "spearman_loss_ratio": 0.981
+  },
+  {
+   "variante": "frequenza frana x2",
+   "spearman_loss_ratio": 0.9773
+  },
+  {
+   "variante": "frequenza idraulico x0.5",
+   "spearman_loss_ratio": 0.9725
+  },
+  {
+   "variante": "frequenza idraulico x2",
+   "spearman_loss_ratio": 0.9599
+  },
+  {
+   "variante": "tutti i parametri x0.5",
+   "spearman_loss_ratio": 0.9582
+  }
+ ],
+ "nota_sardegna": {
+  "n_comuni": 70,
+  "loss_ratio_mediano": 2.54,
+  "n_comuni_senza_rischio_modellato": 3,
+  "nota": "benchmark ~ 0 per i 3 hazard modellati: il loss ratio non e' interpretabile (la tariffa copre un perimetro piu' ampio)"
+ }
+}
