@@ -27,12 +27,15 @@ docs/
   risultati_sdm_comuni.md              ← risultati completi del SDM a livello comune (ML, spreg/PySAL)
   risultati_sdm_sismico.md             ← risultati del SDM esteso con il terzo hazard sismico (p=4)
   sismico_metodologia.md               ← fonti INGV (MPS04), estrazione griglie, matching, pipeline
+  pricing_coerenza.md                  ← benchmark EAL, loss ratio vs tariffe IVASS, coerenza asset
+  mappa_loss.svg                       ← mappa di loss: EAL attesa e loss ratio per comune
   log_R_livello_impresa.md            ← guida e integrazione dei log R (spatialreg) livello impresa
 scripts/
   step1_kdist_moran.py                 ← selezione k via curva k-dist + Moran (livello comune)
   sdm_grid.js, definitivo.js           ← stima ML della SDM (implementazione pura Python/JS)
   se_definitivi.js                     ← errore standard ML (Hessiana numerica, k=5..8)
   script_spreg_sdm_catnat.py           ← stima di riferimento con spreg/PySAL (CSV_PATH = data/…)
+  pricing/pricing_model.py             ← benchmark EAL 3-hazard, loss ratio vs IVASS, mappa di loss
   sismico/                             ← pipeline del terzo hazard sismico (estrazione, matching, SDM p=4)
 results/
   grid_results.json                     ← griglia di selezione k (k-dist, Moran, AIC)
@@ -40,6 +43,8 @@ results/
   se_definitivi.json                   ← errori standard ML definitivi (k=5..8)
   FINAL_k5.json                         ← quadro riassuntivo del modello definitivo k=5
   FINAL_sismico_k5.json                 ← quadro riassuntivo del modello esteso con il sismico (p=4)
+  eal_comuni.csv                        ← EAL benchmark e loss ratio per comune (3.823 righe)
+  pricing_benchmark.json                ← parametri, calibrazione, tabella province, regressione rate
 data/
   Matrice_Modello_Savelli_Final.csv     ← matrice definitiva: 3.823 comuni × 37 colonne
   Matrice_Modello_Savelli_Final_sismico.csv ← matrice estesa con le colonne sismiche: 3.823 × 53
@@ -186,6 +191,35 @@ rate dei premi è definita — la correlazione tra log-rate e log1p(ag medio) è
 di quella idrogeologica. Reset cala da 24,4 a 4,95: gran parte della mancata linearità del
 modello a due regressori era dovuta alla variabile omessa.
 
+### 3.4 Modello di pricing e coerenza asset (benchmark EAL)
+
+Estensione attuariale (`docs/pricing_coerenza.md`, quadro macchina in
+`results/pricing_benchmark.json`, dati per comune in `results/eal_comuni.csv`): un
+benchmark di **loss annuale attesa** a tre hazard (sismico via curva MDR(ag),
+idraulico e frana via share di area esposta; parametri illustrativi documentati) è
+confrontato con le tariffe IVASS tramite un loss ratio `tariffa / benchmark calibrato`
+(calibrazione a un solo scalare sull'aggregato, c = 1,92). Risultati chiave:
+
+- **EAL benchmark nazionale: 1,70 mld €/anno** (52% del premio teorico di 3,26 mld),
+  mix sismico 61% / idraulico 28% / frana 11%;
+- **loss ratio mediano 1,01** (p10–p90: 0,48–4,13): la tariffa segue il rischio dove il
+  sismico domina, mentre le province a forte idraulico/frana sono **sottoprezzate**
+  rispetto al benchmark (Treviso, Udine, Rimini, Forlì-Cesena ~0,5; Valle d'Aosta 0,28)
+  e quelle a basso sismico sono sovrapprezzate (Agrigento 4,6; Lecce 3,5) — effetto del
+  pavimento tariffario per i perils non modellati;
+- **coerenza asset**: il 95,9% della variabilità del log-premio comunale è componente
+  asset (esposizione), il 4,1% rate: la variabile di pricing è la rate provinciale;
+  la regressione provinciale (n = 107, SE robusti White) dà elasticità **+5,4
+  all'accelerazione sismica** (t = 16,7), +1,0 all'idraulico, **frana non
+  significativa** — conferma asset-free del SDM: la tariffazione è un fatto sismico;
+- la geografia del loss ratio è **robusta ai parametri** (Spearman ≥ 0,96 su ogni
+  perturbazione ×0,5/×2);
+- mappa di loss a due pannelli (EAL attesa e loss ratio) in `docs/mappa_loss.svg`.
+
+**Avvertenza**: il benchmark usa parametri fisici illustrativi e modella solo i 3
+hazard della matrice: misura coerenza relativa della tariffazione, non è un modello
+di pricing operativo.
+
 ## 4. Riproducibilità
 
 1. Costruire la matrice partendo dai sorgenti (AIDA, ISTAT/ISPRA, IVASS, centroidi ISTAT) con le
@@ -215,6 +249,9 @@ modello a due regressori era dovuta alla variabile omessa.
    `data/log_R_livello_impresa/`; l'ISP dipende dalla pipeline della tesi
    ([tesi-magistrale](https://github.com/pietroscik/tesi-magistrale)); interpretazione guidata
    in `docs/log_R_livello_impresa.md`.
+8. Benchmark EAL e coerenza asset: `python3 scripts/pricing/pricing_model.py` (solo stdlib,
+   deterministico) → `results/pricing_benchmark.json`, `results/eal_comuni.csv`,
+   `docs/mappa_loss.svg`; dettagli e limiti in `docs/pricing_coerenza.md`.
 
 Ambienti: R 4.x con `spdep`, `spatialreg`, `FNN`, `ggplot2`; Python 3 con `spreg`, `libpysal`
 (pipeline sismica: solo stdlib); Node.js per gli script ML; notebook: Python 3 con sola

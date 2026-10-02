@@ -25,11 +25,18 @@ jobs:
           python -m py_compile \
             scripts/step1_kdist_moran.py \
             scripts/script_spreg_sdm_catnat.py \
+            scripts/pricing/pricing_model.py \
             scripts/sismico/match_sismico.py \
             scripts/sismico/build_matrice_v2.py \
             scripts/sismico/parse_biff.py \
             scripts/sismico/recover_sa.py \
             scripts/sismico/xlsx_to_csv.py
+
+      - name: Benchmark pricing (deterministico, rigenera JSON/CSV/SVG)
+        run: |
+          python scripts/pricing/pricing_model.py
+          git diff --quiet -- results/ docs/mappa_loss.svg || \
+            { echo "ERRORE: output pricing non riproducibile (git diff)"; git diff --stat; exit 1; }
 
       - name: Setup Node
         uses: actions/setup-node@v4
