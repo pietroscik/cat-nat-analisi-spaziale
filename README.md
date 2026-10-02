@@ -27,7 +27,7 @@ docs/
   risultati_sdm_comuni.md              ← risultati completi del SDM a livello comune (ML, spreg/PySAL)
   risultati_sdm_sismico.md             ← risultati del SDM esteso con il terzo hazard sismico (p=4)
   sismico_metodologia.md               ← fonti INGV (MPS04), estrazione griglie, matching, pipeline
-  pricing_coerenza.md                  ← benchmark EAL, loss ratio vs tariffe IVASS, coerenza asset
+  pricing_coerenza.md                  ← benchmark EAL, loss ratio vs tariffe IVASS, coerenza asset, esposizione del tessuto
   mappa_loss.svg                       ← mappa di loss: EAL attesa e loss ratio per comune
   log_R_livello_impresa.md            ← guida e integrazione dei log R (spatialreg) livello impresa
 scripts/
@@ -36,6 +36,7 @@ scripts/
   se_definitivi.js                     ← errore standard ML (Hessiana numerica, k=5..8)
   script_spreg_sdm_catnat.py           ← stima di riferimento con spreg/PySAL (CSV_PATH = data/…)
   pricing/pricing_model.py             ← benchmark EAL 3-hazard, loss ratio vs IVASS, mappa di loss
+  pricing/tessuto_produttivo.py        ← peso della loss sul tessuto: esposizione per performance ISP
   sismico/                             ← pipeline del terzo hazard sismico (estrazione, matching, SDM p=4)
 results/
   grid_results.json                     ← griglia di selezione k (k-dist, Moran, AIC)
@@ -45,6 +46,7 @@ results/
   FINAL_sismico_k5.json                 ← quadro riassuntivo del modello esteso con il sismico (p=4)
   eal_comuni.csv                        ← EAL benchmark e loss ratio per comune (3.823 righe)
   pricing_benchmark.json                ← parametri, calibrazione, tabella province, regressione rate
+  esposizione_tessuto.json             ← peso EAL/EBITDA, quartili ISP, regressione peso, province
 data/
   Matrice_Modello_Savelli_Final.csv     ← matrice definitiva: 3.823 comuni × 37 colonne
   Matrice_Modello_Savelli_Final_sismico.csv ← matrice estesa con le colonne sismiche: 3.823 × 53
@@ -216,6 +218,22 @@ confrontato con le tariffe IVASS tramite un loss ratio `tariffa / benchmark cali
   perturbazione ×0,5/×2);
 - mappa di loss a due pannelli (EAL attesa e loss ratio) in `docs/mappa_loss.svg`.
 
+Estensione al tessuto produttivo (`scripts/pricing/tessuto_produttivo.py`, output
+`results/esposizione_tessuto.json`, dettagli in §5 di `docs/pricing_coerenza.md`):
+
+- **peso nazionale della loss: 2,54% dell'EBITDA** (3,26 mld € di EAL calibrata su
+  128,5 mld € di valore prodotto; 895 € per addetto, 106.408 € per impresa);
+- **esposizione per performance (quartili ISP)**: i comuni con imprese meno
+  performanti (Q1) assorbono il 3,91% del proprio EBITDA in loss attesa — quasi
+  il doppio dei comuni più performanti (Q4: 2,06%); intensità di esposizione
+  (quota EAL / quota EBITDA) 1,54 vs 0,81;
+- **modello predittivo** (OLS con SE robusti White, n = 3.791 comuni, R² = 0,762):
+  a parità di hazard, dimensione e struttura dimensionale, **+1 deviazione standard
+  di ISP riduce il peso della loss del ~31%** (β = −0,375, t = −21,8); quota di
+  imprese Grandi con un piccolo premio di esposizione (+0,08, t = 2,2 — concentration
+  risk comunale); province estreme Vibo Valentia 8,3% / Isernia 8,2% / Avellino
+  8,1% contro Monza-Brianza 0,38% / Lecce 0,40%.
+
 **Avvertenza**: il benchmark usa parametri fisici illustrativi e modella solo i 3
 hazard della matrice: misura coerenza relativa della tariffazione, non è un modello
 di pricing operativo.
@@ -252,6 +270,9 @@ di pricing operativo.
 8. Benchmark EAL e coerenza asset: `python3 scripts/pricing/pricing_model.py` (solo stdlib,
    deterministico) → `results/pricing_benchmark.json`, `results/eal_comuni.csv`,
    `docs/mappa_loss.svg`; dettagli e limiti in `docs/pricing_coerenza.md`.
+9. Peso della loss sul tessuto produttivo: `python3 scripts/pricing/tessuto_produttivo.py`
+   → `results/esposizione_tessuto.json` (richiede il passo 8; deterministico); quartili di
+   esposizione per performance ISP, regressione del peso-EBITDA e tabella provinciale.
 
 Ambienti: R 4.x con `spdep`, `spatialreg`, `FNN`, `ggplot2`; Python 3 con `spreg`, `libpysal`
 (pipeline sismica: solo stdlib); Node.js per gli script ML; notebook: Python 3 con sola

@@ -26,6 +26,7 @@ jobs:
             scripts/step1_kdist_moran.py \
             scripts/script_spreg_sdm_catnat.py \
             scripts/pricing/pricing_model.py \
+            scripts/pricing/tessuto_produttivo.py \
             scripts/sismico/match_sismico.py \
             scripts/sismico/build_matrice_v2.py \
             scripts/sismico/parse_biff.py \
@@ -37,6 +38,12 @@ jobs:
           python scripts/pricing/pricing_model.py
           git diff --quiet -- results/ docs/mappa_loss.svg || \
             { echo "ERRORE: output pricing non riproducibile (git diff)"; git diff --stat; exit 1; }
+
+      - name: Esposizione tessuto produttivo (deterministico, rigenera JSON)
+        run: |
+          python scripts/pricing/tessuto_produttivo.py
+          git diff --quiet -- results/esposizione_tessuto.json || \
+            { echo "ERRORE: esposizione_tessuto.json non riproducibile (git diff)"; git diff --stat; exit 1; }
 
       - name: Setup Node
         uses: actions/setup-node@v4

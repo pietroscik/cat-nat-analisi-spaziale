@@ -7,7 +7,7 @@ annual loss)** a tre hazard per comune, confrontato con la tariffa IVASS per mis
 dalla parte meccanica del premio (asset × rate).
 
 **Avvertenza di metodo.** Il benchmark usa parametri fisici *illustrativi* (ordini di
-grandezza della letteratura tecnica, dichiarati in §2 e perturbati in §6): **non è un
+grandezza della letteratura tecnica, dichiarati in §2 e perturbati in §7): **non è un
 modello di pricing operativo** e non sostituisce un cat model. Ciò che misura è la
 coerenza **relativa** della tariffazione: dove la tariffa segue il rischio modellato e
 dove no. Il loss ratio va letto come indicatore di adeguatezza relativa, non come
@@ -15,8 +15,10 @@ economic loss ratio di portafoglio.
 
 Output macchina: `results/pricing_benchmark.json` (parametri, calibrazione, tabella
 province, regressione), `results/eal_comuni.csv` (3.823 righe), `docs/mappa_loss.svg`
-(mappa di loss a due pannelli). Tutto si rigenera con
-`python3 scripts/pricing/pricing_model.py` (solo stdlib, deterministico).
+(mappa di loss a due pannelli), `results/esposizione_tessuto.json` (peso della loss
+sul tessuto produttivo, §5). Tutto si rigenera con
+`python3 scripts/pricing/pricing_model.py` seguito da
+`python3 scripts/pricing/tessuto_produttivo.py` (solo stdlib, deterministici).
 
 ## 1. Struttura del premio comunale
 
@@ -76,7 +78,7 @@ hanno lo stesso aggregato, e il confronto diventa puramente **relativo**.
 La distribuzione è right-skewed per costruzione: nei comuni a basso hazard modellato
 il benchmark tende a 0 mentre la tariffa ha un pavimento (~11 per 10.000 €), quindi
 il ratio esplode — non è inefficienza, è il perimetro tariffario più ampio
-(documentato in §6).
+(documentato in §7).
 
 **Province estreme** (aggregato asset-weighted; tabella completa nel JSON):
 
@@ -125,7 +127,86 @@ condividono la componente asset; qui la rate provinciale la esclude per costruzi
 I due risultati convergono sul contenuto sostantivo (sismico dominante, frana
 sottopagato), da angoli indipendenti.
 
-## 5. Mappa di loss
+## 5. Esposizione delle imprese performanti e peso della loss sul tessuto produttivo
+
+Risposta attuariale alla domanda: **quanto pesa la loss Cat-Nat attesa sul valore
+prodotto, e quanto sono esposte a questo peso le imprese performanti?** Lo script
+`scripts/pricing/tessuto_produttivo.py` collega la EAL calibrata (§3) agli indicatori
+del tessuto produttivo comunale della matrice estesa: `ISP_std_medio` (l'indicatore
+composito di performance della tesi), EBITDA, dipendenti, numero imprese, struttura
+dimensionale degli asset. Output: `results/esposizione_tessuto.json`.
+
+### 5.1 Peso della loss sul tessuto
+
+| Indicatore nazionale | Valore |
+|---|---|
+| EAL calibrata / EBITDA | **2,54%** (3,26 mld € su 128,5 mld €) |
+| EAL per addetto | 895 €/anno |
+| EAL per impresa | 106.408 €/anno |
+| peso comunale (EAL/EBITDA): mediana / p90 / max | 2,44% / 7,50% / 70,7% |
+
+Il peso comunale è fortemente right-skewed: la coda (max 70,7%, comune in Appennino
+sismico con EBITDA piccolo) è dove un evento singolo più impattante può deprimere
+per anni la capacità di ricostruzione del tessuto locale.
+
+### 5.2 Esposizione per classe di performance (quartili ISP)
+
+| Classe ISP | n comuni | rate bmk pesata | peso EAL/EBITDA | quota EAL / quota EBITDA |
+|---|---|---|---|---|
+| Q1 (meno performanti) | 949 | 30,74 | **3,91%** | 1,54 |
+| Q2 | 950 | 27,67 | 3,07% | 1,21 |
+| Q3 | 950 | 19,28 | 2,21% | 0,87 |
+| Q4 (più performanti) | 950 | 25,02 | **2,06%** | **0,81** |
+
+L'**intensità di esposizione** (quota di EAL nazionale / quota di EBITDA nazionale)
+dice quanto pesa la loss di una classe rispetto al valore che quella classe produce:
+i comuni con imprese *meno* performanti assorbono una quota di loss quasi **2 volte**
+la loro quota di EBITDA (1,54 vs 0,81) — il gradiente è monotono su tutti e quattro i
+quartili. I 77 comuni del cluster High-High dell'ISP espongono asset a rate medie
+leggermente sopra il resto (24,53 vs 22,72 per 10.000 €: sono aree produttive
+dell'Italia centro-meridionale con sismicità significativa), ma il loro peso-EBITDA (2,61%) resta vicino alla mediana
+nazionale: l'alta produzione diluisce la loss.
+
+Le correlazioni dicono che **la performance è geograficamente ortogonale al rischio
+fisico** (ISP vs ag: +0,04; vs share frana/idraulico: ≈ 0): il gradiente di peso non
+è "le imprese brave stanno dove non c'è rischio", è un fatto di composizione del
+valore prodotto (EBITDA per asset più alto nei comuni performanti, stessa geografia
+dell'hazard).
+
+### 5.3 Modello predittivo del peso della loss
+
+Regressione OLS del log-peso-EBITDA (n = 3.791 comuni; esclusi 24 senza ISP, 5 con
+EBITDA ≤ 0 e 3 sardi con EAL calibrata = 0), SE robusti White HC1,
+R² = 0,762:
+
+| Regressore | β | t robusto |
+|---|---|---|
+| ISP (performance) | **−0,375** | **−21,8** |
+| log1p(ag) | +14,68 | +71,9 |
+| share frana | +2,76 | +29,1 |
+| share idraulico | +4,30 | +25,1 |
+| log(asset totale) | −0,038 | −4,7 |
+| quota Grandi | +0,080 | +2,2 |
+
+Lettura attuariale: **a parità di rischio fisico, dimensione e struttura dimensionale,
+un incremento di 1 deviazione standard dell'ISP riduce il peso della loss del ~31%**
+(e^−0,375 ≈ 0,69). La performance predice il peso della loss perché determina il
+denominatore (valore prodotto) su una geografia dell'hazard che resta la stessa; gli
+hazard confermano i segni attesi (sismico dominante, idraulico forte, frana presente),
+la dimensione media degli asset ha effetto diluizione (−0,04 log-point per raddoppio),
+e la quota di imprese Grandi ha un piccolo premio positivo (+0,08, t = 2,2): i comuni
+a struttura dimensionale maggiore espongono asset più concentrati, e la loss pesa
+leggermente di più — un segnale di **concentration risk** a livello comunale, marginale
+ma statisticmente distinguibile.
+
+A livello provinciale le posizioni estreme del peso-EBITDA sono **Vibo Valentia
+(8,3%), Isernia (8,2%), Avellino (8,1%), Cosenza (7,8%)** — sismico calabro-lucano e
+irpino su EBITDA bassi — contro **Monza e della Brianza (0,38%), Lecce (0,40%),
+Brindisi (0,41%)** (tabella completa delle 107 province nel JSON, con la EAL per
+addetto). Lo Spearman ISP–peso a livello comunale è −0,18: la relazione negativa
+esiste ed è robusta, ma è un gradiente, non una legge.
+
+## 6. Mappa di loss
 
 `docs/mappa_loss.svg` — due pannelli sugli stessi 3.823 centroidi comunali:
 
@@ -138,7 +219,7 @@ sottopagato), da angoli indipendenti.
 Generata dallo stesso script (nessuna dipendenza); visualizzabile direttamente su
 GitHub.
 
-## 6. Limiti e sensibilità
+## 7. Limiti e sensibilità
 
 1. **Parametri illustrativi**: MDR, fattore curva e frequenze-danno sono ordini di
    grandezza dichiarati, non stime. La sensibilità (ogni parametro ×0,5 e ×2, più tutti
@@ -156,15 +237,17 @@ GitHub.
    hazard con un moltiplicatore costante; un cat model userebbe le percentili 16/84
    (già in matrice) per l'incertezza.
 
-## 7. Riproducibilità
+## 8. Riproducibilità
 
 ```bash
-# dalla root del repo (solo stdlib; ~2 secondi)
+# dalla root del repo (solo stdlib; ~2 + ~1 secondi)
 python3 scripts/pricing/pricing_model.py
 # output: results/pricing_benchmark.json, results/eal_comuni.csv, docs/mappa_loss.svg
+python3 scripts/pricing/tessuto_produttivo.py
+# output: results/esposizione_tessuto.json (richiede results/eal_comuni.csv)
 ```
 
-Script deterministico (nessun campionamento), percorsi configurabili via env
-(`MATRICE`, `OUT_CSV`, `OUT_JSON`, `OUT_SVG`). Fonti: IVASS (tariffe provinciali),
-INGV MPS04 (ag RP475), ISPRA (aree PAI P3/P4 e P3), AIDA (asset per classe
-dimensione, aggregati a comune).
+Script deterministici (nessun campionamento), percorsi configurabili via env
+(`MATRICE`, `OUT_CSV`, `OUT_JSON`, `OUT_SVG` per pricing_model.py). Fonti: IVASS
+(tariffe provinciali), INGV MPS04 (ag RP475), ISPRA (aree PAI P3/P4 e P3), AIDA
+(asset per classe dimensione, aggregati a comune).
