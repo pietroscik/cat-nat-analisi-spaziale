@@ -60,7 +60,8 @@ def eal_rates(ag, share_frana, share_idr):
 
 
 # ---------- OLS con SE classici e White (HC1) ----------
-def ols(X, y):
+def ols(X, y, names=None):
+    """OLS con SE classici e robusti White HC1; `names` opzionali (default generici)."""
     n, k = len(y), len(X[0])
     xtx = [[sum(X[i][a] * X[i][b] for i in range(n)) for b in range(k)] for a in range(k)]
     xty = [sum(X[i][a] * y[i] for i in range(n)) for a in range(k)]
@@ -97,7 +98,8 @@ def ols(X, y):
     hc = n / (n - k)
     cov_w = [[hc * sum(xtx_inv[a][t] * meat[t][u] * xtx_inv[u][b] for t in range(k) for u in range(k))
               for b in range(k)] for a in range(k)]
-    names = ['interc', 'log1p(ag aw)', 'log1p(frana aw)', 'log1p(idraulico aw)']
+    if names is None:
+        names = ['x%d' % a for a in range(k)]
     out = []
     for a in range(k):
         se_c, se_w = math.sqrt(cov_c[a][a]), math.sqrt(cov_w[a][a])
@@ -208,7 +210,7 @@ def main():
            math.log1p(sum(c['idr'] * c['asset'] for c in p['com']) / sum(c['asset'] for c in p['com']))]
           for p in prov.values()]
     yp = [math.log(p['com'][0]['rate_ivass']) for p in prov.values()]
-    reg, r2, nreg = ols(Xp, yp)
+    reg, r2, nreg = ols(Xp, yp, ['interc', 'log1p(ag aw)', 'log1p(frana aw)', 'log1p(idraulico aw)'])
 
     # ---------- 5. sensibilita' dei parametri ----------
     base_ratio = [c['loss_ratio'] for c in com]
@@ -313,6 +315,11 @@ def main():
 
 # ---------- rendering SVG ----------
 def draw_svg(com):
+    """Mappa a due pannelli: EAL attesa (EUR/anno) e loss ratio (coerenza tariffa/benchmark).
+
+    SVG inline senza prologo XML (renderizza sia su GitHub sia incapsulato in pagine),
+    layout con legenda su righe fisse sotto ogni pannello, nessuna sovrapposizione.
+    """
     lons = [c['lon'] for c in com]
     lats = [c['lat'] for c in com]
     lon0, lon1, lat0, lat1 = min(lons), max(lons), min(lats), max(lats)
@@ -320,8 +327,10 @@ def draw_svg(com):
     W_PANEL, H_PANEL = 440, 480
     PAD_X, PAD_TOP = 30, 58
     GAP = 60
-    W, H = PAD_X * 2 + W_PANEL * 2 + GAP, H_PANEL + 128
-    # proiezione: compensa la contrazione dei meridiani (cos(lat media))
+    LEG_ROW_H = 26
+    N_LEG_ROWS = 2
+    H = PAD_TOP + H_PANEL + 30 + LEG_ROW_H * N_LEG_ROWS + 34
+    W = PAD_X * 2 + W_PANEL * 2 + GAP
     LAT_M = math.radians((lat0 + lat1) / 2)
     SCALE = min(W_PANEL / ((lon1 - lon0) * math.cos(LAT_M)), H_PANEL / (lat1 - lat0))
 
@@ -329,55 +338,23 @@ def draw_svg(com):
         return (x0 + (lon - lon0) * math.cos(LAT_M) * SCALE,
                 PAD_TOP + (lat1 - lat) * SCALE)
 
-    # --- pannello A: EAL raw (EUR), 8 classi a quantili, palette calda ---
     eals = sorted(c['eal_raw_eur'] for c in com)
-    cuts_e = [eals[int(i / 8 * len(eals))] for i in range(1, 8)]
+    cuts_e = [eals[int(k / 8 * len(eals))] for k in range(1, 8)]
     PAL_E = ['#f7f0c7', '#f3d99a', '#eec168', '#e8a33c', '#e07b28', '#d4521c', '#bd2b18', '#991b12']
     PAL_R = ['#2b5f9e', '#5b8fc4', '#a9c4df', '#e8e8e3', '#f0c184', '#e08a3c', '#c94b2a', '#9c1f1f']
     bins_r = [0.0, 0.6, 0.8, 1.0, 1.2, 1.5, 2.0, 3.0, 99.0]
 
     def fmt_eur(v):
-        return f"{v/1e6:.1f} M€" if v >= 1e6 else (f"{v/1e3:.0f} k€" if v >= 1e3 else f"{v:.0f} €")
+        if v >= 1e6:
+            return f"{v/1e6:.1f}M"
+        if v >= 1e3:
+            return f"{v/1e3:.0f}k"
+        return f"{v:.0f}"
 
-    s = ['<?xml version="1.0" encoding="UTF-8"?>',
-         f'<svg xmlns="http://www.w3.org/2000/svg" width="{W}" height="{H}" viewBox="0 0 {W} {H}" font-family="Helvetica,Arial,sans-serif">',
+    s = [f'<svg xmlns="http://www.w3.org/2000/svg" width="{W}" height="{H}" viewBox="0 0 {W} {H}" font-family="Helvetica,Arial,sans-serif">',
          f'<rect width="{W}" height="{H}" fill="#ffffff"/>',
-         '<text x="%d" y="26" font-size="17" font-weight="bold" fill="#222">Mappa di loss — EAL attesa per comune e coerenza della tariffazione Cat-Nat</text>' % (W // 2),
-         '<text x="%d" y="44" font-size="11" fill="#666">Benchmark EAL a 3 hazard (parametri illustrativi, calibrato sull\u2019aggregato IVASS) · loss ratio = tariffa IVASS / benchmark calibrato · 3.823 comuni</text>' % (W // 2)]
-
-    def panel(x0, title, subtitle, classify, palette, legend_items):
-        s.append(f'<text x="{x0 + W_PANEL // 2}" y="{PAD_TOP - 26}" font-size="13" font-weight="bold" fill="#333" text-anchor="middle">{title}</text>')
-        s.append(f'<text x="{x0 + W_PANEL // 2}" y="{PAD_TOP - 12}" font-size="10" fill="#777" text-anchor="middle">{subtitle}</text>')
-        s.append(f'<rect x="{x0}" y="{PAD_TOP}" width="{W_PANEL}" height="{H_PANEL}" fill="#f4f2ec" stroke="#ccc" stroke-width="1"/>')
-        for c in com:
-            px, py = xy(c['lon'], c['lat'], x0)
-            k = classify(c)
-            s.append(f'<circle cx="{px:.1f}" cy="{py:.1f}" r="2.2" fill="{palette[k]}" fill-opacity="0.92" stroke="none"/>')
-        # legenda
-        ly = PAD_TOP + H_PANEL + 26
-        s.append(f'<text x="{x0}" y="{ly - 8}" font-size="10" fill="#555">classi:</text>')
-        lx = x0
-        for i, (col, lab) in enumerate(legend_items):
-            if lx > x0 + W_PANEL - 88:
-                lx = x0
-                ly += 20
-            s.append(f'<rect x="{lx}" y="{ly}" width="12" height="12" fill="{col}" stroke="#999" stroke-width="0.5"/>')
-            s.append(f'<text x="{lx + 16}" y="{ly + 10}" font-size="10" fill="#444">{lab}</text>')
-            lx += 16 + 6 * len(lab) + 14
-
-    def legend_eal():
-        items = []
-        bounds = [0.0] + cuts_e + [eals[-1]]
-        for i in range(8):
-            items.append((PAL_E[i], f"{fmt_eur(bounds[i])}–{fmt_eur(bounds[i+1])}" if i < 7 else f"≥ {fmt_eur(bounds[7])}"))
-        return items
-
-    def legend_ratio():
-        items = []
-        for i in range(8):
-            lo, hi = bins_r[i], bins_r[i + 1]
-            items.append((PAL_R[i], (f"{lo:g}–{hi:g}" if i < 7 else f"> {bins_r[7]:g}")))
-        return items
+         f'<text x="{W // 2}" y="24" font-size="17" font-weight="bold" fill="#222" text-anchor="middle">Mappa di loss — EAL attesa per comune e coerenza della tariffazione Cat-Nat</text>',
+         f'<text x="{W // 2}" y="41" font-size="11" fill="#666" text-anchor="middle">Benchmark EAL a 3 hazard (parametri illustrativi, calibrato sull’aggregato IVASS) · loss ratio = tariffa IVASS / benchmark calibrato · 3.823 comuni</text>']
 
     def cls_eal(c):
         v = c['eal_raw_eur']
@@ -395,15 +372,43 @@ def draw_svg(com):
                 return i
         return 7
 
+    def panel(x0, title, subtitle, classify, palette, legend_items):
+        s.append(f'<text x="{x0 + W_PANEL // 2}" y="{PAD_TOP - 26}" font-size="13" font-weight="bold" fill="#333" text-anchor="middle">{title}</text>')
+        s.append(f'<text x="{x0 + W_PANEL // 2}" y="{PAD_TOP - 12}" font-size="10" fill="#777" text-anchor="middle">{subtitle}</text>')
+        s.append(f'<rect x="{x0}" y="{PAD_TOP}" width="{W_PANEL}" height="{H_PANEL}" fill="#f4f2ec" stroke="#ccc" stroke-width="1"/>')
+        for c in com:
+            px, py = xy(c['lon'], c['lat'], x0)
+            k = classify(c)
+            s.append(f'<circle cx="{px:.1f}" cy="{py:.1f}" r="2.2" fill="{palette[k]}" fill-opacity="0.92" stroke="none"/>')
+        # legenda: al massimo 4 elementi per riga (larghezza garantita dal pannello)
+        leg_y0 = PAD_TOP + H_PANEL + 24
+        s.append(f'<text x="{x0}" y="{leg_y0 - 4}" font-size="10" fill="#555">classi:</text>')
+        per_row = 4
+        for idx, (col, lab) in enumerate(legend_items):
+            row, col_i = divmod(idx, per_row)
+            lx = x0 + col_i * (W_PANEL // per_row)
+            ly = leg_y0 + 4 + row * LEG_ROW_H
+            s.append(f'<rect x="{lx}" y="{ly}" width="12" height="12" fill="{col}" stroke="#999" stroke-width="0.5"/>')
+            s.append(f'<text x="{lx + 16}" y="{ly + 10}" font-size="10" fill="#444">{lab}</text>')
+
+    legend_eal = []
+    bounds = [0.0] + cuts_e + [eals[-1]]
+    for i in range(8):
+        legend_eal.append((PAL_E[i],
+                           f"{fmt_eur(bounds[i])}–{fmt_eur(bounds[i+1])} €" if i < 7 else f"≥ {fmt_eur(bounds[7])} €"))
+    legend_ratio = []
+    for i in range(8):
+        lo, hi = bins_r[i], bins_r[i + 1]
+        legend_ratio.append((PAL_R[i], (f"{lo:g}–{hi:g}" if i < 7 else f"> {bins_r[7]:g}")))
+
     panel(PAD_X, 'Loss attesa (EAL benchmark, EUR/anno)',
           'più scuro = loss attesa maggiore (pesata per gli asset esposti)',
-          cls_eal, PAL_E, legend_eal())
-    x1 = PAD_X + W_PANEL + GAP
-    panel(x1, 'Loss ratio (coerenza tariffa/rischio)',
+          cls_eal, PAL_E, legend_eal)
+    panel(PAD_X + W_PANEL + GAP, 'Loss ratio (coerenza tariffa/rischio)',
           'rosso = tariffa sopra il benchmark, blu = sotto',
-          cls_ratio, PAL_R, legend_ratio())
+          cls_ratio, PAL_R, legend_ratio)
 
-    s.append(f'<text x="{W // 2}" y="{H - 12}" font-size="9.5" fill="#888" text-anchor="middle">Fonti: IVASS (tariffe), INGV MPS04 (ag), ISPRA (PAI P3/P4, P3), AIDA (asset) · generato da scripts/pricing/pricing_model.py · dettagli in docs/pricing_coerenza.md</text>')
+    s.append(f'<text x="{W // 2}" y="{H - 10}" font-size="9.5" fill="#888" text-anchor="middle">Fonti: IVASS (tariffe), INGV MPS04 (ag), ISPRA (PAI P3/P4, P3), AIDA (asset) · generato da scripts/pricing/pricing_model.py · dettagli in docs/pricing_coerenza.md</text>')
     s.append('</svg>')
     with open(OUT_SVG, 'w', encoding='utf-8') as f:
         f.write('\n'.join(s))

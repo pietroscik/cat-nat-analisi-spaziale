@@ -1,0 +1,689 @@
+{
+ "modello": "peso della loss EAL sul tessuto produttivo ed esposizione delle imprese performanti",
+ "fonti": "EAL calibrata da results/eal_comuni.csv (pricing_model.py); ISP_std_medio, EBITDA, dipendenti dalla matrice estesa",
+ "nazionale": {
+  "eal_tot_EUR": 3263967906.95,
+  "ebitda_tot_EUR": 128458538300.0,
+  "peso_ebitda_nazionale": 0.0254,
+  "eal_per_addetto_nazionale": 895.0259,
+  "eal_per_impresa_nazionale": 106408.2906,
+  "peso_ebitda_comuni": {
+   "mediana": 0.024401571093787364,
+   "p90": 0.0749914356689405,
+   "max": 0.7070595768374165,
+   "n_comuni_ebitda_positivo": 3818
+  }
+ },
+ "nazionale_note": {
+  "peso_ebitda_nazionale": "EAL calibrata / EBITDA: quota del valore prodotto assorbita dalla loss attesa annua",
+  "n_comuni": 3823
+ },
+ "quartili_ISP": [
+  {
+   "classe": "Q1 (meno performanti)",
+   "n_comuni": 949,
+   "isp_medio": -0.83,
+   "rate_bmk_pesata_asset": 30.74,
+   "peso_ebitda": 0.0391,
+   "quota_EAL_nazionale": 0.1066,
+   "quota_EBITDA_nazionale": 0.0692,
+   "intensita_esposizione (quotaEAL/quotaEBITDA)": 1.54,
+   "ag_medio": 0.1158,
+   "share_frana_medio": 0.0682,
+   "share_idr_medio": 0.0505
+  },
+  {
+   "classe": "Q2",
+   "n_comuni": 950,
+   "isp_medio": -0.182,
+   "rate_bmk_pesata_asset": 27.67,
+   "peso_ebitda": 0.0307,
+   "quota_EAL_nazionale": 0.3165,
+   "quota_EBITDA_nazionale": 0.2615,
+   "intensita_esposizione (quotaEAL/quotaEBITDA)": 1.21,
+   "ag_medio": 0.118,
+   "share_frana_medio": 0.0476,
+   "share_idr_medio": 0.0529
+  },
+  {
+   "classe": "Q3",
+   "n_comuni": 950,
+   "isp_medio": 0.137,
+   "rate_bmk_pesata_asset": 19.28,
+   "peso_ebitda": 0.0221,
+   "quota_EAL_nazionale": 0.4991,
+   "quota_EBITDA_nazionale": 0.5736,
+   "intensita_esposizione (quotaEAL/quotaEBITDA)": 0.87,
+   "ag_medio": 0.1217,
+   "share_frana_medio": 0.0489,
+   "share_idr_medio": 0.0509
+  },
+  {
+   "classe": "Q4 (piu' performanti)",
+   "n_comuni": 950,
+   "isp_medio": 0.786,
+   "rate_bmk_pesata_asset": 25.02,
+   "peso_ebitda": 0.0206,
+   "quota_EAL_nazionale": 0.0766,
+   "quota_EBITDA_nazionale": 0.0947,
+   "intensita_esposizione (quotaEAL/quotaEBITDA)": 0.809,
+   "ag_medio": 0.1204,
+   "share_frana_medio": 0.0627,
+   "share_idr_medio": 0.0499
+  }
+ ],
+ "cluster_HighHigh": {
+  "n_HighHigh": 77,
+  "isp_medio_HH": 0.645,
+  "rate_bmk_pesata_HH": 24.53,
+  "rate_bmk_pesata_resto": 22.72,
+  "peso_ebitda_HH": 0.0261
+ },
+ "correlazioni": {
+  "ISP_vs_ag": 0.0389,
+  "ISP_vs_share_frana": 0.0007,
+  "ISP_vs_share_idr": -0.0091,
+  "ISP_vs_rate_bmk": 0.0185,
+  "ISP_vs_peso_ebitda_spearman": -0.1831
+ },
+ "regressione_peso_ebitda": {
+  "n": 3791,
+  "R2": 0.7618,
+  "specifica": "log(EAL/EBITDA) ~ ISP + log1p(ag) + share_frana + share_idraulico + log(asset_tot) + quota_grandi (OLS, SE White HC1)",
+  "coeff": [
+   {
+    "name": "interc",
+    "beta": -5.229404110833823,
+    "se": 0.13669848401075488,
+    "t": -38.25502637192666,
+    "se_rob": 0.1505871914698313,
+    "t_rob": -34.72675238704803
+   },
+   {
+    "name": "ISP (performance)",
+    "beta": -0.3750517976037007,
+    "se": 0.014079256493877132,
+    "t": -26.63860820823922,
+    "se_rob": 0.017179634914589553,
+    "t_rob": -21.831185555939463
+   },
+   {
+    "name": "log1p(ag)",
+    "beta": 14.67887406322574,
+    "se": 0.16566046515397717,
+    "t": 88.60819055157246,
+    "se_rob": 0.2042238162900226,
+    "t_rob": 71.87640663016481
+   },
+   {
+    "name": "share frana",
+    "beta": 2.757612279375784,
+    "se": 0.08000532671463505,
+    "t": 34.467858486619306,
+    "se_rob": 0.09476794712589232,
+    "t_rob": 29.098575657785396
+   },
+   {
+    "name": "share idraulico",
+    "beta": 4.302299717633611,
+    "se": 0.09084657461193525,
+    "t": 47.35786391519469,
+    "se_rob": 0.17131321265491212,
+    "t_rob": 25.113647984058453
+   },
+   {
+    "name": "log(asset totale)",
+    "beta": -0.038327264782348436,
+    "se": 0.007767214541596631,
+    "t": -4.934492870911464,
+    "se_rob": 0.008151091019865232,
+    "t_rob": -4.702102416589397
+   },
+   {
+    "name": "quota Grandi",
+    "beta": 0.07977604384565362,
+    "se": 0.03699483216585742,
+    "t": 2.1564104815504215,
+    "se_rob": 0.036649366668226685,
+    "t_rob": 2.1767373108473325
+   }
+  ]
+ },
+ "province_peso_ebitda": [
+  {
+   "provincia": "Vibo Valentia",
+   "peso_ebitda": 0.0833,
+   "eal_addetto": 2828.0
+  },
+  {
+   "provincia": "Isernia",
+   "peso_ebitda": 0.0824,
+   "eal_addetto": 3053.4
+  },
+  {
+   "provincia": "Avellino",
+   "peso_ebitda": 0.0813,
+   "eal_addetto": 2352.0
+  },
+  {
+   "provincia": "Cosenza",
+   "peso_ebitda": 0.0779,
+   "eal_addetto": 1839.6
+  },
+  {
+   "provincia": "Catanzaro",
+   "peso_ebitda": 0.0747,
+   "eal_addetto": 2293.5
+  },
+  {
+   "provincia": "Bologna",
+   "peso_ebitda": 0.0724,
+   "eal_addetto": 2409.0
+  },
+  {
+   "provincia": "Ravenna",
+   "peso_ebitda": 0.0707,
+   "eal_addetto": 3061.4
+  },
+  {
+   "provincia": "Rieti",
+   "peso_ebitda": 0.0701,
+   "eal_addetto": 1497.2
+  },
+  {
+   "provincia": "Siracusa",
+   "peso_ebitda": 0.07,
+   "eal_addetto": 1797.6
+  },
+  {
+   "provincia": "Potenza",
+   "peso_ebitda": 0.0664,
+   "eal_addetto": 1300.5
+  },
+  {
+   "provincia": "Rimini",
+   "peso_ebitda": 0.0661,
+   "eal_addetto": 2478.6
+  },
+  {
+   "provincia": "Benevento",
+   "peso_ebitda": 0.0659,
+   "eal_addetto": 2655.3
+  },
+  {
+   "provincia": "Catania",
+   "peso_ebitda": 0.0633,
+   "eal_addetto": 1615.1
+  },
+  {
+   "provincia": "Pescara",
+   "peso_ebitda": 0.0633,
+   "eal_addetto": 1434.8
+  },
+  {
+   "provincia": "L'Aquila",
+   "peso_ebitda": 0.0632,
+   "eal_addetto": 1320.5
+  },
+  {
+   "provincia": "Crotone",
+   "peso_ebitda": 0.0619,
+   "eal_addetto": 1000.8
+  },
+  {
+   "provincia": "Udine",
+   "peso_ebitda": 0.0598,
+   "eal_addetto": 1798.5
+  },
+  {
+   "provincia": "Campobasso",
+   "peso_ebitda": 0.0593,
+   "eal_addetto": 1527.9
+  },
+  {
+   "provincia": "Forlì-Cesena",
+   "peso_ebitda": 0.0593,
+   "eal_addetto": 2339.5
+  },
+  {
+   "provincia": "Reggio di Calabria",
+   "peso_ebitda": 0.0592,
+   "eal_addetto": 1974.5
+  },
+  {
+   "provincia": "Prato",
+   "peso_ebitda": 0.0583,
+   "eal_addetto": 1509.0
+  },
+  {
+   "provincia": "Ferrara",
+   "peso_ebitda": 0.057,
+   "eal_addetto": 1722.7
+  },
+  {
+   "provincia": "Valle d'Aosta/Vallée d'Aoste",
+   "peso_ebitda": 0.0548,
+   "eal_addetto": 2336.6
+  },
+  {
+   "provincia": "Frosinone",
+   "peso_ebitda": 0.0547,
+   "eal_addetto": 1517.7
+  },
+  {
+   "provincia": "Pistoia",
+   "peso_ebitda": 0.0506,
+   "eal_addetto": 1734.7
+  },
+  {
+   "provincia": "Ragusa",
+   "peso_ebitda": 0.0496,
+   "eal_addetto": 1093.2
+  },
+  {
+   "provincia": "Lucca",
+   "peso_ebitda": 0.0476,
+   "eal_addetto": 2065.3
+  },
+  {
+   "provincia": "Teramo",
+   "peso_ebitda": 0.0466,
+   "eal_addetto": 1723.0
+  },
+  {
+   "provincia": "Foggia",
+   "peso_ebitda": 0.0464,
+   "eal_addetto": 810.9
+  },
+  {
+   "provincia": "Parma",
+   "peso_ebitda": 0.0462,
+   "eal_addetto": 1670.2
+  },
+  {
+   "provincia": "Messina",
+   "peso_ebitda": 0.0452,
+   "eal_addetto": 1161.6
+  },
+  {
+   "provincia": "Pordenone",
+   "peso_ebitda": 0.044,
+   "eal_addetto": 1348.0
+  },
+  {
+   "provincia": "Massa-Carrara",
+   "peso_ebitda": 0.0438,
+   "eal_addetto": 2496.3
+  },
+  {
+   "provincia": "Imperia",
+   "peso_ebitda": 0.0435,
+   "eal_addetto": 2145.5
+  },
+  {
+   "provincia": "Gorizia",
+   "peso_ebitda": 0.0434,
+   "eal_addetto": 1539.5
+  },
+  {
+   "provincia": "Napoli",
+   "peso_ebitda": 0.0423,
+   "eal_addetto": 1074.6
+  },
+  {
+   "provincia": "Perugia",
+   "peso_ebitda": 0.0416,
+   "eal_addetto": 1826.4
+  },
+  {
+   "provincia": "Ancona",
+   "peso_ebitda": 0.0411,
+   "eal_addetto": 1315.7
+  },
+  {
+   "provincia": "Treviso",
+   "peso_ebitda": 0.0405,
+   "eal_addetto": 1474.2
+  },
+  {
+   "provincia": "Siena",
+   "peso_ebitda": 0.0401,
+   "eal_addetto": 1192.1
+  },
+  {
+   "provincia": "Modena",
+   "peso_ebitda": 0.0396,
+   "eal_addetto": 1523.5
+  },
+  {
+   "provincia": "Fermo",
+   "peso_ebitda": 0.0392,
+   "eal_addetto": 1109.8
+  },
+  {
+   "provincia": "Arezzo",
+   "peso_ebitda": 0.0388,
+   "eal_addetto": 1363.7
+  },
+  {
+   "provincia": "Pesaro e Urbino",
+   "peso_ebitda": 0.0386,
+   "eal_addetto": 1049.0
+  },
+  {
+   "provincia": "Salerno",
+   "peso_ebitda": 0.038,
+   "eal_addetto": 975.0
+  },
+  {
+   "provincia": "Genova",
+   "peso_ebitda": 0.0377,
+   "eal_addetto": 2086.0
+  },
+  {
+   "provincia": "Grosseto",
+   "peso_ebitda": 0.0373,
+   "eal_addetto": 1827.5
+  },
+  {
+   "provincia": "Terni",
+   "peso_ebitda": 0.0364,
+   "eal_addetto": 1088.1
+  },
+  {
+   "provincia": "La Spezia",
+   "peso_ebitda": 0.0358,
+   "eal_addetto": 2082.9
+  },
+  {
+   "provincia": "Reggio nell'Emilia",
+   "peso_ebitda": 0.0354,
+   "eal_addetto": 1659.2
+  },
+  {
+   "provincia": "Firenze",
+   "peso_ebitda": 0.0353,
+   "eal_addetto": 1585.8
+  },
+  {
+   "provincia": "Macerata",
+   "peso_ebitda": 0.0347,
+   "eal_addetto": 1353.4
+  },
+  {
+   "provincia": "Verona",
+   "peso_ebitda": 0.0347,
+   "eal_addetto": 1192.7
+  },
+  {
+   "provincia": "Ascoli Piceno",
+   "peso_ebitda": 0.0341,
+   "eal_addetto": 1524.3
+  },
+  {
+   "provincia": "Verbano-Cusio-Ossola",
+   "peso_ebitda": 0.0332,
+   "eal_addetto": 790.0
+  },
+  {
+   "provincia": "Pisa",
+   "peso_ebitda": 0.0316,
+   "eal_addetto": 1459.8
+  },
+  {
+   "provincia": "Barletta-Andria-Trani",
+   "peso_ebitda": 0.0313,
+   "eal_addetto": 854.5
+  },
+  {
+   "provincia": "Palermo",
+   "peso_ebitda": 0.0312,
+   "eal_addetto": 1987.6
+  },
+  {
+   "provincia": "Trento",
+   "peso_ebitda": 0.031,
+   "eal_addetto": 1250.5
+  },
+  {
+   "provincia": "Chieti",
+   "peso_ebitda": 0.0308,
+   "eal_addetto": 997.6
+  },
+  {
+   "provincia": "Roma",
+   "peso_ebitda": 0.0308,
+   "eal_addetto": 792.9
+  },
+  {
+   "provincia": "Caserta",
+   "peso_ebitda": 0.0294,
+   "eal_addetto": 881.2
+  },
+  {
+   "provincia": "Piacenza",
+   "peso_ebitda": 0.029,
+   "eal_addetto": 1169.2
+  },
+  {
+   "provincia": "Belluno",
+   "peso_ebitda": 0.0289,
+   "eal_addetto": 724.3
+  },
+  {
+   "provincia": "Vicenza",
+   "peso_ebitda": 0.0288,
+   "eal_addetto": 1033.0
+  },
+  {
+   "provincia": "Padova",
+   "peso_ebitda": 0.0269,
+   "eal_addetto": 998.6
+  },
+  {
+   "provincia": "Brescia",
+   "peso_ebitda": 0.0253,
+   "eal_addetto": 1136.5
+  },
+  {
+   "provincia": "Matera",
+   "peso_ebitda": 0.025,
+   "eal_addetto": 769.3
+  },
+  {
+   "provincia": "Mantova",
+   "peso_ebitda": 0.0242,
+   "eal_addetto": 1155.7
+  },
+  {
+   "provincia": "Trieste",
+   "peso_ebitda": 0.0229,
+   "eal_addetto": 1017.1
+  },
+  {
+   "provincia": "Nuoro",
+   "peso_ebitda": 0.0207,
+   "eal_addetto": 1230.6
+  },
+  {
+   "provincia": "Viterbo",
+   "peso_ebitda": 0.0202,
+   "eal_addetto": 577.9
+  },
+  {
+   "provincia": "Cagliari",
+   "peso_ebitda": 0.0192,
+   "eal_addetto": 796.8
+  },
+  {
+   "provincia": "Lecco",
+   "peso_ebitda": 0.0191,
+   "eal_addetto": 845.9
+  },
+  {
+   "provincia": "Taranto",
+   "peso_ebitda": 0.0189,
+   "eal_addetto": 342.4
+  },
+  {
+   "provincia": "Bergamo",
+   "peso_ebitda": 0.0182,
+   "eal_addetto": 732.5
+  },
+  {
+   "provincia": "Pavia",
+   "peso_ebitda": 0.0169,
+   "eal_addetto": 556.3
+  },
+  {
+   "provincia": "Sud Sardegna",
+   "peso_ebitda": 0.0168,
+   "eal_addetto": 464.8
+  },
+  {
+   "provincia": "Alessandria",
+   "peso_ebitda": 0.0164,
+   "eal_addetto": 903.9
+  },
+  {
+   "provincia": "Cremona",
+   "peso_ebitda": 0.0161,
+   "eal_addetto": 768.1
+  },
+  {
+   "provincia": "Bolzano/Bozen",
+   "peso_ebitda": 0.0154,
+   "eal_addetto": 447.3
+  },
+  {
+   "provincia": "Livorno",
+   "peso_ebitda": 0.0146,
+   "eal_addetto": 582.3
+  },
+  {
+   "provincia": "Cuneo",
+   "peso_ebitda": 0.0145,
+   "eal_addetto": 597.7
+  },
+  {
+   "provincia": "Sondrio",
+   "peso_ebitda": 0.0139,
+   "eal_addetto": 488.2
+  },
+  {
+   "provincia": "Venezia",
+   "peso_ebitda": 0.0131,
+   "eal_addetto": 499.5
+  },
+  {
+   "provincia": "Latina",
+   "peso_ebitda": 0.013,
+   "eal_addetto": 447.5
+  },
+  {
+   "provincia": "Lodi",
+   "peso_ebitda": 0.0122,
+   "eal_addetto": 513.5
+  },
+  {
+   "provincia": "Savona",
+   "peso_ebitda": 0.012,
+   "eal_addetto": 485.1
+  },
+  {
+   "provincia": "Torino",
+   "peso_ebitda": 0.0115,
+   "eal_addetto": 321.4
+  },
+  {
+   "provincia": "Bari",
+   "peso_ebitda": 0.0114,
+   "eal_addetto": 237.6
+  },
+  {
+   "provincia": "Asti",
+   "peso_ebitda": 0.0093,
+   "eal_addetto": 251.0
+  },
+  {
+   "provincia": "Caltanissetta",
+   "peso_ebitda": 0.0092,
+   "eal_addetto": 207.2
+  },
+  {
+   "provincia": "Rovigo",
+   "peso_ebitda": 0.0089,
+   "eal_addetto": 265.1
+  },
+  {
+   "provincia": "Sassari",
+   "peso_ebitda": 0.0086,
+   "eal_addetto": 276.3
+  },
+  {
+   "provincia": "Enna",
+   "peso_ebitda": 0.0083,
+   "eal_addetto": 297.2
+  },
+  {
+   "provincia": "Varese",
+   "peso_ebitda": 0.0081,
+   "eal_addetto": 312.0
+  },
+  {
+   "provincia": "Oristano",
+   "peso_ebitda": 0.0072,
+   "eal_addetto": 250.7
+  },
+  {
+   "provincia": "Vercelli",
+   "peso_ebitda": 0.007,
+   "eal_addetto": 729.0
+  },
+  {
+   "provincia": "Biella",
+   "peso_ebitda": 0.0069,
+   "eal_addetto": 189.0
+  },
+  {
+   "provincia": "Como",
+   "peso_ebitda": 0.0063,
+   "eal_addetto": 219.8
+  },
+  {
+   "provincia": "Milano",
+   "peso_ebitda": 0.0062,
+   "eal_addetto": 232.3
+  },
+  {
+   "provincia": "Novara",
+   "peso_ebitda": 0.0062,
+   "eal_addetto": 219.8
+  },
+  {
+   "provincia": "Trapani",
+   "peso_ebitda": 0.0058,
+   "eal_addetto": 200.4
+  },
+  {
+   "provincia": "Agrigento",
+   "peso_ebitda": 0.0043,
+   "eal_addetto": 106.5
+  },
+  {
+   "provincia": "Brindisi",
+   "peso_ebitda": 0.0041,
+   "eal_addetto": 137.5
+  },
+  {
+   "provincia": "Lecce",
+   "peso_ebitda": 0.004,
+   "eal_addetto": 78.0
+  },
+  {
+   "provincia": "Monza e della Brianza",
+   "peso_ebitda": 0.0038,
+   "eal_addetto": 145.9
+  }
+ ]
+}
