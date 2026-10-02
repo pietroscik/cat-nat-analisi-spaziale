@@ -1,8 +1,11 @@
 # Analisi spaziale Cat-Nat — premi assicurativi e rischio idrogeologico in Italia
 
-Repository dell'elaborazione quantitativa della tesi magistrale sull'assicurazione delle calamità naturali
-(Cat-Nat, Decreto-Legge 78/2025 "Misure urgenti per l'inclusione finanziaria e assicurativa"),
-a cura di **Pietro Maietta**.
+Analisi quantitativa nata dall'applicazione dei modelli spaziali ai premi assicurativi delle
+calamità naturali (Cat-Nat, Decreto-Legge 78/2025 "Misure urgenti per l'inclusione finanziaria
+e assicurativa"), a cura di **Pietro Maietta**. Non è la tesi magistrale: i dati impresa AIDA
+(bilanci, 30.673 unità) e l'indicatore composito di performance (ISP) provengono dalla pipeline
+della tesi ([repo tesi-magistrale](https://github.com/pietroscik/tesi-magistrale)); qui vengono
+riusi come variabili di esposizione e di contesto produttivo.
 
 L'oggetto dell'indagine è la relazione spaziale tra il **rischio idrogeologico** (frane, da dati ISPRA
 aggregati a livello comunale) e la **dimensione economica delle imprese esposte** (PMI vs Grandi imprese,
@@ -264,8 +267,9 @@ di pricing operativo.
    (include la baseline p=2 che replica FINAL_k5 e le robustezze RP/k/Sardegna).
 6. Confronto modelli: SAR, SEM, SDM con AIC e LR; effetti con matrice (I − ρW)^{-1}.
 7. Analisi livello impresa: script R (`spatialreg`/`spdep`) i cui output console sono i log in
-   `data/log_R_livello_impresa/`; l'ISP dipende dalla pipeline della tesi
-   ([tesi-magistrale](https://github.com/pietroscik/tesi-magistrale)); interpretazione guidata
+   `data/log_R_livello_impresa/`; i dati impresa AIDA e la costruzione dell'ISP provengono
+   dalla pipeline della tesi ([repo tesi-magistrale](https://github.com/pietroscik/tesi-magistrale)),
+   che qui si riusa sui premi Cat-Nat; interpretazione guidata
    in `docs/log_R_livello_impresa.md`.
 8. Benchmark EAL e coerenza asset: `python3 scripts/pricing/pricing_model.py` (solo stdlib,
    deterministico) → `results/pricing_benchmark.json`, `results/eal_comuni.csv`,
