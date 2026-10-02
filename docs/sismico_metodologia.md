@@ -109,6 +109,13 @@ SAR/SEM; effetti LeSage–Pace via matrice (I−ρW)^{-1}), con:
   (vedi la nota bug in `docs/risultati_sdm_sismico.md`: la Hessiana interna di
   `scripts/definitivo.js` usava perturbazioni errate fuori diagonale).
 
+Nota su `results/FINAL_sismico_k5.json`: oltre all'output dello script, il file
+contiene i p-value dei test LR e le sezioni descrittive `prov_level`,
+`note_estensione` e `convenzioni` aggiunte in fase di analisi; una riesecuzione
+dello script con seed fisso riproduce tutti i valori numerici del modello
+(verificato; differiscono solo la notazione di due valori < 1e-4 e le sezioni
+aggiunte a posteriori).
+
 ## 6. Pipeline di rigenerazione completa
 
 Tutti i comandi si lanciano **dalla root del repo**.
