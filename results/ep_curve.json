@@ -1,0 +1,44 @@
+{
+ "modello": "AAL sismico numerico dalla curva di hazard MPS04 (3 punti) e curva EP nazionale",
+ "fonti": "ag RP30/72/475 (+ percentili 16/84 al RP475) e asset dalla matrice estesa; benchmark EAL da results/eal_comuni.csv (pricing_model.py)",
+ "assunzioni": {
+  "MDR(ag) = min(1, 6*ag^2)": "identico a pricing_model.py §2",
+  "trapezoid sui punti noti": "interpolazione lineare di MDR in lambda tra RP30/72/475; nessuna assunzione aggiuntiva",
+  "coda frequente lambda>1/30": "lambda(ag) = lambda_30*(ag/ag_30)^(-k), k=3 (dichiarata); contributo chiuso = (k/(k-2))*MDR(ag_30)/30"
+ },
+ "aal_numerico_sismico": {
+  "trapezoid_3punti_EUR": 1135297882.0,
+  "coda_frequente_k3_EUR": 1165344670.0,
+  "totale_k3_EUR": 2300642552.0,
+  "sensibilita_coda": {
+   "k2.5_EUR": 3077538998.0,
+   "k3.5_EUR": 2041677069.0
+  },
+  "benchmark_CURVE4_EUR": 1034560856.0,
+  "ratio_numerico_vs_benchmark": 2.224
+ },
+ "curve_effettiva": {
+  "definizione": "AAL_numerico * 475 / MDR(ag_RP475): moltiplicatore empirico della curva di hazard rispetto al solo design point",
+  "mediana": 9.52,
+  "p10": 7.17,
+  "p90": 12.979,
+  "trapezoid_solo_banda_RP30_475": {
+   "mediana": 4.526,
+   "p10": 3.983,
+   "p90": 5.357,
+   "nota": "senza coda frequente: il confronto diretto con l'ipotesi CURVE=4 del benchmark"
+  },
+  "n_comuni_con_hazard": 3753
+ },
+ "ep_nazionale_sismica": {
+  "RP30": 11653446700.0,
+  "RP72": 19096095582.0,
+  "RP475": 122854101646.0,
+  "RP475_banda_epistemica_16_84": {
+   "p16": 82153155830.0,
+   "p84": 153848651284.0
+  },
+  "evento_1in475_in_anni_di_AAL": 53.4,
+  "nota": "loss fisica a scenario su MDR(ag)*asset, rate NON calibrate, solo hazard sismico (frana e idraulico sono gia AAL nel benchmark, non hanno RP di scenario)"
+ }
+}
