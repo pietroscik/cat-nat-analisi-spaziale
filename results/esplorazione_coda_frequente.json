@@ -1,0 +1,217 @@
+{
+ "esperimento": "banda a priori della coda frequente RP<30: momento entropico previsionato + Monte Carlo (ramo dev)",
+ "ancoraggi": {
+  "L30_nazionale_EUR": 11653446700.0,
+  "AAL_identificato_RP30_inf_EUR": 1712535014.0,
+  "benchmark_CURVE4_EUR": 1034560856.0,
+  "pendine_RP30_72": {
+   "n": 3753,
+   "mediana": 3.695,
+   "p10": 2.974,
+   "p90": 4.459,
+   "quota_k_minore_uguale_2": 0.0
+  },
+  "pendine_RP72_475": {
+   "n": 3753,
+   "mediana": 2.111,
+   "p10": 1.766,
+   "p90": 2.688,
+   "quota_k_minore_uguale_2": 0.3885
+  }
+ },
+ "chiusa": {
+  "formula": "AAL_f(k) = (L30/30^(2/k)) * [30^(2/k-1) - RP_min^(2/k-1)]/(2/k-1), L(RP)=L30*(RP/30)^(2/k)",
+  "cap_MDR_non_vincola": "saturazione mediana del cap a RP ~19.600 anni: sotto RP30 MDR<1 sempre",
+  "verifica_quadratura": {
+   "k=1": {
+    "chiusa": 375499949.22,
+    "quadratura": 375499949.22,
+    "err_rel": 2e-12
+   },
+   "k=2": {
+    "chiusa": 1321189080.11,
+    "quadratura": 1321189082.83,
+    "err_rel": 2.058e-09
+   },
+   "k=3.695": {
+    "chiusa": 3183852881.42,
+    "quadratura": 3183852900.32,
+    "err_rel": 5.936e-09
+   }
+  }
+ },
+ "prior": {
+  "P1": "max-ent lognormale, mediana = pendine osservato RP30-72 (3,695), sigma dalla dispersione p10-p90 empirica",
+  "P2": "max-ent lognormale, mediana = pendine RP72-475 (2,111), il prior finito piu prudente compatibile coi dati",
+  "P3": "max-ent log-uniforme su k in [1,20], senza ancore (scala-free)",
+  "MC": "200000 estrazioni, LCG 64 bit seed 42, deterministico e riproducibile"
+ },
+ "predittiva": {
+  "P1_ancorata_RP30_72": {
+   "tipo": "lognormale mediana 3.695 sigma 0.158",
+   "AAL_frequente_EUR": {
+    "p10": 2471727206.306,
+    "p25": 2801594158.442,
+    "p50": 3184174005.994,
+    "p75": 3581784868.569,
+    "p90": 3951501860.181
+   },
+   "AAL_totale_EUR": {
+    "p10": 4184262220.306,
+    "p25": 4514129172.442,
+    "p50": 4896709019.994,
+    "p75": 5294319882.569,
+    "p90": 5664036874.181
+   },
+   "rapporto_totale_su_benchmark": {
+    "p10": 4.044,
+    "p25": 4.363,
+    "p50": 4.733,
+    "p75": 5.117,
+    "p90": 5.475
+   },
+   "k_medio_MC": 3.7418
+  },
+  "P2_appiattita_RP72_475": {
+   "tipo": "lognormale mediana 2.111 sigma 0.164",
+   "AAL_frequente_EUR": {
+    "p10": 1003229954.769,
+    "p25": 1198560430.037,
+    "p50": 1446917880.032,
+    "p75": 1729615973.754,
+    "p90": 2014653993.533
+   },
+   "AAL_totale_EUR": {
+    "p10": 2715764968.769,
+    "p25": 2911095444.037,
+    "p50": 3159452894.032,
+    "p75": 3442150987.754,
+    "p90": 3727189007.533
+   },
+   "rapporto_totale_su_benchmark": {
+    "p10": 2.625,
+    "p25": 2.814,
+    "p50": 3.054,
+    "p75": 3.327,
+    "p90": 3.603
+   },
+   "k_medio_MC": 2.1398
+  },
+  "P3_loguniforme_1_20": {
+   "tipo": "log-uniforme [1, 20]",
+   "AAL_frequente_EUR": {
+    "p10": 645285666.83,
+    "p25": 1449816731.088,
+    "p50": 3905676352.177,
+    "p75": 6709561354.867,
+    "p90": 8072476888.308
+   },
+   "AAL_totale_EUR": {
+    "p10": 2357820680.83,
+    "p25": 3162351745.088,
+    "p50": 5618211366.177,
+    "p75": 8422096368.867,
+    "p90": 9785011902.308
+   },
+   "rapporto_totale_su_benchmark": {
+    "p10": 2.279,
+    "p25": 3.057,
+    "p50": 5.431,
+    "p75": 8.141,
+    "p90": 9.458
+   },
+   "k_medio_MC": 6.3503
+  }
+ },
+ "griglia_deterministica": [
+  {
+   "k": 1.0,
+   "AAL_f_EUR": 375499949.0,
+   "AAL_tot_EUR": 2088034963.0,
+   "x_benchmark": 2.02
+  },
+  {
+   "k": 1.5,
+   "AAL_f_EUR": 790302034.0,
+   "AAL_tot_EUR": 2502837048.0,
+   "x_benchmark": 2.42
+  },
+  {
+   "k": 2.0,
+   "AAL_f_EUR": 1321189080.0,
+   "AAL_tot_EUR": 3033724094.0,
+   "x_benchmark": 2.93
+  },
+  {
+   "k": 2.5,
+   "AAL_f_EUR": 1892423576.0,
+   "AAL_tot_EUR": 3604958590.0,
+   "x_benchmark": 3.48
+  },
+  {
+   "k": 3.0,
+   "AAL_f_EUR": 2455652169.0,
+   "AAL_tot_EUR": 4168187183.0,
+   "x_benchmark": 4.03
+  },
+  {
+   "k": 3.695,
+   "AAL_f_EUR": 3183852881.0,
+   "AAL_tot_EUR": 4896387895.0,
+   "x_benchmark": 4.73
+  },
+  {
+   "k": 4.459,
+   "AAL_f_EUR": 3891808142.0,
+   "AAL_tot_EUR": 5604343156.0,
+   "x_benchmark": 5.42
+  },
+  {
+   "k": 6.0,
+   "AAL_f_EUR": 5042967206.0,
+   "AAL_tot_EUR": 6755502220.0,
+   "x_benchmark": 6.53
+  },
+  {
+   "k": 10.0,
+   "AAL_f_EUR": 6892465294.0,
+   "AAL_tot_EUR": 8605000308.0,
+   "x_benchmark": 8.32
+  },
+  {
+   "k": 20.0,
+   "AAL_f_EUR": 8783484642.0,
+   "AAL_tot_EUR": 10496019656.0,
+   "x_benchmark": 10.15
+  }
+ ],
+ "calcolo_inverso": {
+  "AAL_f=10%_identificato": {
+   "k_richiesto": 0.612,
+   "rapporto_su_pendine_osservato": 0.166
+  },
+  "AAL_f=25%_identificato": {
+   "k_richiesto": 1.076,
+   "rapporto_su_pendine_osservato": 0.291
+  },
+  "AAL_f=50%_identificato": {
+   "k_richiesto": 1.567,
+   "rapporto_su_pendine_osservato": 0.424
+  },
+  "AAL_f=100%_identificato": {
+   "k_richiesto": 2.343,
+   "rapporto_su_pendine_osservato": 0.634
+  }
+ },
+ "sensibilita_dominio": {
+  "RP_min=1": 3183852881.0,
+  "RP_min=2": 2086015487.0,
+  "RP_min=5": 1079566691.0
+ },
+ "massa_prior_k_oltre_2": {
+  "P1_ancorata_RP30_72": 0.9999,
+  "P2_appiattita_RP72_475": 0.6275,
+  "P3_loguniforme_1_20": 0.7682
+ },
+ "verdetto": "il momento entropico previsionato formalizza la non-stimabilita' invece di risolverla: anche col prior piu' informato (P1, ancorato al pendine osservato RP30-72 = 3,70) il contributo RP<30 predetto e' enorme (mediana 3.18 mld) e il totale sale a 4.7x il benchmark; per riportare il contributo frequente al 25% dell'AAL identificato servirebbe k=1.08, circa 1/3 del pendine osservato: una curva che sotto RP30 diventi tanto piu' ripida e' in direzione OPPOSTA al gradiente osservato (k cresce verso RP piu' frequenti: 2,11 su RP72-475 -> 3,70 su RP30-72). L'extrapolazione della curva EP contraddice l'esperienza e la coda RP<30 va chiusa con dati evento (catalogo storico + fragilita'), non con la statistica della curva: l'1,71 mld resta il limite inferiore identificato."
+}

@@ -1,0 +1,130 @@
+{
+ "esperimento": "CV spaziale a blocchi + benchmark di non-linearita' (ramo dev, esplorazione)",
+ "domanda": "quanto guadagna una forma non lineare sull'OLS §5.3, valutata fuori campione su blocchi spaziali (Moran del log loss ratio 0,65: senza blocchi il leakage gonfia l'R2 oos)",
+ "replica_base": {
+  "n": 3791,
+  "R2": 0.7618,
+  "beta_ISP": -0.3751,
+  "t_rob": -21.8
+ },
+ "fold": {
+  "LOPO": {
+   "n_fold": 107
+  },
+  "blocchi_griglia": {
+   "n_fold": 11,
+   "schema": "griglia 4x3 sui comuni: lat>40,43; lon>9,12,15"
+  }
+ },
+ "lopo": {
+  "ols_base": {
+   "R2_oos": 0.7553,
+   "RMSE_oos": 0.5732,
+   "beta_ISP_p10_p50_p90": [
+    -0.3768,
+    -0.375,
+    -0.3731
+   ]
+  },
+  "ols_isp23": {
+   "R2_oos": 0.7554,
+   "RMSE_oos": 0.573,
+   "beta_ISP_p10_p50_p90": [
+    -0.4097,
+    -0.4073,
+    -0.4049
+   ]
+  },
+  "ols_spline_isp": {
+   "R2_oos": 0.7551,
+   "RMSE_oos": 0.5733,
+   "beta_ISP_p10_p50_p90": [
+    -0.4622,
+    -0.4574,
+    -0.4526
+   ]
+  }
+ },
+ "blocchi": {
+  "ols_base": {
+   "R2_oos": 0.7443,
+   "RMSE_oos": 0.5859
+  },
+  "ols_isp23": {
+   "R2_oos": 0.7445,
+   "RMSE_oos": 0.5857
+  },
+  "ols_spline_isp": {
+   "R2_oos": 0.7441,
+   "RMSE_oos": 0.5861
+  },
+  "gbm": {
+   "R2_oos": 0.8314,
+   "RMSE_oos": 0.4757
+  }
+ },
+ "in_sample_R2": {
+  "ols_base": 0.7618,
+  "ols_isp23": 0.7625,
+  "ols_spline_isp": 0.7622,
+  "gbm": 0.8572
+ },
+ "pd_isp_gbm": {
+  "grid": [
+   -1.111,
+   -0.996,
+   -0.881,
+   -0.766,
+   -0.651,
+   -0.536,
+   -0.421,
+   -0.306,
+   -0.191,
+   -0.076,
+   0.039,
+   0.154,
+   0.269,
+   0.384,
+   0.499,
+   0.614,
+   0.729,
+   0.844,
+   0.959,
+   1.074
+  ],
+  "pred_mean": [
+   -3.5104,
+   -3.6424,
+   -3.6424,
+   -3.6424,
+   -3.6739,
+   -3.6739,
+   -3.7917,
+   -3.8758,
+   -3.8839,
+   -3.9179,
+   -3.9261,
+   -3.9603,
+   -4.0088,
+   -4.0159,
+   -4.0589,
+   -4.0589,
+   -4.0932,
+   -4.0932,
+   -4.0932,
+   -4.0932
+  ],
+  "pendenza_media": -0.2666,
+  "beta_isp_ols": -0.3751,
+  "nota": "partial dependence: media delle predizioni con ISP fissato al valore di griglia"
+ },
+ "gbm_param": {
+  "rounds": 60,
+  "lr": 0.06,
+  "depth": 3,
+  "bins": 16,
+  "min_leaf": 40,
+  "boosting": "istogrammi quantilici, greedy full-batch, senza componenti random"
+ },
+ "verdetto": "1) le estensioni OLS dell'ISP (RESET x2/x3, spline a cerniera) non guadagnano nulla fuori campione (-0.0002): la non-linearita' dell'ISP vista dal RESET e' minuscola e non generalizza; 2) il GBM sugli stessi fold guadagna +0.087 di R2 oos (RMSE -19%): la forma additiva-lineare lascia sul tavolo interazioni reali fra hazard, asset e quota Grandi; 3) il beta_ISP resta l'elasticita' dichiarabile: su LOPO p10-p90 [-0.377, -0.373] e la PD del GBM e' monotona (pendenza media -0.267 vs --0.375, saturazione sopra ISP ~0,6): coerenza tariffaria OLS, predizione operativa con interazioni"
+}
