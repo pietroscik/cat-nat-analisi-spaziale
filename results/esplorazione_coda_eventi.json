@@ -1,0 +1,124 @@
+{
+ "esperimento": "coda frequente RP<30 event-based: eventi CPTI15 x attenuazione x fragilita x esposizione (ramo dev)",
+ "modello": {
+  "eventi": "CPTI15 v4.0, finestra 1980-2020, Mw>=5.0 (92 eventi, 0 scartati senza coordinate)",
+  "Io0_per_bin": {
+   "[5.0,5.5)": 7.0,
+   "[5.5,6.0)": 8.0,
+   "[6.0,6.5)": 9.0,
+   "[6.5,inf)": 10.0
+  },
+  "Io0_per_bin_finestra_moderna": {
+   "[5.0,5.5)": 6.5,
+   "[5.5,6.0)": 7.5,
+   "[6.0,6.5)": 7.5,
+   "[6.5,inf)": 7.5
+  },
+  "attenuazione": "I(d) = Io0 - 3*log10(sqrt(d^2+25)/5) - 0.010*d",
+  "PGA": "PGA(I) = 0.020*10^((I-5)/4.0) g (illustrativa)",
+  "MDR": "min(1, 6*PGA^2), identico a pricing_model.py e results/ep_curve.json",
+  "banda_frequente": "PGA locale < ag_RP30 del comune (griglia MPS04 RP30 in matrice): disgiunta per costruzione dal limite identificato",
+  "esposizione": "asset_tot_EUR dei 3753 comuni con hazard classificato"
+ },
+ "risultato": {
+  "AAL_frequente_RP_inf30_EUR": 77127414.34,
+  "AAL_banda_identificata_eventi_EUR": 28967210.8,
+  "AAL_totale_eventi_EUR": 106094625.14,
+  "per_magnitudo_AAL_freq": {
+   "[5.0,5.5)": 13178923.75,
+   "[5.5,6.0)": 18902091.4,
+   "[6.0,6.5)": 25308853.28,
+   "[6.5,inf)": 19737545.91
+  },
+  "per_magnitudo_AAL_ident": {
+   "[5.0,5.5)": 1370504.01,
+   "[5.5,6.0)": 8797407.05,
+   "[6.0,6.5)": 6149585.89,
+   "[6.5,inf)": 12649713.85
+  },
+  "top_eventi_AAL_freq": [
+   {
+    "anno": 2012,
+    "area": "Pianura emiliana",
+    "Mw": 6.09,
+    "contributo_AAL_freq_EUR": 17006181.44
+   },
+   {
+    "anno": 2016,
+    "area": "Valnerina",
+    "Mw": 6.61,
+    "contributo_AAL_freq_EUR": 13689151.92
+   },
+   {
+    "anno": 1980,
+    "area": "Irpinia-Basilicata",
+    "Mw": 6.81,
+    "contributo_AAL_freq_EUR": 6048393.98
+   },
+   {
+    "anno": 2012,
+    "area": "Pianura emiliana",
+    "Mw": 5.9,
+    "contributo_AAL_freq_EUR": 5039251.87
+   },
+   {
+    "anno": 2012,
+    "area": "Pianura emiliana",
+    "Mw": 5.5,
+    "contributo_AAL_freq_EUR": 4018209.37
+   },
+   {
+    "anno": 1983,
+    "area": "Parmense",
+    "Mw": 5.04,
+    "contributo_AAL_freq_EUR": 3939069.51
+   },
+   {
+    "anno": 2016,
+    "area": "Valnerina",
+    "Mw": 6.07,
+    "contributo_AAL_freq_EUR": 3411155.34
+   },
+   {
+    "anno": 2016,
+    "area": "Monti della Laga",
+    "Mw": 6.18,
+    "contributo_AAL_freq_EUR": 2531836.5
+   }
+  ]
+ },
+ "calibrazione": {
+  "superamenti_modello_PGA_sup_ag30_per_anno": 6.5,
+  "superamenti_impliciti_MPS04_per_anno": 125.1,
+  "deficit": 19.4,
+  "variante_Mw45_superamenti_per_anno": 7.7,
+  "variante_lasca_superamenti_per_anno": 11.7,
+  "nota": "il deficit e alimentato da eventi M<4,5 ravvicinati e dalla seismicita liscia di fondo: contano nella frequenza dei superamenti, quasi nulla nel danno (MDR proporzionale a PGA^2): con Mw>=4,5 la AAL frequente sale solo da 77 a 103 mln",
+  "AAL_freq_variante_scalata_EUR": 1492808380.69,
+  "nota_variante_scalata": "ipotesi estrema di deficit uniforme su tutti i livelli di scuotimento: prudenziale, non una stima"
+ },
+ "gate": {
+  "limite_inferiore_RP_sup30_EUR": 1712535014.0,
+  "benchmark_CURVE4_EUR": 1034560856.0,
+  "prior_maxent_P1_mediana_EUR": 3183852881.42,
+  "AAL_f_quota_maxent_P1": 0.0242,
+  "AAL_f_quota_identificato": 0.045,
+  "totale_RP_sup0_stimato_EUR": 1789662428.34,
+  "totale_quota_benchmark": 1.73,
+  "sanita_banda_identificata": "eventi 1980-2020: 29 mln/anno nella banda identificata vs curva 1.713 mld: stesso ordine al bordo RP30, eventi rari non campionati in 41 anni"
+ },
+ "sensibilita": {
+  "anelastico=0.005,pga_div=3.5": 122774525.07,
+  "anelastico=0.005,pga_div=4.0": 118972122.22,
+  "anelastico=0.005,pga_div=5.0": 115765637.89,
+  "anelastico=0.010,pga_div=3.5": 78434563.21,
+  "anelastico=0.010,pga_div=5.0": 74540252.51,
+  "anelastico=0.020,pga_div=3.5": 40831011.59,
+  "anelastico=0.020,pga_div=4.0": 40913166.33,
+  "anelastico=0.020,pga_div=5.0": 39629112.92,
+  "Io0_finestra_1980": 16290073.76,
+  "finestra_1960_2020": 72788432.17,
+  "soglia_Mw_4.5": 103206996.1
+ },
+ "verdetto": "AAL frequente event-based = 77 mln EUR/anno (base; sensibilita 16-123 mln): 2.4% del prior max-ent P1 (3,18 mld) e 4.5% del limite identificato (1,713 mld). Il modello sotto-produce i superamenti di ag_RP30 di 19x rispetto alla definizione MPS04, ma il deficit e quasi tutto frequenza senza danno (M<4,5 ravvicinati): la variante prudenziale scalata (1.49 mld) resta sotto il max-ent. Verdetto: la coda frequente e un correctivo minore, indicativamente 77-123 mln/anno, al piu ~1.5 mld in prudenza estrema; totale RP>=0 = 1,713 + 77 = 1.79 mld (1.73x benchmark, dal 1.66x del limite inferiore). Chiusura definitiva del gate al passo DBMI15 (danni osservati), come da protocollo."
+}

@@ -6,7 +6,9 @@ stimabile dalla curva EP in `docs/pricing_coerenza.md` §2.1 e §8.2) e si valut
 se, e con quali dati, la banda può essere chiusa. Questo documento **recensisce
 il tutto**: cosa esiste pubblicamente, cosa è stato scaricato, come è stato
 validato, e quale protocollo ne deriva. Script: `scripts/esplorazione/validazione_cpti15.py`
-(sole stdlib, deterministico); output: `results/esplorazione_cpti15.json`.
+(catalogo) e `scripts/esplorazione/esplorazione_coda_eventi.py` (stima
+event-based, esito in §6), entrambi sole stdlib e deterministici; output:
+`results/esplorazione_cpti15.json` e `results/esplorazione_coda_eventi.json`.
 
 ## 1. Recupero hazard: verdetto MPS04 — sotto RP30 non esiste nulla di pubblico
 
@@ -106,7 +108,8 @@ RP<30 che la curva EP non copre. Cioè:
 
 ## 5. Protocollo della fase di validazione (prossimi passi dev)
 
-1. **Stima event-based della coda frequente** (`esplorazione_coda_eventi.py`):
+1. **Stima event-based della coda frequente** (`esplorazione_coda_eventi.py`)
+   — *eseguita, esito in §6*:
    per bin di magnitudo (5,0–5,5–6,0–6,5+), tasso empirico CPTI15 × intensità
    attesa (Io mediano per classe, già validato) × fragilità. Fonte fragilità:
    funzioni di fragilità per edifici italiani (Rosti et al. 2021, URM e RC),
@@ -126,16 +129,57 @@ RP<30 che la curva EP non copre. Cioè:
    verificata (barra β_ISP [−0,377;−0,373]); su questo lato eventi non si
    tocca il modello tariffario pubblicato su `main`.
 
-## 6. Riproducibilità
+## 6. Esito del passo 1: stima event-based (`results/esplorazione_coda_eventi.json`)
 
-Lo script è deterministico (doppia esecuzione: JSON identico, md5
-`c1e516fe301be3d4390949cd12172694`) e usa solo stdlib. Il catalogo non è nel
-repo: si scarica dall'URL di §2 (oppure si imposta `CPTI15_XLSX`), poi
+Script `scripts/esplorazione/esplorazione_coda_eventi.py`: 92 eventi Mw≥5,0
+1980–2020 con epicentro, catena dichiarata illustrativa: Io0 per bin (mediane
+empiriche 7/8/9/10), attenuazione geometrica+anelastica, PGA(Io), MDR identica
+al benchmark, e **soglia per-sito**: la banda frequente è il danno dove la PGA
+locale resta sotto l'`ag_RP30` del comune — disgiunta per costruzione dal
+limite identificato di 1,713 mld.
+
+**Risultato base: AAL frequente = 77,1 mln €/anno**, il 4,5% del limite
+identificato e il 2,4% del prior max-ent P1 (3,18 mld). Totale RP≥0 = 1,713 +
+0,077 = **1,79 mld €/anno (1,73× il benchmark, dal 1,66× del limite
+inferiore)**. Tre letture:
+
+- **composizione**: la coda frequente viene per ~58% dagli stessi eventi
+  maggiori (l'anello 20–60 km dove lo scuotimento resta sotto ag30):
+  [5,0–5,5) 13,2; [5,5–6,0) 18,9; [6,0–6,5) 25,3; [6,5+] 19,7 mln/anno.
+  Top contributi: Emilia 2012 M6,09 (17,0), Valnerina 30/10/2016 M6,61 (13,7),
+  Irpinia 1980 M6,81 (6,0);
+- **calibrazione**: il modello sotto-produce i superamenti di ag_RP30 di 19,4×
+  rispetto ai 125/anno impliciti nella definizione MPS04 (n_comuni/30): il
+  deficit è quasi tutto frequenza senza danno (eventi M<4,5 ravvicinati e
+  sismicità liscia di fondo — con Mw≥4,5 l'AAL sale solo da 77 a 103 mln),
+  quindi la stima puntuale è un limite inferiore; la variante prudenziale
+  scalata (1,49 mld) resta comunque sotto il max-ent;
+- **sensibilità**: 16–123 mln/anno sull'intera griglia (attenuazione, PGA, Io0,
+  finestra 1960, soglia Mw 4,5); il parametro dominante è l'Io0 (mediane del
+  catalogo completo vs solo post-1980).
+
+**Gate del passo 2**: event-based ≪ max-ent → il prior max-ent si archivia come
+bound lasco (41× sopra la stima base) e il totale RP≥0 si attesta indicativamente
+in 1,73–1,84 mld (1,67–1,77× benchmark). La coda frequente è un **correctivo
+minore**, non un raddoppio: l'ipotesi P1 (AAL_f mediana 3,18 mld, totale 4,7×
+benchmark) è scartata. Chiusura definitiva del gate con i danni osservati
+DBMI15 (passo 3 del protocollo).
+
+## 7. Riproducibilità
+
+Entrambi gli script sono deterministici (doppia esecuzione: JSON identico; md5
+`c1e516fe301be3d4390949cd12172694` per `esplorazione_cpti15.json`,
+`158a0ee01483cb9a9f95e296edcf715a` per `esplorazione_coda_eventi.json`) e usano
+sole stdlib. Il catalogo non è nel repo: si scarica dall'URL di §2 (oppure si
+imposta `CPTI15_XLSX`), poi
 
 ```bash
 python3 scripts/esplorazione/validazione_cpti15.py
+python3 scripts/esplorazione/esplorazione_coda_eventi.py
 ```
 
-genera `results/esplorazione_cpti15.json` (tassi su 5 finestre, eventi noti,
-coerenza Mw→Io, verdetto). Nessun output di `main` cambia: l'esplorazione sta
-sul ramo `dev` e confluis su `main` solo dopo validazione via PR.
+generano `results/esplorazione_cpti15.json` (tassi su 5 finestre, eventi noti,
+coerenza Mw→Io, verdetto) e `results/esplorazione_coda_eventi.json` (AAL
+frequente, composizione per magnitudo, calibrazione, gate). Nessun output di
+`main` cambia: l'esplorazione sta sul ramo `dev` e confluis su `main` solo
+dopo validazione via PR.
