@@ -22,8 +22,9 @@ README.md                              ← questo file (panoramica, risultati, r
 LICENSE                                ← MIT (codice); i dati terzi restano dei rispettivi titolari
 CITATION.cff                           ← metadati di citazione (GitHub li espone in sidebar)
 requirements.txt                       ← dipendenze Python (notebook: solo numpy; CI: nbconvert)
-package.json                           ← script Node della pipeline ML (definitivo, SE, grid, sismico)
-.github/workflows/ci.yml                ← CI: sintassi JS/Python + esecuzione integrale del notebook
+package.json                           ← script Node della pipeline ML (definitivo, SE, SE robusti, grid, sismico)
+run_all.sh                             ← pipeline one-click: catena pricing/validazione (Python) + SE robusti HC1 (Node)
+.github/workflows/ci.yml                ← CI: sintassi JS/Python, rigenerazione verificata degli output, notebook
 docs/
   capitolo_metodologico_W_k.md         ← matrice dati, transizioni di scala, W e k, domanda di ricerca
   dizionario_dati.md                    ← dizionario delle 37 (+16 sismiche) colonne delle matrici
@@ -39,6 +40,7 @@ scripts/
   step1_kdist_moran.py                 ← selezione k via curva k-dist + Moran (livello comune)
   sdm_grid.js, definitivo.js           ← stima ML della SDM (implementazione pura Python/JS)
   se_definitivi.js                     ← errore standard ML (Hessiana numerica, k=5..8)
+  se_robusti.js                        ← SE robusti HC1 (sandwich Huber–White) del SDM, k=5..8 (riusa definitivo.js)
   script_spreg_sdm_catnat.py           ← stima di riferimento con spreg/PySAL (CSV_PATH = data/…)
   pricing/pricing_model.py             ← benchmark EAL 3-hazard, loss ratio vs IVASS, mappa di loss
   pricing/tessuto_produttivo.py        ← peso della loss sul tessuto: esposizione per performance ISP
@@ -53,6 +55,7 @@ results/
   grid_results.json                     ← griglia di selezione k (k-dist, Moran, AIC)
   risultati_definitivi.json            ← stime SDM k=5..8: coefficienti, AIC, LR, effetti
   se_definitivi.json                   ← errori standard ML definitivi (k=5..8)
+  se_robusti_hc1.json                  ← SE robusti HC1 del SDM: confronto SE ML vs HC1 (k=5..8)
   FINAL_k5.json                         ← quadro riassuntivo del modello definitivo k=5
   FINAL_sismico_k5.json                 ← quadro riassuntivo del modello esteso con il sismico (p=4)
   eal_comuni.csv                        ← EAL benchmark e loss ratio per comune (3.823 righe)
@@ -159,7 +162,8 @@ Risultati salienti (dettaglio completo in `docs/risultati_sdm_comuni.md`):
 - Robustezza su k = 6, 7, 8: β_Grandi stabile (0,142–0,144), θ_PMI stabile (−0,042/−0,050), ρ cresce
   con k (0,50→0,61) come atteso da W più densa; segni e significatività mai invertiti;
 - Diagnostica: Moran residui I = −0,0486 (p = 0,004), RESET F = 24,4 (forma funzionale da
-  approfondare), Breusch–Pagan LM = 124,4 (eteroschedasticità).
+  approfondare), Breusch–Pagan LM = 124,4 (eteroschedasticità; inferenze confermate con
+  SE robusti HC1, §3.5).
 
 **Interpretazione sintetica.** Il premio teorico Cat-Nat a livello comunale cresce con l'esposizione
 delle Grandi imprese al rischio frana (elasticità diretta ~0,15, totale ~0,21); l'esposizione delle
@@ -276,6 +280,34 @@ Estensione al tessuto produttivo (`scripts/pricing/tessuto_produttivo.py`, outpu
 hazard della matrice: misura coerenza relativa della tariffazione, non è un modello
 di pricing operativo.
 
+### 3.5 Robustezza agli errori standard (HC1)
+
+Il Breusch–Pagan del SDM k=5 segnala eteroschedasticità (LM = 124,4, §3.2): gli errori
+standard ML della Hessiana numerica potrebbero quindi sbagliare le inferenze. Il problema
+è chiuso con la covarianza sandwich Huber–White robusta, con correzione a campione finito
+HC1 — lo stesso trattamento già usato per l'OLS del benchmark pricing
+(`scripts/pricing/pricing_model.py`), qui esteso al modello spaziale.
+
+`scripts/se_robusti.js` riusa `scripts/definitivo.js` (stessa stima ML, stesse tracce
+Monte Carlo, stessa Hessiana a 4 angoli): stime e SE ML replicano esattamente
+`results/se_definitivi.json` (scarto relativo 0), quindi SE ML e SE HC1 sono confrontati
+a parità di tutto. Risultati in `results/se_robusti_hc1.json` (k = 5..8); a k = 5:
+
+| Parametro | Stima | SE ML | SE HC1 | z HC1 | p HC1 |
+|---|---|---|---|---|---|
+| β_Grandi | 0,1434 | 0,0039 | 0,0035 | 41,5 | ≈ 0 |
+| ρ | 0,4966 | 0,0216 | 0,0200 | 24,8 | ≈ 0 |
+| θ_PMI | −0,0520 | 0,0063 | 0,0065 | −8,0 | 9×10⁻¹⁶ |
+| θ_Grandi | −0,0374 | 0,0093 | 0,0084 | −4,4 | 9×10⁻⁶ |
+| β_PMI | 0,0061 | 0,0050 | 0,0055 | 1,1 | 0,27 |
+
+(p ≈ 0: underflow della normale, p < 10⁻³⁰⁰.) **Nessuna inferenza sostantiva cambia**: i
+coefficienti-chiave β_Grandi e ρ restano altamente significativi con SE HC1 anzi più
+stretti degli ML (0,89× e 0,93×: la Hessiana era conservativa proprio dove serve
+solidità), θ_PMI e θ_Grandi restano significativi (|z| = 8,0 e 4,4) e β_PMI resta non
+significativo (p = 0,27), come già dichiarato in §3.2. Il quadro è identico su tutta la
+griglia k = 6–8 (`results/se_robusti_hc1.json`).
+
 ## 4. Riproducibilità
 
 1. Costruire la matrice partendo dai sorgenti (AIDA, ISTAT/ISPRA, IVASS, centroidi ISTAT) con le
@@ -285,7 +317,8 @@ di pricing operativo.
    `results/grid_results.json`.
 3. Stima SDM ML: `scripts/script_spreg_sdm_catnat.py` (via `spreg`) oppure
    `scripts/definitivo.js` + `scripts/se_definitivi.js` (implementazione equivalente in ML pura,
-   con Hessiana numerica per gli errori standard).
+   con Hessiana numerica per gli errori standard); errori standard robusti all'eteroschedasticità:
+   `scripts/se_robusti.js` → `results/se_robusti_hc1.json` (sandwich Huber–White HC1, §3.5).
 4. Riproduzione end-to-end: `notebook/riproduce_sdm_comuni.ipynb` — pipeline completa in un unico
    notebook eseguibile (caricamento matrice e controlli, transizioni di scala §1.3, W KNN, stima ML
    del SDM con confronto SAR/SEM, effetti LeSage–Pace, diagnostica, robustezza k=6–8), con assert
@@ -324,12 +357,21 @@ di pricing operativo.
    (validazione formale delle assunzioni: correzione della coda, diagnostica OLS,
    trasformazione log, matrice W, seed); `python3 scripts/pricing/grafici.py` →
    `docs/grafici_pricing.svg` (quadro grafico a 6 pannelli, legge i JSON dei risultati).
+11. SE robusti HC1 del SDM: `node scripts/se_robusti.js` → `results/se_robusti_hc1.json`
+   (Node 18+; deterministico: riusa `scripts/definitivo.js` e verifica internamente di
+   replicare `results/se_definitivi.json` a scarto relativo 0).
+
+Tutta la catena deterministica (passi 8–11) si esegue con un solo comando:
+`bash run_all.sh` — con `--verify` esegue anche la verifica `git diff` sugli output
+rigenerati (la stessa della CI), con `--notebook` il notebook end-to-end e con
+`--riferimento` la selezione k e la stima spreg/PySAL (§2–3).
 
 Ambienti: R 4.x con `spdep`, `spatialreg`, `FNN`, `ggplot2`; Python 3 con `spreg`, `libpysal`
 (pipeline sismica: solo stdlib); Node.js per gli script ML; notebook: Python 3 con sola
 dipendenza `numpy` (≥ 1.24). A ogni push la GitHub Actions (`.github/workflows/ci.yml`)
-verifica la sintassi di tutti gli script ed esegue il notebook per intero: la riproducibilità
-è parte del repository, non una dichiarazione.
+verifica la sintassi di tutti gli script, rigenera e controlla al byte gli output della
+catena deterministica (pricing, validazione, SE robusti HC1) e esegue il notebook per
+intero: la riproducibilità è parte del repository, non una dichiarazione.
 
 ## 5. Licenza e citazione
 

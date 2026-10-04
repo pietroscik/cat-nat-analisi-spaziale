@@ -80,6 +80,13 @@ significatività non si invertono mai: la scelta k = 5 non condiziona il contenu
 | Breusch–Pagan | LM = 124,4 | eteroschedasticità presente |
 | Distanza mediana k-vicini (k=5) | 0,0882 gradi | vicinato compatto |
 
+Il Breusch–Pagan segnala eteroschedasticità: le inferenze della §3 reggono comunque
+anche con errori standard robusti Huber–White HC1 (`scripts/se_robusti.js` →
+`results/se_robusti_hc1.json`, k = 5..8, stessa stima ML di `scripts/definitivo.js`):
+a k = 5 β_Grandi mantiene z = 41,5 (SE HC1 0,0035, addirittura sotto l'ML 0,0039),
+ρ z = 24,8, θ_PMI z = −8,0, θ_Grandi z = −4,4; β_PMI resta non significativo
+(p = 0,27), come già letto in §6.
+
 ## 6. Lettura sostantiva (per il capitolo dei risultati della tesi)
 
 1. **Il premio Cat-Nat è un fatto spaziale**: ρ ≈ 0,5 significa che oltre metà dell'inerzia del
@@ -91,4 +98,5 @@ significatività non si invertono mai: la scelta k = 5 non condiziona il contenu
    composizione del tessuto economico tra comuni confinanti;
 4. la robustezza su k e la conferma LR/AIC rendono la SDM la base solida per la parte
    econometrica a livello comunale; l'eteroschedasticità residua impone prudenza sulla
-   significatività esatta dei coefficienti minori (β_PMI).
+   significatività esatta dei coefficienti minori (β_PMI); gli SE robusti HC1 (§5)
+   confermano però che tutte le inferenze sostantive reggono.

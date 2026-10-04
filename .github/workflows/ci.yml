@@ -75,7 +75,17 @@ jobs:
           node --check scripts/definitivo.js
           node --check scripts/sdm_grid.js
           node --check scripts/se_definitivi.js
+          node --check scripts/se_robusti.js
           node --check scripts/sismico/definitivo_sismico.js
+
+      - name: Sintassi shell (bash -n)
+        run: bash -n run_all.sh
+
+      - name: SE robusti HC1 del SDM (deterministico, rigenera JSON)
+        run: |
+          node scripts/se_robusti.js
+          git diff --quiet -- results/se_robusti_hc1.json || \
+            { echo "ERRORE: se_robusti_hc1.json non riproducibile (git diff)"; git diff --stat; exit 1; }
 
       - name: Notebook end-to-end (nbconvert --execute, assert vs FINAL_k5)
         run: |

@@ -11,8 +11,9 @@
   "scripts": {
     "definitivo": "node scripts/definitivo.js",
     "se": "node scripts/se_definitivi.js",
+    "se-robusti": "node scripts/se_robusti.js",
     "grid": "node scripts/sdm_grid.js",
     "sismico": "node scripts/sismico/definitivo_sismico.js",
-    "syntax-check": "node --check scripts/definitivo.js && node --check scripts/sdm_grid.js && node --check scripts/se_definitivi.js && node --check scripts/sismico/definitivo_sismico.js"
+    "syntax-check": "node --check scripts/definitivo.js && node --check scripts/sdm_grid.js && node --check scripts/se_definitivi.js && node --check scripts/se_robusti.js && node --check scripts/sismico/definitivo_sismico.js"
   }
 }
