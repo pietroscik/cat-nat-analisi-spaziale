@@ -156,7 +156,13 @@ inferiore)**. Tre letture:
   scalata (1,49 mld) resta comunque sotto il max-ent;
 - **sensibilità**: 16–123 mln/anno sull'intera griglia (attenuazione, PGA, Io0,
   finestra 1960, soglia Mw 4,5); il parametro dominante è l'Io0 (mediane del
-  catalogo completo vs solo post-1980).
+  catalogo completo vs solo post-1980);
+- **declustering**: variante di robustezza (finestra 50 km / 90 giorni attorno
+  alla scossa più forte, Gardner-Knopoff semplificato): 58 principali su 92
+  (34 repliche, in gran parte delle triple 2009/2012/2016), AAL frequente
+  pavimento = 55,6 mln/anno. Per una AAL storica la finestra osservata
+  (cluster inclusi) è già il dato: la base 77,1 resta la stima centrale, la
+  declusterata è il pavimento Poisson-forward.
 
 **Gate del passo 2**: event-based ≪ max-ent → il prior max-ent si archivia come
 bound lasco (41× sopra la stima base) e il totale RP≥0 si attesta indicativamente
@@ -165,11 +171,22 @@ minore**, non un raddoppio: l'ipotesi P1 (AAL_f mediana 3,18 mld, totale 4,7×
 benchmark) è scartata. Chiusura definitiva del gate con i danni osservati
 DBMI15 (passo 3 del protocollo).
 
+**Nota sul "gap" 1,035 vs 1,713 mld** (per evitare letture sbagliate): il
+confronto non misura una sottostima del premio e il 1,713 **non** è una stima
+event-based: è l'integrale numerico della stessa MDR sulla curva MPS04 per
+RP≥30 (trapezoid RP30–475 + coda rara k=3, `results/ep_curve.json`), mentre il
+benchmark CURVE=4 è l'approssimazione dichiarata più grossolana — lo stesso
+`ep_curve.json` su `main` documenta già `ratio_numerico_vs_benchmark = 1,655`.
+Il gap è un artefatto dell'approssimazione (quattro punti di progettazione
+contro l'integrazione numerica), non una nuova scoperta sul rischio; il gate
+event-based semmai lo conferma aggiungendo +77 mln sopra 1,713. Le implicazioni
+sulla tariffazione restanno quelle di `docs/pricing_coerenza.md`, separate.
+
 ## 7. Riproducibilità
 
 Entrambi gli script sono deterministici (doppia esecuzione: JSON identico; md5
 `c1e516fe301be3d4390949cd12172694` per `esplorazione_cpti15.json`,
-`158a0ee01483cb9a9f95e296edcf715a` per `esplorazione_coda_eventi.json`) e usano
+`14fa15c84da61738013fcf6184ad047c` per `esplorazione_coda_eventi.json`) e usano
 sole stdlib. Il catalogo non è nel repo: si scarica dall'URL di §2 (oppure si
 imposta `CPTI15_XLSX`), poi
 

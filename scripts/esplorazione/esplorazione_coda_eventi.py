@@ -25,6 +25,12 @@ Modello (dichiarato, illustrativo, coerente col benchmark dove possibile):
   costruzione;
 - esposizione: asset_tot_EUR per comune, come nel benchmark.
 
+Declustering (variante di robustezza dell'output): finestra spazio-temporale
+50 km / 90 giorni attorno alla scossa più forte del cluster (Gardner-Knopoff
+semplificato, deterministico). Per una AAL storica la finestra osservata
+(cluster inclusi) è già il dato: la variante declusterata è il pavimento
+Poisson-forward, non la stima centrale.
+
 Calibrazione (sezione dedicata dell'output): il modello event-based produce
 pochi superamenti PGA>=ag_RP30 rispetto a quelli impliciti nella definizione
 MPS04 (n_comuni/30 all'anno): il deficit è strutturale (lo alimentano eventi
@@ -40,6 +46,7 @@ Output: results/esplorazione_coda_eventi.json. Solo stdlib, deterministico
 """
 
 import csv
+import datetime
 import json
 import math
 import os
@@ -160,10 +167,50 @@ def raccogli_eventi(righe, intestazione, w1, w2, soglia_mw):
             scartati += 1
             continue
         io = medio(r.get(intestazione['IoDef']))
+        t = None
+        mo = medio(r.get(intestazione['Mo']))
+        da = medio(r.get(intestazione['Da']))
+        if mo is not None and da is not None:
+            try:
+                t = datetime.date(anno, int(mo), int(da)).toordinal()
+            except ValueError:
+                t = None
         eventi.append({'anno': anno, 'mw': mw, 'lat': lat, 'lon': lon,
-                       'io': io, 'area': str(r.get(intestazione['EpicentralArea'], '?'))})
+                       'io': io, 't': t,
+                       'area': str(r.get(intestazione['EpicentralArea'], '?'))})
     eventi.sort(key=lambda e: (e['anno'], e['area'], e['lat'], e['lon']))
     return eventi, scartati
+
+def decluster(eventi, giorni=90, km=50):
+    """Variante di robustezza: repliche = eventi nella finestra spazio-temporale
+    (km, giorni) di una scossa più forte (Gardner-Knopoff semplificato).
+
+    Deterministico: si processano gli eventi in ordine di Mw decrescente (a
+    parità di Mw, anno crescente): la scossa più forte del cluster resta
+    principale e ne rimuove foreshock e aftershock nella finestra. Gli eventi
+    senza data completa non possono essere dichiarati replica e restano
+    principali.
+    """
+    ordine = sorted(range(len(eventi)),
+                    key=lambda i: (-eventi[i]['mw'], eventi[i]['anno'], eventi[i]['area']))
+    repliche = set()
+    for k, i in enumerate(ordine):
+        if i in repliche:
+            continue
+        e = eventi[i]
+        if e['t'] is None:
+            continue
+        for j in ordine[k + 1:]:
+            if j in repliche:
+                continue
+            f = eventi[j]
+            if f['t'] is None:
+                continue
+            if (abs(f['t'] - e['t']) <= giorni and f['mw'] < e['mw']
+                    and distanza_km(e['lat'], e['lon'], f['lat'], f['lon']) <= km):
+                repliche.add(j)
+    eventi_principali = [eventi[i] for i in range(len(eventi)) if i not in repliche]
+    return eventi_principali, len(repliche)
 
 
 def mediane_io(righe, intestazione, w1, w2, mw_min=5.0):
@@ -302,6 +349,10 @@ def main():
     med_io_45, _ = mediane_io(righe, intestazione, 1005, 2020, 4.5)
     s_45 = stima(comuni, ev_45, med_io_45, mw_min=4.5)
     sens['soglia_Mw_4.5'] = round(s_45['danni_freq'] / anni, 2)
+    # variante di robustezza: declustering (repliche rimosse, pavimento Poisson)
+    ev_principali, n_repliche = decluster(eventi)
+    s_dec = stima(comuni, ev_principali, med_io)
+    sens['declustering_50km_90gg'] = round(s_dec['danni_freq'] / anni, 2)
 
     # calibrazione: superamenti PGA>=ag_RP30 del modello vs impliciti MPS04
     impliciti_anno = len(comuni) / 30.0
@@ -343,6 +394,14 @@ def main():
             'per_magnitudo_AAL_ident': per_bin_ident_aal,
             'top_eventi_AAL_freq': top_eventi,
         },
+        'declustering': {
+            'metodo': 'finestra spazio-temporale 50 km / 90 giorni attorno alla scossa piu forte (Gardner-Knopoff semplificato), deterministico',
+            'n_eventi_base': len(eventi),
+            'n_principali': len(ev_principali),
+            'n_repliche': n_repliche,
+            'AAL_freq_declusterata_EUR': round(s_dec['danni_freq'] / anni, 2),
+            'nota': 'per una AAL storica la finestra osservata (cluster inclusi) e il dato: la variante declusterata e il pavimento Poisson-forward, non la stima centrale',
+        },
         'calibrazione': {
             'superamenti_modello_PGA_sup_ag30_per_anno': round(sup_modello, 1),
             'superamenti_impliciti_MPS04_per_anno': round(impliciti_anno, 1),
@@ -374,13 +433,15 @@ def main():
         'variante prudenziale scalata (%.2f mld) resta sotto il max-ent. Verdetto: la coda '
         'frequente e un correctivo minore, indicativamente %.0f-%.0f mln/anno, al piu ~%.1f '
         'mld in prudenza estrema; totale RP>=0 = 1,713 + %.0f = %.2f mld (%.2fx benchmark, '
-        'dal %.2fx del limite inferiore). Chiusura definitiva del gate al passo DBMI15 '
+        'dal %.2fx del limite inferiore). Con declustering (repliche fuori): %.0f '
+        'mln/anno, pavimento. Chiusura definitiva del gate al passo DBMI15 '
         '(danni osservati), come da protocollo.'
         % (aal_freq / 1e6, min(sens.values()) / 1e6, max(sens.values()) / 1e6,
            100 * q_maxent, 100 * aal_freq / AAL_IDENTIFICATO_EUR, deficit,
            aal_freq_scalata / 1e9, aal_freq / 1e6, max(sens.values()) / 1e6,
            aal_freq_scalata / 1e9, aal_freq / 1e6, totale_stimato / 1e9,
-           totale_stimato / BENCHMARK_CURVE4_EUR, AAL_IDENTIFICATO_EUR / BENCHMARK_CURVE4_EUR))
+           totale_stimato / BENCHMARK_CURVE4_EUR, AAL_IDENTIFICATO_EUR / BENCHMARK_CURVE4_EUR,
+           s_dec['danni_freq'] / anni / 1e6))
     percorso_out = os.path.join(ROOT, 'results', 'esplorazione_coda_eventi.json')
     with open(percorso_out, 'w', encoding='utf-8') as f:
         json.dump(out, f, indent=1, ensure_ascii=True, sort_keys=False)

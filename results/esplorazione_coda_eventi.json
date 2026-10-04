@@ -87,6 +87,14 @@
    }
   ]
  },
+ "declustering": {
+  "metodo": "finestra spazio-temporale 50 km / 90 giorni attorno alla scossa piu forte (Gardner-Knopoff semplificato), deterministico",
+  "n_eventi_base": 92,
+  "n_principali": 58,
+  "n_repliche": 34,
+  "AAL_freq_declusterata_EUR": 55561625.58,
+  "nota": "per una AAL storica la finestra osservata (cluster inclusi) e il dato: la variante declusterata e il pavimento Poisson-forward, non la stima centrale"
+ },
  "calibrazione": {
   "superamenti_modello_PGA_sup_ag30_per_anno": 6.5,
   "superamenti_impliciti_MPS04_per_anno": 125.1,
@@ -118,7 +126,8 @@
   "anelastico=0.020,pga_div=5.0": 39629112.92,
   "Io0_finestra_1980": 16290073.76,
   "finestra_1960_2020": 72788432.17,
-  "soglia_Mw_4.5": 103206996.1
+  "soglia_Mw_4.5": 103206996.1,
+  "declustering_50km_90gg": 55561625.58
  },
- "verdetto": "AAL frequente event-based = 77 mln EUR/anno (base; sensibilita 16-123 mln): 2.4% del prior max-ent P1 (3,18 mld) e 4.5% del limite identificato (1,713 mld). Il modello sotto-produce i superamenti di ag_RP30 di 19x rispetto alla definizione MPS04, ma il deficit e quasi tutto frequenza senza danno (M<4,5 ravvicinati): la variante prudenziale scalata (1.49 mld) resta sotto il max-ent. Verdetto: la coda frequente e un correctivo minore, indicativamente 77-123 mln/anno, al piu ~1.5 mld in prudenza estrema; totale RP>=0 = 1,713 + 77 = 1.79 mld (1.73x benchmark, dal 1.66x del limite inferiore). Chiusura definitiva del gate al passo DBMI15 (danni osservati), come da protocollo."
+ "verdetto": "AAL frequente event-based = 77 mln EUR/anno (base; sensibilita 16-123 mln): 2.4% del prior max-ent P1 (3,18 mld) e 4.5% del limite identificato (1,713 mld). Il modello sotto-produce i superamenti di ag_RP30 di 19x rispetto alla definizione MPS04, ma il deficit e quasi tutto frequenza senza danno (M<4,5 ravvicinati): la variante prudenziale scalata (1.49 mld) resta sotto il max-ent. Verdetto: la coda frequente e un correctivo minore, indicativamente 77-123 mln/anno, al piu ~1.5 mld in prudenza estrema; totale RP>=0 = 1,713 + 77 = 1.79 mld (1.73x benchmark, dal 1.66x del limite inferiore). Con declustering (repliche fuori): 56 mln/anno, pavimento. Chiusura definitiva del gate al passo DBMI15 (danni osservati), come da protocollo."
 }
