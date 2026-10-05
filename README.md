@@ -1,5 +1,7 @@
 # Analisi spaziale Cat-Nat — premi assicurativi e rischio idrogeologico in Italia
 
+> ✅ **Stato**: Production-ready — pipeline completa (L. 78/2025), CI attiva, CITATION, risultati riproducibili.
+
 Analisi quantitativa nata dall'applicazione dei modelli spaziali ai premi assicurativi delle
 calamità naturali (Cat-Nat, Decreto-Legge 78/2025 "Misure urgenti per l'inclusione finanziaria
 e assicurativa"), a cura di **Pietro Maietta**. Non è la tesi magistrale: i dati impresa AIDA
@@ -27,7 +29,8 @@ run_all.sh                             ← pipeline one-click: catena pricing/va
 .github/workflows/ci.yml                ← CI: sintassi JS/Python, rigenerazione verificata degli output, notebook
 docs/
   capitolo_metodologico_W_k.md         ← matrice dati, transizioni di scala, W e k, domanda di ricerca
-  dizionario_dati.md                    ← dizionario delle 37 (+16 sismiche) colonne delle matrici
+  di
+zionario_dati.md                    ← dizionario delle 37 (+16 sismiche) colonne delle matrici
   risultati_sdm_comuni.md              ← risultati completi del SDM a livello comune (ML, spreg/PySAL)
   risultati_sdm_sismico.md             ← risultati del SDM esteso con il terzo hazard sismico (p=4)
   sismico_metodologia.md               ← fonti INGV (MPS04), estrazione griglie, matching, pipeline
@@ -47,7 +50,8 @@ scripts/
   pricing/ep_curve.py                  ← AAL numerico dalla curva MPS04 (RP30/72/475) e curva EP nazionale
   pricing/chi_paga.py                  ← ripartizione del premio per classe dimensionale (PMI vs Grandi)
   pricing/spazializzazione.py          ← Moran e LISA della coerenza tariffaria + mappa dei cluster
-  pricing/robustezza_tessuto.py        ← verifiche del risultato del tessuto (winsorizzato, ROA, SLX)
+  pricing/robustezza_tessuto.py        ← verifiche
+ del risultato del tessuto (winsorizzato, ROA, SLX)
   pricing/validazione_assunzioni.py     ← validazione formale delle assunzioni (curve, OLS, W, seed)
   pricing/grafici.py                    ← quadro grafico SVG dei risultati (6 pannelli dai JSON)
   sismico/                             ← pipeline del terzo hazard sismico (estrazione, matching, SDM p=4)
@@ -70,7 +74,8 @@ data/
   Matrice_Modello_Savelli_Final.csv     ← matrice definitiva: 3.823 comuni × 37 colonne
   Matrice_Modello_Savelli_Final_sismico.csv ← matrice estesa con le colonne sismiche: 3.823 × 53
   sismico/matrice_sismica_ingv.csv      ← matching comune → griglie INGV (ag, Sa ai vari RP)
-  log_R_livello_impresa/               ← 12 log R (spatialreg) dell'analisi a livello impresa
+  log_R_livello_impresa/               ← 12
+ log R (spatialreg) dell'analisi a livello impresa
 notebook/
   riproduce_sdm_comuni.ipynb           ← riproduzione end-to-end dell'analisi SDM k=5 (numpy, assert vs FINAL_k5)
   README.md                            ← guida all'esecuzione del notebook e mappa cella → artefatto
@@ -99,7 +104,8 @@ capitolo metodologico, §1.3):
 - **rischio incrociato**: `hazard_frana_share = PAI_area_P3P4_kmq / SUP_kmq` e
   `Risk_Frana_Asset_X = hazard_frana_share × asset_X_EUR` (X = PMI, Grandi).
 
-L'estensione sismica aggiunge una terza transizione **punto-griglia → comune** (matching al
+L'estensione sismica aggiunge una terza
+ transizione **punto-griglia → comune** (matching al
 punto INGV più vicino, vedi `docs/sismico_metodologia.md`): `hazard_sismico = ag_RP475` (in g)
 e `Risk_Sismico_Asset_X = ag_RP475 × asset_X_EUR`, con la Sardegna non classificata gestita
 esplicitamente (ag = 0 + flag). Nota di unità: frana/idraulico sono quote di area (share),
@@ -127,7 +133,8 @@ fini della matrice W.
   con k* ottimali specifici per subset (da 16 a 74);
 - Modelli: OLS, SAR(err), SDM(mix), GMM(err), selezione per AIC + diagnostica (Moran residui, BP, AD, RESET);
 - Evidenza chiave: autocorrelazione globale positiva ma debole dell'ISP (Moran I = 0,00865, p < 2,2e-16),
-  cluster significativi solo nel 12,72% delle imprese; l'effetto spaziale è modesto e instabile
+  cluster significativi solo nel 12,72% delle imprese; l'effetto spaziale è modesto 
+e instabile
   nei subset con W poco densa (ρ anche negativi estremi nei subset piccoli), mentre ROI è
   costantemente positivo e forte e l'integrazione verticale negativa.
 
@@ -162,7 +169,8 @@ Risultati salienti (dettaglio completo in `docs/risultati_sdm_comuni.md`):
 - Robustezza su k = 6, 7, 8: β_Grandi stabile (0,142–0,144), θ_PMI stabile (−0,042/−0,050), ρ cresce
   con k (0,50→0,61) come atteso da W più densa; segni e significatività mai invertiti;
 - Diagnostica: Moran residui I = −0,0486 (p = 0,004), RESET F = 24,4 (forma funzionale da
-  approfondare), Breusch–Pagan LM = 124,4 (eteroschedasticità; inferenze confermate con
+  
+approfondare), Breusch–Pagan LM = 124,4 (eteroschedasticità; inferenze confermate con
   SE robusti HC1, §3.5).
 
 **Interpretazione sintetica.** Il premio teorico Cat-Nat a livello comunale cresce con l'esposizione
@@ -196,7 +204,8 @@ dettaglio completo in `docs/risultati_sdm_sismico.md`, quadro macchina in
 | θ Sismico Grandi | −0,0221 | 0,0065 | −3,40 |
 | θ Frana Grandi | −0,0187 | 0,0086 | −2,17 |
 
-- AIC: SDM p=4 (**10.396,1**) < SEM p=4 (10.454,3) < SAR p=4 (10.595,4) ≪ SDM p=2 (12.717,4);
+- AIC: SDM p=4 (**10.396,1**) < SEM p=4 (10.454,3) < 
+SAR p=4 (10.595,4) ≪ SDM p=2 (12.717,4);
   LR vs p=2 = 2.329,3*** (df 4);
 - Effetti LeSage–Pace: Sismico Grandi → diretto 0,133, totale 0,169; Sismico PMI → diretto 0,171,
   totale 0,092; Frana Grandi → totale 0,007;
@@ -225,7 +234,8 @@ confrontato con le tariffe IVASS tramite un loss ratio `tariffa / benchmark cali
 - **EAL benchmark nazionale: 1,70 mld €/anno** (52% del premio teorico di 3,26 mld),
   mix sismico 61% / idraulico 28% / frana 11%;
 - **loss ratio mediano 1,01** (p10–p90: 0,48–4,13): la tariffa segue il rischio dove il
-  sismico domina, mentre le province a forte idraulico/frana sono **sottoprezzate**
+  sismico domina, mentre le province a forte idraulico/frana sono **sottopre
+zzate**
   rispetto al benchmark (Treviso, Udine, Rimini, Forlì-Cesena ~0,5; Valle d'Aosta 0,28)
   e quelle a basso sismico sono sovrapprezzate (Agrigento 4,6; Lecce 3,5) — effetto del
   pavimento tariffario per i perils non modellati;
@@ -254,7 +264,8 @@ Estensione al tessuto produttivo (`scripts/pricing/tessuto_produttivo.py`, outpu
   risk comunale); province estreme Vibo Valentia 8,3% / Isernia 8,2% / Avellino
   8,1% contro Monza-Brianza 0,38% / Lecce 0,40%;
 - **chi paga** (`results/chi_paga.json`): le Grandi imprese sono il 10,5% delle unità
-  ma pagano il **63,7% del premio** (premio medio 569.617 € vs 43.884 € della PMI,
+  ma pagano il *
+*63,7% del premio** (premio medio 569.617 € vs 43.884 € della PMI,
   ×13); il 67% dei comuni non ha Grandi imprese;
 - **AAL numerico dalla curva MPS04** (`results/ep_curve.json`): la banda RP30–475
   vale 4,53× il design point (moltiplicatore totale identificabile 6,88); l'AAL
@@ -284,7 +295,8 @@ di pricing operativo.
 
 Il Breusch–Pagan del SDM k=5 segnala eteroschedasticità (LM = 124,4, §3.2): gli errori
 standard ML della Hessiana numerica potrebbero quindi sbagliare le inferenze. Il problema
-è chiuso con la covarianza sandwich Huber–White robusta, con correzione a campione finito
+è chiuso con la covarianza sandwich Huber–White robusta, con correzione a campio
+ne finito
 HC1 — lo stesso trattamento già usato per l'OLS del benchmark pricing
 (`scripts/pricing/pricing_model.py`), qui esteso al modello spaziale.
 
@@ -318,7 +330,8 @@ griglia k = 6–8 (`results/se_robusti_hc1.json`).
 3. Stima SDM ML: `scripts/script_spreg_sdm_catnat.py` (via `spreg`) oppure
    `scripts/definitivo.js` + `scripts/se_definitivi.js` (implementazione equivalente in ML pura,
    con Hessiana numerica per gli errori standard); errori standard robusti all'eteroschedasticità:
-   `scripts/se_robusti.js` → `results/se_robusti_hc1.json` (sandwich Huber–White HC1, §3.5).
+   `scripts/s
+e_robusti.js` → `results/se_robusti_hc1.json` (sandwich Huber–White HC1, §3.5).
 4. Riproduzione end-to-end: `notebook/riproduce_sdm_comuni.ipynb` — pipeline completa in un unico
    notebook eseguibile (caricamento matrice e controlli, transizioni di scala §1.3, W KNN, stima ML
    del SDM con confronto SAR/SEM, effetti LeSage–Pace, diagnostica, robustezza k=6–8), con assert
@@ -342,7 +355,8 @@ griglia k = 6–8 (`results/se_robusti_hc1.json`).
 8. Benchmark EAL e coerenza asset: `python3 scripts/pricing/pricing_model.py` (solo stdlib,
    deterministico) → `results/pricing_benchmark.json`, `results/eal_comuni.csv`,
    `docs/mappa_loss.svg`; dettagli e limiti in `docs/pricing_coerenza.md`.
-9. Peso della loss sul tessuto produttivo: `python3 scripts/pricing/tessuto_produttivo.py`
+9. Peso della l
+oss sul tessuto produttivo: `python3 scripts/pricing/tessuto_produttivo.py`
    → `results/esposizione_tessuto.json` (richiede il passo 8; deterministico); quartili di
    esposizione per performance ISP, regressione del peso-EBITDA e tabella provinciale.
 10. Approfondimenti attuariali del pricing (tutti deterministici, solo stdlib, richiedono il
@@ -368,7 +382,8 @@ rigenerati (la stessa della CI), con `--notebook` il notebook end-to-end e con
 
 Ambienti: R 4.x con `spdep`, `spatialreg`, `FNN`, `ggplot2`; Python 3 con `spreg`, `libpysal`
 (pipeline sismica: solo stdlib); Node.js per gli script ML; notebook: Python 3 con sola
-dipendenza `numpy` (≥ 1.24). A ogni push la GitHub Actions (`.github/workflows/ci.yml`)
+dipendenza `numpy
+` (≥ 1.24). A ogni push la GitHub Actions (`.github/workflows/ci.yml`)
 verifica la sintassi di tutti gli script, rigenera e controlla al byte gli output della
 catena deterministica (pricing, validazione, SE robusti HC1) e esegue il notebook per
 intero: la riproducibilità è parte del repository, non una dichiarazione.
