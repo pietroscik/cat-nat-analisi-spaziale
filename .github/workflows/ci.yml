@@ -102,25 +102,26 @@ jobs:
             --output /tmp/riproduce_eseguito.ipynb \
             notebook/riproduce_sdm_comuni.ipynb
           python - <<'PY'
-import json, re, sys
-nb = json.load(open('/tmp/riproduce_eseguito.ipynb'))
-bad = 0
-for c in nb['cells']:
-    if c['cell_type'] != 'code':
-        continue
-    for o in c.get('outputs', []):
-        if o.get('output_type') == 'error':
-            bad += 1
-            if bad == 1:
-                tb = re.sub(r'\x1b\[[0-9;]*m', '', ''.join(o.get('traceback', [])))
-                tb = tb.replace('\n', ' | ')
-                for j in range(0, min(len(tb), 3600), 400):
-                    print(f'::error title=NBERR{j//400}::{tb[j:j+400]}')
-            else:
-                ename = o.get('ename', '?'); evalue = o.get('evalue', '')[:150]
-                print(f'::error title=NBERR{bad}::{ename}: {evalue}')
-if bad:
-    print(f'::error title=NBSUMMARY::{bad} celle in errore')
-    sys.exit(1)
-print('notebook eseguito senza errori')
-PY
+          import json, re, sys
+          nb = json.load(open('/tmp/riproduce_eseguito.ipynb'))
+          bad = 0
+          for c in nb['cells']:
+              if c['cell_type'] != 'code':
+                  continue
+              for o in c.get('outputs', []):
+                  if o.get('output_type') == 'error':
+                      bad += 1
+                      if bad == 1:
+                          tb = re.sub(r'\x1b\[[0-9;]*m', '', ''.join(o.get('traceback', [])))
+                          tb = tb.replace('\n', ' | ')
+                          for j in range(0, min(len(tb), 3600), 400):
+                              print(f'::error title=NBERR{j//400}::{tb[j:j+400]}')
+                      else:
+                          ename = o.get('ename', '?')
+                          evalue = o.get('evalue', '')[:150]
+                          print(f'::error title=NBERR{bad}::{ename}: {evalue}')
+          if bad:
+              print(f'::error title=NBSUMMARY::{bad} celle in errore')
+              sys.exit(1)
+          print('notebook eseguito senza errori')
+          PY
