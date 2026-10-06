@@ -314,6 +314,84 @@ def main():
 
 
 # ---------- rendering SVG ----------
+# ----------------- confini provinciali sottili (nessun dato esterno) -----------------
+# I confini si derivano dai comuni stessi: ogni cella di una griglia fine prende
+# la provincia del comune piu' vicino (Voronoi dei comuni, che partizionano le
+# province); il confine e' lo spigolo tra celle di provincia diversa. Le celle
+# oltre 2,5x la distanza mediana al primo vicino sono considerate mare, cosi'
+# i confini non si estendono in mare. Deterministico, solo stdlib.
+CONF_G = 3.0            # passo della griglia (px)
+CONF_COL = '#a9a396'    # grigio caldo chiaro: presente ma leggero
+_CONF_CACHE = {}
+
+
+def confini_path(P, px0, py0, pw_px, ph_px):
+    """P: [(px, py, cod_provincia)] proiettati; ritorna l'elemento <path> dei
+    confini (stringa vuota se non ci sono segmenti)."""
+    key = (px0, py0, pw_px, ph_px, len(P), P[0][0], P[-1][0])
+    if key in _CONF_CACHE:
+        return _CONF_CACHE[key]
+    BS = 12.0                       # lato dei bucket di ricerca (px)
+    buck = {}
+    for i, (x, y, pv) in enumerate(P):
+        buck.setdefault((int(x // BS), int(y // BS)), []).append(i)
+
+    def vicino(x, y, skip=-1, thr=0.0):
+        """Piu' vicino comune (indice, distanza). Con thr > 0 esce appena puo'
+        certificare d > thr (cella di mare): non serve il piu' vicino esatto."""
+        cx, cy = int(x // BS), int(y // BS)
+        k, bd, bi = 0, 1e18, -1
+        while k < 80:
+            k += 1
+            for a in range(cx - k, cx + k + 1):
+                for b in range(cy - k, cy + k + 1):
+                    for idx in buck.get((a, b), ()):
+                        if idx == skip:
+                            continue
+                        dx, dy = x - P[idx][0], y - P[idx][1]
+                        d = dx * dx + dy * dy
+                        if d < bd:
+                            bd, bi = d, idx
+            lb = (k - 1) * BS       # distanza minima di un punto fuori dall'anello
+            if bi >= 0 and bd <= lb * lb:
+                break               # il piu' vicino trovato e' esatto
+            if thr > 0 and bd > thr * thr and lb > thr:
+                return -1, math.sqrt(bd)     # certificato oltre soglia: mare
+        return bi, (math.sqrt(bd) if bi >= 0 else 1e18)
+
+    dnn = sorted(vicino(x, y, skip=i)[1] for i, (x, y, pv) in enumerate(P))
+    thr = 2.5 * dnn[len(dnn) // 2]
+    nx = max(1, int(pw_px / CONF_G))
+    ny = max(1, int(ph_px / CONF_G))
+    cell = [[None] * ny for _ in range(nx)]
+    for ix in range(nx):
+        for iy in range(ny):
+            idx, d = vicino(px0 + (ix + 0.5) * CONF_G, py0 + (iy + 0.5) * CONF_G,
+                            thr=thr)
+            if idx >= 0:
+                cell[ix][iy] = (P[idx][2], d)
+    segs = []
+    for ix in range(nx):
+        for iy in range(ny):
+            c = cell[ix][iy]
+            if c is None or c[1] > thr:
+                continue
+            if ix + 1 < nx:
+                r = cell[ix + 1][iy]
+                if r is not None and r[1] <= thr and r[0] != c[0]:
+                    segs.append('M%.1f,%.1fv%.1f' % (px0 + (ix + 1) * CONF_G,
+                                                    py0 + iy * CONF_G, CONF_G))
+            if iy + 1 < ny:
+                b = cell[ix][iy + 1]
+                if b is not None and b[1] <= thr and b[0] != c[0]:
+                    segs.append('M%.1f,%.1fh%.1f' % (px0 + ix * CONF_G,
+                                                    py0 + (iy + 1) * CONF_G, CONF_G))
+    path = ('<path d="%s" fill="none" stroke="%s" stroke-width="1"/>'
+            % (''.join(segs), CONF_COL)) if segs else ''
+    _CONF_CACHE[key] = path
+    return path
+
+
 def draw_svg(com):
     """Mappa a due pannelli: EAL attesa (EUR/anno) e loss ratio (coerenza tariffa/benchmark).
 
@@ -376,6 +454,10 @@ def draw_svg(com):
         s.append(f'<text x="{x0 + W_PANEL // 2}" y="{PAD_TOP - 26}" font-size="13" font-weight="bold" fill="#333" text-anchor="middle">{title}</text>')
         s.append(f'<text x="{x0 + W_PANEL // 2}" y="{PAD_TOP - 12}" font-size="10" fill="#777" text-anchor="middle">{subtitle}</text>')
         s.append(f'<rect x="{x0}" y="{PAD_TOP}" width="{W_PANEL}" height="{H_PANEL}" fill="#f4f2ec" stroke="#ccc" stroke-width="1"/>')
+        Pconf = [(*xy(c['lon'], c['lat'], x0), c['COD_PROV']) for c in com]
+        s.append(confini_path(Pconf, x0, PAD_TOP,
+                              (lon1 - lon0) * math.cos(LAT_M) * SCALE,
+                              (lat1 - lat0) * SCALE))
         for c in com:
             px, py = xy(c['lon'], c['lat'], x0)
             k = classify(c)
@@ -408,6 +490,7 @@ def draw_svg(com):
           'rosso = tariffa sopra il benchmark, blu = sotto',
           cls_ratio, PAL_R, legend_ratio)
 
+    s.append(f'<text x="{W - 30}" y="{H - 26}" font-size="9" fill="#888" text-anchor="end">confini provinciali sottili (Voronoi dei comuni)</text>')
     s.append(f'<text x="{W // 2}" y="{H - 10}" font-size="9.5" fill="#888" text-anchor="middle">Fonti: IVASS (tariffe), INGV MPS04 (ag), ISPRA (PAI P3/P4, P3), AIDA (asset) · generato da scripts/pricing/pricing_model.py · dettagli in docs/pricing_coerenza.md</text>')
     s.append('</svg>')
     with open(OUT_SVG, 'w', encoding='utf-8') as f:

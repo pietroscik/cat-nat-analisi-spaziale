@@ -132,9 +132,87 @@ def lisa(z, neigh):
     return out
 
 
+# ----------------- confini provinciali sottili (nessun dato esterno) -----------------
+# I confini si derivano dai comuni stessi: ogni cella di una griglia fine prende
+# la provincia del comune piu' vicino (Voronoi dei comuni, che partizionano le
+# province); il confine e' lo spigolo tra celle di provincia diversa. Le celle
+# oltre 2,5x la distanza mediana al primo vicino sono considerate mare, cosi'
+# i confini non si estendono in mare. Deterministico, solo stdlib.
+CONF_G = 3.0            # passo della griglia (px)
+CONF_COL = '#a9a396'    # grigio caldo chiaro: presente ma leggero
+_CONF_CACHE = {}
+
+
+def confini_path(P, px0, py0, pw_px, ph_px):
+    """P: [(px, py, cod_provincia)] proiettati; ritorna l'elemento <path> dei
+    confini (stringa vuota se non ci sono segmenti)."""
+    key = (px0, py0, pw_px, ph_px, len(P), P[0][0], P[-1][0])
+    if key in _CONF_CACHE:
+        return _CONF_CACHE[key]
+    BS = 12.0                       # lato dei bucket di ricerca (px)
+    buck = {}
+    for i, (x, y, pv) in enumerate(P):
+        buck.setdefault((int(x // BS), int(y // BS)), []).append(i)
+
+    def vicino(x, y, skip=-1, thr=0.0):
+        """Piu' vicino comune (indice, distanza). Con thr > 0 esce appena puo'
+        certificare d > thr (cella di mare): non serve il piu' vicino esatto."""
+        cx, cy = int(x // BS), int(y // BS)
+        k, bd, bi = 0, 1e18, -1
+        while k < 80:
+            k += 1
+            for a in range(cx - k, cx + k + 1):
+                for b in range(cy - k, cy + k + 1):
+                    for idx in buck.get((a, b), ()):
+                        if idx == skip:
+                            continue
+                        dx, dy = x - P[idx][0], y - P[idx][1]
+                        d = dx * dx + dy * dy
+                        if d < bd:
+                            bd, bi = d, idx
+            lb = (k - 1) * BS       # distanza minima di un punto fuori dall'anello
+            if bi >= 0 and bd <= lb * lb:
+                break               # il piu' vicino trovato e' esatto
+            if thr > 0 and bd > thr * thr and lb > thr:
+                return -1, math.sqrt(bd)     # certificato oltre soglia: mare
+        return bi, (math.sqrt(bd) if bi >= 0 else 1e18)
+
+    dnn = sorted(vicino(x, y, skip=i)[1] for i, (x, y, pv) in enumerate(P))
+    thr = 2.5 * dnn[len(dnn) // 2]
+    nx = max(1, int(pw_px / CONF_G))
+    ny = max(1, int(ph_px / CONF_G))
+    cell = [[None] * ny for _ in range(nx)]
+    for ix in range(nx):
+        for iy in range(ny):
+            idx, d = vicino(px0 + (ix + 0.5) * CONF_G, py0 + (iy + 0.5) * CONF_G,
+                            thr=thr)
+            if idx >= 0:
+                cell[ix][iy] = (P[idx][2], d)
+    segs = []
+    for ix in range(nx):
+        for iy in range(ny):
+            c = cell[ix][iy]
+            if c is None or c[1] > thr:
+                continue
+            if ix + 1 < nx:
+                r = cell[ix + 1][iy]
+                if r is not None and r[1] <= thr and r[0] != c[0]:
+                    segs.append('M%.1f,%.1fv%.1f' % (px0 + (ix + 1) * CONF_G,
+                                                    py0 + iy * CONF_G, CONF_G))
+            if iy + 1 < ny:
+                b = cell[ix][iy + 1]
+                if b is not None and b[1] <= thr and b[0] != c[0]:
+                    segs.append('M%.1f,%.1fh%.1f' % (px0 + ix * CONF_G,
+                                                    py0 + (iy + 1) * CONF_G, CONF_G))
+    path = ('<path d="%s" fill="none" stroke="%s" stroke-width="1"/>'
+            % (''.join(segs), CONF_COL)) if segs else ''
+    _CONF_CACHE[key] = path
+    return path
+
+
 # ---------- mappa SVG (dot map a pannello unico, stesso stile di mappa_loss.svg) ----------
 def draw_svg(items, path):
-    """items: dict PRO_COM -> (lon, lat, cluster)."""
+    """items: dict PRO_COM -> (lon, lat, cluster, provincia)."""
     xs = [v[0] for v in items.values()]
     ys = [v[1] for v in items.values()]
     W, H = 1000, 600
@@ -153,7 +231,10 @@ def draw_svg(items, path):
     parts.append('<text x="500" y="41" font-size="10.5" text-anchor="middle" fill="#666">'
                  'LISA del log(loss ratio) (Moran locale, KNN k=5, randomizzazione condizionata 499 permutazioni, '
                  'p&lt;0,05) — 3.820 comuni con loss ratio definito</text>')
-    for pc, (lon, lat, cl) in sorted(items.items()):
+    Pconf = [(ox + (lon - min(xs)) * s, oy + h - (lat - min(ys)) * s, pv)
+             for pc, (lon, lat, cl, pv) in sorted(items.items())]
+    parts.append(confini_path(Pconf, ox, oy, s * (max(xs) - min(xs)), s * (max(ys) - min(ys))))
+    for pc, (lon, lat, cl, pv) in sorted(items.items()):
         x = ox + (lon - min(xs)) * s
         y = oy + h - (lat - min(ys)) * s
         parts.append('<circle cx="%.1f" cy="%.1f" r="2.4" fill="%s" fill-opacity="0.9"/>'
@@ -172,6 +253,8 @@ def draw_svg(items, path):
                      % (cx, cy, COL[cl]))
         parts.append('<text x="%d" y="%d" font-size="9.5" fill="#444">%s — %s</text>'
                      % (cx + 16, cy + 9, cl, desc))
+    parts.append('<text x="970" y="%d" font-size="8.5" text-anchor="end" fill="#888">confini provinciali sottili (Voronoi dei comuni)</text>'
+                 % (H - 26))
     parts.append('<text x="500" y="%d" font-size="9" text-anchor="middle" fill="#888">'
                  'Fonti: IVASS (tariffe), INGV MPS04 (ag), ISPRA (PAI P3/P4, P3), AIDA (asset) · '
                  'generato da scripts/pricing/spazializzazione.py · dettagli in docs/pricing_coerenza.md</text>'
@@ -239,7 +322,8 @@ def main():
         cand.sort()
         top[cl] = [{'comune': c[2], 'provincia': c[3], 'loss_ratio': c[4], 'p': round(c[0], 3)}
                    for c in cand[:12]]
-    draw_svg({lr_log[i]['pc']: (lr_log[i]['lon'], lr_log[i]['lat'], lis[i]['cluster']) for i in range(len(lr_log))}, OUT_SVG)
+    draw_svg({lr_log[i]['pc']: (lr_log[i]['lon'], lr_log[i]['lat'], lis[i]['cluster'], lr_log[i]['prov'])
+              for i in range(len(lr_log))}, OUT_SVG)
 
     out = {
         'modello': 'autocorrelazione spaziale e cluster LISA della coerenza tariffaria (loss ratio)',

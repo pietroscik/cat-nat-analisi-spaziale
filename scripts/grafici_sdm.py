@@ -383,8 +383,87 @@ def classe(v, breaks):
     return len(breaks)
 
 
+# ----------------- confini provinciali sottili (nessun dato esterno) -----------------
+# I confini si derivano dai comuni stessi: ogni cella di una griglia fine prende
+# la provincia del comune piu' vicino (Voronoi dei comuni, che partizionano le
+# province); il confine e' lo spigolo tra celle di provincia diversa. Le celle
+# oltre 2,5x la distanza mediana al primo vicino sono considerate mare, cosi'
+# i confini non si estendono in mare. Deterministico, solo stdlib.
+CONF_G = 3.0            # passo della griglia (px)
+CONF_COL = '#a9a396'    # grigio caldo chiaro: presente ma leggero
+_CONF_CACHE = {}
+
+
+def confini_path(P, px0, py0, pw_px, ph_px):
+    """P: [(px, py, cod_provincia)] proiettati; ritorna l'elemento <path> dei
+    confini (stringa vuota se non ci sono segmenti)."""
+    key = (px0, py0, pw_px, ph_px, len(P), P[0][0], P[-1][0])
+    if key in _CONF_CACHE:
+        return _CONF_CACHE[key]
+    BS = 12.0                       # lato dei bucket di ricerca (px)
+    buck = {}
+    for i, (x, y, pv) in enumerate(P):
+        buck.setdefault((int(x // BS), int(y // BS)), []).append(i)
+
+    def vicino(x, y, skip=-1, thr=0.0):
+        """Piu' vicino comune (indice, distanza). Con thr > 0 esce appena puo'
+        certificare d > thr (cella di mare): non serve il piu' vicino esatto."""
+        cx, cy = int(x // BS), int(y // BS)
+        k, bd, bi = 0, 1e18, -1
+        while k < 80:
+            k += 1
+            for a in range(cx - k, cx + k + 1):
+                for b in range(cy - k, cy + k + 1):
+                    for idx in buck.get((a, b), ()):
+                        if idx == skip:
+                            continue
+                        dx, dy = x - P[idx][0], y - P[idx][1]
+                        d = dx * dx + dy * dy
+                        if d < bd:
+                            bd, bi = d, idx
+            lb = (k - 1) * BS       # distanza minima di un punto fuori dall'anello
+            if bi >= 0 and bd <= lb * lb:
+                break               # il piu' vicino trovato e' esatto
+            if thr > 0 and bd > thr * thr and lb > thr:
+                return -1, math.sqrt(bd)     # certificato oltre soglia: mare
+        return bi, (math.sqrt(bd) if bi >= 0 else 1e18)
+
+    dnn = sorted(vicino(x, y, skip=i)[1] for i, (x, y, pv) in enumerate(P))
+    thr = 2.5 * dnn[len(dnn) // 2]
+    nx = max(1, int(pw_px / CONF_G))
+    ny = max(1, int(ph_px / CONF_G))
+    cell = [[None] * ny for _ in range(nx)]
+    for ix in range(nx):
+        for iy in range(ny):
+            idx, d = vicino(px0 + (ix + 0.5) * CONF_G, py0 + (iy + 0.5) * CONF_G,
+                            thr=thr)
+            if idx >= 0:
+                cell[ix][iy] = (P[idx][2], d)
+    segs = []
+    for ix in range(nx):
+        for iy in range(ny):
+            c = cell[ix][iy]
+            if c is None or c[1] > thr:
+                continue
+            if ix + 1 < nx:
+                r = cell[ix + 1][iy]
+                if r is not None and r[1] <= thr and r[0] != c[0]:
+                    segs.append('M%.1f,%.1fv%.1f' % (px0 + (ix + 1) * CONF_G,
+                                                    py0 + iy * CONF_G, CONF_G))
+            if iy + 1 < ny:
+                b = cell[ix][iy + 1]
+                if b is not None and b[1] <= thr and b[0] != c[0]:
+                    segs.append('M%.1f,%.1fh%.1f' % (px0 + ix * CONF_G,
+                                                    py0 + (iy + 1) * CONF_G, CONF_G))
+    path = ('<path d="%s" fill="none" stroke="%s" stroke-width="1"/>'
+            % (''.join(segs), CONF_COL)) if segs else ''
+    _CONF_CACHE[key] = path
+    return path
+
+
 def pannello_mappa(x0, y0, w, h, titolo, sub, punti, palette, unit, nota,
-                   breaks=None, legenda_classi='classi ai quantili (%s)', legenda_dec=2):
+                   breaks=None, legenda_classi='classi ai quantili (%s)', legenda_dec=2,
+                   confini=None):
     """punti: lista ordinata (lon, lat, valore); breaks=None -> quantili."""
     parts = [rect(x0, y0, w, h, '#ffffff', '#d8d6ce')]
     parts.append(txt(x0 + 10, y0 + 18, titolo, 11.5, INK, bold=True))
@@ -400,6 +479,10 @@ def pannello_mappa(x0, y0, w, h, titolo, sub, punti, palette, unit, nota,
     s = min((w - 2 * mx) / span_x, (h - my - mt) / span_y)
     ox = x0 + (w - span_x * s) / 2
     oy = y0 + my
+    if confini:
+        Pconf = [((lo - lonmin) * cs * s + ox, (latmax - la) * s + oy, pv)
+                 for lo, la, pv in confini]
+        parts.append(confini_path(Pconf, ox, oy, span_x * s, span_y * s))
     vals = [p[2] for p in punti]
     if breaks is None:
         breaks = quantili(vals)
@@ -429,9 +512,10 @@ def mappe():
     with open(MATRICE, newline='', encoding='utf-8') as f:
         for r in csv.DictReader(f):
             rows.append(r)
-    sis, fra, idr = [], [], []
+    sis, fra, idr, pro = [], [], [], []
     for r in sorted(rows, key=lambda r: r['PRO_COM']):   # determinismo
         lon, lat = float(r['long']), float(r['lat'])
+        pro.append((lon, lat, r['COD_PROV']))
         ag = float(r['ag_RP475'])
         share = float(r['PAI_area_P3P4_kmq']) / float(r['SUP_kmq'])
         share = max(0.0, min(1.0, share))
@@ -444,28 +528,29 @@ def mappe():
              '<rect width="1040" height="640" fill="#f6f5f0"/>\n']
     parts.append(txt(20, 28, 'Hazard comunali: sismico (MPS04), frana (PAI P3/P4) e idraulico (PAI P3)', 15, INK, bold=True))
     parts.append(txt(20, 44, 'dot map dei 3.823 comuni (data/Matrice_Modello_Savelli_Final_sismico.csv), '
-                             'classi ai quantili, proiezione equidistante', 9, MUT))
+                             'classi ai quantili, proiezione equidistante, confini provinciali sottili (Voronoi dei comuni)', 9, MUT))
     PW3, GAP3 = 322, 17
     xs = [20, 20 + PW3 + GAP3, 20 + 2 * (PW3 + GAP3)]
     parts += pannello_mappa(xs[0], 58, PW3, 556,
                             'ag RP 475 anni (accelerazione, g)',
                             'MPS04 INGV, 10% in 50 anni; 70 comuni sardi non classificati',
                             sis, PALETTE_SIS, 'g',
-                            'Sardegna: hazard sismico non classificato nelle mappe MPS04 (ag = 0)')
+                            'Sardegna: hazard sismico non classificato nelle mappe MPS04 (ag = 0)',
+                            confini=pro)
     parts += pannello_mappa(xs[1], 58, PW3, 556,
                             'Quota di area in frana P3/P4',
                             'hazard_frana_share = PAI_area_P3P4_kmq / SUP_kmq (ISPRA, 0-1)',
                             fra, PALETTE_FRA, 'quota area',
                             'Fonte: aree PAI P3/P4 ISPRA; classe 0 = quota nulla o trascurabile',
                             breaks=[0.001, 0.01, 0.05, 0.15, 0.30],
-                            legenda_classi='classi fisse (%s)', legenda_dec=3)
+                            legenda_classi='classi fisse (%s)', legenda_dec=3, confini=pro)
     parts += pannello_mappa(xs[2], 58, PW3, 556,
                             'Quota di area in frana idrogeologica P3',
                             'hazard_idraulico_share = IDR_area_P3_kmq / SUP_kmq (ISPRA, 0-1)',
                             idr, PALETTE_IDR, 'quota area',
                             'Fonte: aree PAI di frana idrogeologica P3 ISPRA; classe 0 = quota nulla',
                             breaks=[0.001, 0.01, 0.05, 0.15, 0.30],
-                            legenda_classi='classi fisse (%s)', legenda_dec=3)
+                            legenda_classi='classi fisse (%s)', legenda_dec=3, confini=pro)
     return ''.join(parts) + '\n</svg>\n'
 
 
