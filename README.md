@@ -24,7 +24,7 @@ rigenerati dagli script e verificati dalla CI; clic per la versione interattiva 
 
 ![Quadro grafico dei risultati SDM: coefficienti con IC 95%, effetti LeSage-Pace, robustezza su nove specifiche, AIC vs k, test LR e diagnostica](docs/grafici_sdm.svg)
 
-![Hazard comunali: accelerazione di picco RP475 (MPS04 INGV) e quota di area in frana P3/P4 (ISPRA) per i 3.823 comuni](docs/mappe_hazard.svg)
+![Hazard comunali: accelerazione di picco RP475 (MPS04 INGV), quota di area in frana P3/P4 e quota in frana idrogeologica P3 (ISPRA) per i 3.823 comuni](docs/mappe_hazard.svg)
 
 ![Quadro grafico del pricing: curva EP sismica, peso della loss per performance ISP, chi paga il premio, province estreme, robustezza, Moran](docs/grafici_pricing.svg)
 
@@ -57,7 +57,7 @@ zionario_dati.md                    ← dizionario delle 37 (+16 sismiche) colon
   mappa_lisa_tariffa.svg                ← cluster LISA della coerenza tariffaria (HH/LL del loss ratio)
   grafici_pricing.svg                   ← quadro grafico dei risultati: EP, quartili ISP, chi paga, robustezza, Moran
   grafici_sdm.svg                        ← quadro grafico dei risultati SDM: coefficienti IC95, effetti, robustezza, AIC vs k
-  mappe_hazard.svg                       ← dot map comunali degli hazard: ag RP475 (MPS04) e frana P3/P4 (quota area)
+  mappe_hazard.svg                       ← dot map comunali degli hazard: ag RP475 (MPS04), frana P3/P4 e idrogeologico P3 (quota area)
   grafici_rp30.svg                       ← coda frequente RP<30: composizione per magnitudo, top eventi, gate, sensibilità
   log_R_livello_impresa.md            ← guida e integrazione dei log R (spatialreg) livello impresa
 scripts/
@@ -238,7 +238,7 @@ SAR p=4 (10.595,4) ≪ SDM p=2 (12.717,4);
   k = 6/7/8 → 0,126–0,127 (ρ 0,41→0,49); esclusione Sardegna → 0,128.
 - Vista grafica dei risultati SDM (coefficienti con IC 95%, effetti, robustezza nelle nove
   specifiche, selezione k, confronto di specifica) in `docs/grafici_sdm.svg`; dot map comunali
-  degli hazard (ag RP475 e frana P3/P4) in `docs/mappe_hazard.svg` — entrambe rigenerate da
+  degli hazard (ag RP475, frana P3/P4 e idrogeologico P3) in `docs/mappe_hazard.svg` — tutte rigenerate da
   `scripts/grafici_sdm.py` e verificate dalla CI.
 
 **Sintesi.** Il sismico è il driver dominante del premio teorico Cat-Nat: β grande e

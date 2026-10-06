@@ -93,7 +93,7 @@
 <text x="787.0" y="114.0" font-size="8.4" fill="#222" text-anchor="start">PMI (27.026 impr.)</text>
 <rect x="904.0" y="106.0" width="9.0" height="9.0" fill="#9c1f1f" stroke="none"/>
 <text x="917.0" y="114.0" font-size="8.4" fill="#222" text-anchor="start">Grandi (3.648 impr.)</text>
-<text x="1066.0" y="106.0" font-size="8" fill="#777" text-anchor="end">premio medio: 43.884 vs 569.617 EUR (x13)</text>
+<text x="920.0" y="355.0" font-size="7.8" fill="#777" text-anchor="middle">premio medio: 43.884 vs 569.617 EUR (x13)</text>
 <rect x="20.0" y="396.0" width="340.0" height="290.0" fill="#ffffff" stroke="#d8d6ce"/>
 <text x="30.0" y="416.0" font-size="11.5" font-weight="bold" fill="#222" text-anchor="start">4. Province estreme: peso della loss</text>
 <text x="30.0" y="430.0" font-size="8.6" fill="#777" text-anchor="start">EAL/EBITDA per provincia — top e bottom delle 107 province</text>

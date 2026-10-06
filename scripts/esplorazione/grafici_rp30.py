@@ -129,8 +129,9 @@ def p_eventi(x0, y0, ev):
         if bw_px > 150:
             parts.append(txt(px + 4, yy + 3, nome + '  ' + val, 8.2, '#fff'))
         else:
-            parts.append(txt(px + 4, yy + 3, nome, 8.2, '#fff'))
-            parts.append(txt(px + bw_px + 5, yy + 3, val, 8.2, INK))
+            # nome e valore entrambi dopo la barra: a fonti piccole il nome
+            # dentro la barra sovrapporrebbe il valore accanto alla barra
+            parts.append(txt(px + bw_px + 5, yy + 3, nome + '  ' + val, 8.2, INK))
     parts.append(line(px, py + ph, px + pw, py + ph, '#bbb'))
     parts.append(txt(px + pw / 2, py + ph + 23,
                      'CPTI15 v4.0, Mw>=5,0 — contributo = tasso empirico x danno sotto ag_RP30 per sito', 7.8, MUT, anchor='middle'))
@@ -270,28 +271,51 @@ def main():
     pr1 = pr['predittiva']['P1_ancorata_RP30_72']['AAL_frequente_EUR']['p50'] / 1e9
     pr2 = pr['predittiva']['P2_appiattita_RP72_475']['AAL_frequente_EUR']['p50'] / 1e9
     lines = [
-        ('Il verdetto in cinque righe', INK, True, 11.5),
-        ('', INK, False, 9),
-        ('1. Sotto RP30 non esiste hazard pubblico MPS04 (81% in 50 anni = RP~30: il muro informativo).', INK, False, 9),
-        ('2. La coda frequente e fatta di eventi osservati: Mw>=6 ogni ~6,8 anni (CPTI15 1980-2020).', INK, False, 9),
-        ('3. Stima event-based: %s mln/anno, il %s%% del limite RP>=30 — correctivo minore, non un raddoppio.'
+        ('Il verdetto in cinque righe', INK, 11.5),
+        ('', INK, 0),
+        ('1. Sotto RP30 non esiste hazard pubblico MPS04 (81% in 50 anni = RP~30: il muro informativo).', INK, 8.8),
+        ('2. La coda frequente e fatta di eventi osservati: Mw>=6 ogni ~6,8 anni (CPTI15 1980-2020).', INK, 8.8),
+        ('3. Stima event-based: %s mln/anno, il %s%% del limite RP>=30 - correctivo minore, non un raddoppio.'
          % (fmt_it(r_['AAL_frequente_RP_inf30_EUR'] / 1e6, 0),
-            fmt_it(r_['AAL_frequente_RP_inf30_EUR'] / gate['limite_inferiore_RP_sup30_EUR'] * 100, 1)), INK, False, 9),
+            fmt_it(r_['AAL_frequente_RP_inf30_EUR'] / gate['limite_inferiore_RP_sup30_EUR'] * 100, 1)), INK, 8.8),
         ('4. I prior max-ent (P1 %s / P2 %s mld) si archiviano come bound laschi: scartati dal gate.'
-         % (fmt_it(pr1, 2), fmt_it(pr2, 2)), INK, False, 9),
+         % (fmt_it(pr1, 2), fmt_it(pr2, 2)), INK, 8.8),
         ('5. Totale RP>=0 = %s mld (%sx benchmark); chiusura definitiva al passo DBMI15 (danni osservati).'
          % (fmt_it(gate['totale_RP_sup0_stimato_EUR'] / 1e9, 2),
-            fmt_it(gate['totale_quota_benchmark'], 2)), INK, False, 9),
-        ('', INK, False, 9),
-        ("Nota: il gap 1,035-vs-1,713 mld e artefatto dell'approssimazione CURVE=4 (ratio 1,655", MUT, False, 8),
-        ('gia documentato in ep_curve.json), non una sottostima del premio. Dettagli:', MUT, False, 8),
-        ('docs/esplorazione_validazione_rp30.md, §6-§7.', MUT, False, 8),
+            fmt_it(gate['totale_quota_benchmark'], 2)), INK, 8.8),
+        ('', INK, 0),
+        ("Nota: il gap 1,035-vs-1,713 mld e artefatto dell'approssimazione CURVE=4 (ratio 1,655 gia "
+         'documentato in ep_curve.json), non una sottostima del premio. Dettagli in '
+         'docs/esplorazione_validazione_rp30.md, §6-§7.', MUT, 7.6),
     ]
-    yy = by + 24
-    for s, col, bold, size in lines:
-        if s:
-            parts.append(txt(bx + 12, yy, s, size, col, bold=bold))
-        yy += 17 if size >= 9 else 13
+
+    def wrap(s, size):
+        # a capo deterministico su spazi: la larghezza del box e PW - 2*12 px
+        if size <= 0:
+            return ['']
+        maxch = max(20, int((PW - 26) / (0.57 * size)))
+        out = []
+        for chunk in s.split(' '):
+            if out and len(out[-1]) + 1 + len(chunk) <= maxch:
+                out[-1] += ' ' + chunk
+            elif out and out[-1] == '':
+                out[-1] = chunk
+            elif out and out[-1]:
+                out.append(chunk)
+            else:
+                out.append(chunk)
+        return out
+
+    yy = by + 20
+    for s, col, size in lines:
+        if size >= 11:          # titolo del box
+            parts.append(txt(bx + 12, yy + 4, s, size, col, bold=True))
+            yy += 20
+            continue
+        for ln in wrap(s, size):
+            if ln:
+                parts.append(txt(bx + 12, yy, ln, size, col))
+            yy += 12 if size >= 8.5 else 10.5
     parts.append(txt(W / 2, H - 10,
                      'Fonti: INGV CPTI15 v4.0 (Rovida et al.), MPS04, IVASS, AIDA · valori letti da results/esplorazione_*.json · '
                      'generato da scripts/esplorazione/grafici_rp30.py · dettagli in docs/esplorazione_validazione_rp30.md',

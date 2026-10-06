@@ -181,8 +181,9 @@ def p_chi(x0, y0, chi):
     parts.append(rect(px + 130, py - 8, 9, 9, ROSSO))
     parts.append(txt(px + 143, py, 'Grandi (%s impr.)' % fmt_migliaia(n_g), 8.4, INK))
     pm, pg = naz['premio_medio_impresa_PMI_EUR'], naz['premio_medio_impresa_grande_EUR']
-    parts.append(txt(px + pw, py - 8, 'premio medio: %s vs %s EUR (x%.0f)'
-                     % (fmt_migliaia(pm), fmt_migliaia(pg), pg / pm), 8, MUT, anchor='end'))
+    parts.append(txt(px + pw / 2, py + ph + 23,
+                     'premio medio: %s vs %s EUR (x%.0f)'
+                     % (fmt_migliaia(pm), fmt_migliaia(pg), pg / pm), 7.8, MUT, anchor='middle'))
     return parts
 
 

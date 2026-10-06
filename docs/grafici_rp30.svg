@@ -33,17 +33,13 @@
 <rect x="414.0" y="156.9" width="209.9" height="23.3" fill="#c97b2a" stroke="none"/>
 <text x="418.0" y="171.5" font-size="8.2" fill="#fff" text-anchor="start">Valnerina 2016  13,7 (M6,61)</text>
 <rect x="414.0" y="193.2" width="92.7" height="23.3" fill="#c97b2a" stroke="none"/>
-<text x="418.0" y="207.8" font-size="8.2" fill="#fff" text-anchor="start">Irpinia-Basilicata 1980</text>
-<text x="511.7" y="207.8" font-size="8.2" fill="#222" text-anchor="start">6,0 (M6,81)</text>
+<text x="511.7" y="207.8" font-size="8.2" fill="#222" text-anchor="start">Irpinia-Basilicata 1980  6,0 (M6,81)</text>
 <rect x="414.0" y="229.5" width="77.3" height="23.3" fill="#c97b2a" stroke="none"/>
-<text x="418.0" y="244.2" font-size="8.2" fill="#fff" text-anchor="start">Pianura emiliana 2012</text>
-<text x="496.3" y="244.2" font-size="8.2" fill="#222" text-anchor="start">5,0 (M5,90)</text>
+<text x="496.3" y="244.2" font-size="8.2" fill="#222" text-anchor="start">Pianura emiliana 2012  5,0 (M5,90)</text>
 <rect x="414.0" y="265.9" width="61.6" height="23.3" fill="#c97b2a" stroke="none"/>
-<text x="418.0" y="280.5" font-size="8.2" fill="#fff" text-anchor="start">Pianura emiliana 2012</text>
-<text x="480.6" y="280.5" font-size="8.2" fill="#222" text-anchor="start">4,0 (M5,50)</text>
+<text x="480.6" y="280.5" font-size="8.2" fill="#222" text-anchor="start">Pianura emiliana 2012  4,0 (M5,50)</text>
 <rect x="414.0" y="302.2" width="60.4" height="23.3" fill="#c97b2a" stroke="none"/>
-<text x="418.0" y="316.8" font-size="8.2" fill="#fff" text-anchor="start">Parmense 1983</text>
-<text x="479.4" y="316.8" font-size="8.2" fill="#222" text-anchor="start">3,9 (M5,04)</text>
+<text x="479.4" y="316.8" font-size="8.2" fill="#222" text-anchor="start">Parmense 1983  3,9 (M5,04)</text>
 <line x1="414.0" y1="332.0" x2="706.00" y2="332.00" stroke="#bbb" stroke-width="1"/>
 <text x="560.0" y="355.0" font-size="7.8" fill="#777" text-anchor="middle">CPTI15 v4.0, Mw&gt;=5,0 — contributo = tasso empirico x danno sotto ag_RP30 per sito</text>
 <rect x="740.0" y="66.0" width="340.0" height="290.0" fill="#ffffff" stroke="#d8d6ce"/>
@@ -137,13 +133,18 @@
 <text x="560.0" y="685.0" font-size="7.8" fill="#777" text-anchor="middle">intervallo complessivo 16-123 mln/anno; la stima puntuale e un limite inferiore</text>
 <rect x="740.0" y="396.0" width="340.0" height="290.0" fill="#ffffff" stroke="#d8d6ce"/>
 <text x="752.0" y="420.0" font-size="11.5" font-weight="bold" fill="#222" text-anchor="start">Il verdetto in cinque righe</text>
-<text x="752.0" y="454.0" font-size="9" fill="#222" text-anchor="start">1. Sotto RP30 non esiste hazard pubblico MPS04 (81% in 50 anni = RP~30: il muro informativo).</text>
-<text x="752.0" y="471.0" font-size="9" fill="#222" text-anchor="start">2. La coda frequente e fatta di eventi osservati: Mw&gt;=6 ogni ~6,8 anni (CPTI15 1980-2020).</text>
-<text x="752.0" y="488.0" font-size="9" fill="#222" text-anchor="start">3. Stima event-based: 77 mln/anno, il 4,5% del limite RP&gt;=30 — correctivo minore, non un raddoppio.</text>
-<text x="752.0" y="505.0" font-size="9" fill="#222" text-anchor="start">4. I prior max-ent (P1 3,18 / P2 1,45 mld) si archiviano come bound laschi: scartati dal gate.</text>
-<text x="752.0" y="522.0" font-size="9" fill="#222" text-anchor="start">5. Totale RP&gt;=0 = 1,79 mld (1,73x benchmark); chiusura definitiva al passo DBMI15 (danni osservati).</text>
-<text x="752.0" y="556.0" font-size="8" fill="#777" text-anchor="start">Nota: il gap 1,035-vs-1,713 mld e artefatto dell'approssimazione CURVE=4 (ratio 1,655</text>
-<text x="752.0" y="569.0" font-size="8" fill="#777" text-anchor="start">gia documentato in ep_curve.json), non una sottostima del premio. Dettagli:</text>
-<text x="752.0" y="582.0" font-size="8" fill="#777" text-anchor="start">docs/esplorazione_validazione_rp30.md, §6-§7.</text>
+<text x="752.0" y="446.5" font-size="8.8" fill="#222" text-anchor="start">1. Sotto RP30 non esiste hazard pubblico MPS04 (81% in 50 anni</text>
+<text x="752.0" y="458.5" font-size="8.8" fill="#222" text-anchor="start">= RP~30: il muro informativo).</text>
+<text x="752.0" y="470.5" font-size="8.8" fill="#222" text-anchor="start">2. La coda frequente e fatta di eventi osservati: Mw&gt;=6 ogni</text>
+<text x="752.0" y="482.5" font-size="8.8" fill="#222" text-anchor="start">~6,8 anni (CPTI15 1980-2020).</text>
+<text x="752.0" y="494.5" font-size="8.8" fill="#222" text-anchor="start">3. Stima event-based: 77 mln/anno, il 4,5% del limite RP&gt;=30 -</text>
+<text x="752.0" y="506.5" font-size="8.8" fill="#222" text-anchor="start">correctivo minore, non un raddoppio.</text>
+<text x="752.0" y="518.5" font-size="8.8" fill="#222" text-anchor="start">4. I prior max-ent (P1 3,18 / P2 1,45 mld) si archiviano come</text>
+<text x="752.0" y="530.5" font-size="8.8" fill="#222" text-anchor="start">bound laschi: scartati dal gate.</text>
+<text x="752.0" y="542.5" font-size="8.8" fill="#222" text-anchor="start">5. Totale RP&gt;=0 = 1,79 mld (1,73x benchmark); chiusura</text>
+<text x="752.0" y="554.5" font-size="8.8" fill="#222" text-anchor="start">definitiva al passo DBMI15 (danni osservati).</text>
+<text x="752.0" y="577.0" font-size="7.6" fill="#777" text-anchor="start">Nota: il gap 1,035-vs-1,713 mld e artefatto dell'approssimazione CURVE=4</text>
+<text x="752.0" y="587.5" font-size="7.6" fill="#777" text-anchor="start">(ratio 1,655 gia documentato in ep_curve.json), non una sottostima del</text>
+<text x="752.0" y="598.0" font-size="7.6" fill="#777" text-anchor="start">premio. Dettagli in docs/esplorazione_validazione_rp30.md, §6-§7.</text>
 <text x="560.0" y="750.0" font-size="8.5" fill="#777" text-anchor="middle">Fonti: INGV CPTI15 v4.0 (Rovida et al.), MPS04, IVASS, AIDA · valori letti da results/esplorazione_*.json · generato da scripts/esplorazione/grafici_rp30.py · dettagli in docs/esplorazione_validazione_rp30.md</text>
 </svg>

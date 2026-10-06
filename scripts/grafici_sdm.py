@@ -24,8 +24,10 @@ Output 1: docs/grafici_sdm.svg - quadro a sei pannelli dei risultati SDM:
    del pannello 3 (nota: noSardegna cambia anche la W, n=3.753).
 
 Output 2: docs/mappe_hazard.svg - dot map comunali (stile di docs/mappa_loss.svg):
-ag RP475 (MPS04, in g) e quota di area comunale in frana P3/P4
-(hazard_frana_share, 0-1), classi ai quantili, ordinamento per PRO_COM.
+ag RP475 (MPS04, in g), quota di area comunale in frana P3/P4
+(hazard_frana_share, 0-1) e quota di area in frana idrogeologica P3
+(hazard_idraulico_share = IDR_area_P3_kmq / SUP_kmq, 0-1),
+ordinamento per PRO_COM.
 
 Deterministico, solo stdlib. Esecuzione dalla root del repo:
     python3 scripts/grafici_sdm.py
@@ -248,7 +250,8 @@ def p_robustezza(x0, y0, fin):
     v = lo
     while v <= hi + 1e-9:
         parts.append(line(lx(v), py, lx(v), py + ph, GRID, '2 3'))
-        parts.append(txt(lx(v), py + ph + 11, fmt_it(v, 3), 8.3, MUT, anchor='middle'))
+        if abs(round(v / tick) % 2) == 0:   # etichette ogni 0,01: griglia fitta, tick rado
+            parts.append(txt(lx(v), py + ph + 11, fmt_it(v, 3), 8.3, MUT, anchor='middle'))
         v += tick
     for i, (lbl, b, se, _rho) in enumerate(stats):
         yy = py + dy * (i + 0.75)
@@ -290,7 +293,6 @@ def p_aic(x0, y0, fin, grid):
     for k in (3, 10, 20, 30):
         parts.append(txt(lx(k), py + ph + 11, str(k), 8.3, MUT, anchor='middle'))
     parts.append(txt(px + pw / 2, py + ph + 24, 'vicini k (KNN, matrice W)', 8.4, MUT, anchor='middle'))
-    parts.append(txt(px - 5, py + 4, 'AIC', 8.3, MUT, anchor='end'))
     return parts
 
 
@@ -364,6 +366,7 @@ def quadro(fin, grid):
 # ============================================================ mappe hazard
 PALETTE_SIS = ['#f2ecdc', '#e8d5a8', '#dbb06a', '#c9813f', '#a84f26', '#7c2d16']
 PALETTE_FRA = ['#eef2ea', '#cfdcc2', '#a8c69a', '#7ba86f', '#4f844f', '#2e6242']
+PALETTE_IDR = ['#eaf1f6', '#cadceb', '#a3c4da', '#75a3c2', '#4680a8', '#285b82']
 NCLASSI = 6
 
 
@@ -426,29 +429,41 @@ def mappe():
     with open(MATRICE, newline='', encoding='utf-8') as f:
         for r in csv.DictReader(f):
             rows.append(r)
-    sis, fra = [], []
+    sis, fra, idr = [], [], []
     for r in sorted(rows, key=lambda r: r['PRO_COM']):   # determinismo
         lon, lat = float(r['long']), float(r['lat'])
         ag = float(r['ag_RP475'])
         share = float(r['PAI_area_P3P4_kmq']) / float(r['SUP_kmq'])
         share = max(0.0, min(1.0, share))
+        idr_share = float(r['IDR_area_P3_kmq']) / float(r['SUP_kmq'])
+        idr_share = max(0.0, min(1.0, idr_share))
         sis.append((lon, lat, ag))
         fra.append((lon, lat, share))
+        idr.append((lon, lat, idr_share))
     parts = ['<svg xmlns="http://www.w3.org/2000/svg" width="1040" height="640" viewBox="0 0 1040 640">\n'
              '<rect width="1040" height="640" fill="#f6f5f0"/>\n']
-    parts.append(txt(20, 28, 'Hazard comunali: sismico (MPS04) e frana (PAI P3/P4)', 15, INK, bold=True))
+    parts.append(txt(20, 28, 'Hazard comunali: sismico (MPS04), frana (PAI P3/P4) e idraulico (PAI P3)', 15, INK, bold=True))
     parts.append(txt(20, 44, 'dot map dei 3.823 comuni (data/Matrice_Modello_Savelli_Final_sismico.csv), '
                              'classi ai quantili, proiezione equidistante', 9, MUT))
-    parts += pannello_mappa(20, 58, 496, 556,
+    PW3, GAP3 = 322, 17
+    xs = [20, 20 + PW3 + GAP3, 20 + 2 * (PW3 + GAP3)]
+    parts += pannello_mappa(xs[0], 58, PW3, 556,
                             'ag RP 475 anni (accelerazione, g)',
-                            'MPS04 INGV, 10% in 50 anni; 70 comuni sardi non classificati (ag = 0)',
+                            'MPS04 INGV, 10% in 50 anni; 70 comuni sardi non classificati',
                             sis, PALETTE_SIS, 'g',
                             'Sardegna: hazard sismico non classificato nelle mappe MPS04 (ag = 0)')
-    parts += pannello_mappa(524, 58, 496, 556,
-                            'Quota di area comunale in frana P3/P4',
+    parts += pannello_mappa(xs[1], 58, PW3, 556,
+                            'Quota di area in frana P3/P4',
                             'hazard_frana_share = PAI_area_P3P4_kmq / SUP_kmq (ISPRA, 0-1)',
                             fra, PALETTE_FRA, 'quota area',
                             'Fonte: aree PAI P3/P4 ISPRA; classe 0 = quota nulla o trascurabile',
+                            breaks=[0.001, 0.01, 0.05, 0.15, 0.30],
+                            legenda_classi='classi fisse (%s)', legenda_dec=3)
+    parts += pannello_mappa(xs[2], 58, PW3, 556,
+                            'Quota di area in frana idrogeologica P3',
+                            'hazard_idraulico_share = IDR_area_P3_kmq / SUP_kmq (ISPRA, 0-1)',
+                            idr, PALETTE_IDR, 'quota area',
+                            'Fonte: aree PAI di frana idrogeologica P3 ISPRA; classe 0 = quota nulla',
                             breaks=[0.001, 0.01, 0.05, 0.15, 0.30],
                             legenda_classi='classi fisse (%s)', legenda_dec=3)
     return ''.join(parts) + '\n</svg>\n'
