@@ -1,0 +1,230 @@
+{
+ "esperimento": "validazione catalogo CPTI15 v4.0 (INGV) per la fase di validazione della coda RP<30 (ramo dev)",
+ "fonte": {
+  "url": "https://emidius.mi.ingv.it/CPTI15-DBMI15/data/CPTI15_v4.0.xlsx",
+  "md5": "c7e9a48ec7b348fec669ecf21906e3bc",
+  "citazione": "Rovida A., Locati M., Camassi R., Lolli B., Gasperini P. (a cura di), CPTI15 v4.0, INGV",
+  "note": "uso scientifico con citazione obbligatoria della fonte; file non archiviato nel repo"
+ },
+ "copertura": {
+  "n_eventi_con_Mw": 4737,
+  "n_righe_senza_Mw": 157,
+  "finestra": "1005-2020",
+  "Mw_min": 2.22,
+  "Mw_max": 7.32
+ },
+ "tassi_empirici": {
+  "1600_2020": {
+   "Mw>=4.0": {
+    "n": 3567,
+    "eventi_anno": 8.473
+   },
+   "Mw>=4.5": {
+    "n": 1640,
+    "eventi_anno": 3.895
+   },
+   "Mw>=5.0": {
+    "n": 626,
+    "eventi_anno": 1.487
+   },
+   "Mw>=5.5": {
+    "n": 202,
+    "eventi_anno": 0.48
+   },
+   "Mw>=6.0": {
+    "n": 68,
+    "eventi_anno": 0.162
+   },
+   "Mw>=6.5": {
+    "n": 30,
+    "eventi_anno": 0.071
+   }
+  },
+  "1900_2020": {
+   "Mw>=4.0": {
+    "n": 2449,
+    "eventi_anno": 20.24
+   },
+   "Mw>=4.5": {
+    "n": 943,
+    "eventi_anno": 7.793
+   },
+   "Mw>=5.0": {
+    "n": 297,
+    "eventi_anno": 2.455
+   },
+   "Mw>=5.5": {
+    "n": 75,
+    "eventi_anno": 0.62
+   },
+   "Mw>=6.0": {
+    "n": 18,
+    "eventi_anno": 0.149
+   },
+   "Mw>=6.5": {
+    "n": 7,
+    "eventi_anno": 0.058
+   }
+  },
+  "1960_2020": {
+   "Mw>=4.0": {
+    "n": 1611,
+    "eventi_anno": 26.41
+   },
+   "Mw>=4.5": {
+    "n": 532,
+    "eventi_anno": 8.721
+   },
+   "Mw>=5.0": {
+    "n": 143,
+    "eventi_anno": 2.344
+   },
+   "Mw>=5.5": {
+    "n": 43,
+    "eventi_anno": 0.705
+   },
+   "Mw>=6.0": {
+    "n": 10,
+    "eventi_anno": 0.164
+   },
+   "Mw>=6.5": {
+    "n": 2,
+    "eventi_anno": 0.033
+   }
+  },
+  "1980_2020": {
+   "Mw>=4.0": {
+    "n": 1240,
+    "eventi_anno": 30.244
+   },
+   "Mw>=4.5": {
+    "n": 351,
+    "eventi_anno": 8.561
+   },
+   "Mw>=5.0": {
+    "n": 92,
+    "eventi_anno": 2.244
+   },
+   "Mw>=5.5": {
+    "n": 29,
+    "eventi_anno": 0.707
+   },
+   "Mw>=6.0": {
+    "n": 6,
+    "eventi_anno": 0.146
+   },
+   "Mw>=6.5": {
+    "n": 2,
+    "eventi_anno": 0.049
+   }
+  },
+  "2000_2020": {
+   "Mw>=4.0": {
+    "n": 646,
+    "eventi_anno": 30.762
+   },
+   "Mw>=4.5": {
+    "n": 174,
+    "eventi_anno": 8.286
+   },
+   "Mw>=5.0": {
+    "n": 49,
+    "eventi_anno": 2.333
+   },
+   "Mw>=5.5": {
+    "n": 17,
+    "eventi_anno": 0.81
+   },
+   "Mw>=6.0": {
+    "n": 5,
+    "eventi_anno": 0.238
+   },
+   "Mw>=6.5": {
+    "n": 1,
+    "eventi_anno": 0.048
+   }
+  }
+ },
+ "finestra_completa_riferimento": "1980-2020 (strumentale, completa per M>=4.5: M>=5,5 ogni ~1,4 anni, M>=6 ogni ~6,8 anni)",
+ "eventi_noti": [
+  {
+   "evento": "L'Aquila 2009",
+   "anno": 2009,
+   "trovato": true,
+   "area": "Aquilano",
+   "Mw": 6.29,
+   "Mw_atteso": 6.29,
+   "ok": true
+  },
+  {
+   "evento": "Amatrice 2016",
+   "anno": 2016,
+   "trovato": true,
+   "area": "Monti della Laga",
+   "Mw": 6.18,
+   "Mw_atteso": 6.18,
+   "ok": true
+  },
+  {
+   "evento": "Emilia 2012",
+   "anno": 2012,
+   "trovato": true,
+   "area": "Pianura emiliana",
+   "Mw": 6.09,
+   "Mw_atteso": 6.09,
+   "ok": true
+  },
+  {
+   "evento": "Irpinia 1980",
+   "anno": 1980,
+   "trovato": true,
+   "area": "Irpinia-Basilicata",
+   "Mw": 6.81,
+   "Mw_atteso": 6.81,
+   "ok": true
+  },
+  {
+   "evento": "Molise 2002",
+   "anno": 2002,
+   "trovato": true,
+   "area": "Molise",
+   "Mw": 5.74,
+   "Mw_atteso": 5.72,
+   "ok": true
+  }
+ ],
+ "coerenza_Mw_Io": [
+  {
+   "classe_Mw": "[4.0,4.5)",
+   "n": 741,
+   "Io_mediano": 5.0,
+   "Io_max": 8.0
+  },
+  {
+   "classe_Mw": "[4.5,5.0)",
+   "n": 417,
+   "Io_mediano": 6.0,
+   "Io_max": 8.5
+  },
+  {
+   "classe_Mw": "[5.0,5.5)",
+   "n": 148,
+   "Io_mediano": 7.0,
+   "Io_max": 9.5
+  },
+  {
+   "classe_Mw": "[5.5,6.0)",
+   "n": 38,
+   "Io_mediano": 8.0,
+   "Io_max": 9.5
+  },
+  {
+   "classe_Mw": "[6.0,9.0)",
+   "n": 16,
+   "Io_mediano": 10.0,
+   "Io_max": 11.0
+  }
+ ],
+ "nota_parsing": "IoDef puo' essere un intervallo (es. '6-7'): convertito al punto medio; 2 righe vuote scartate",
+ "verdetto": "catalogo coerente: 5/5 eventi noti verificati, tassi stabili sulle finestre 1960/1980/2000 (completezza M>=4,5 raggiunta), Mw->Io monotono. Ancoraggio empirico per la coda frequente: gli eventi dannosi M>=6 ricorrono ogni ~7 anni, DENTRO la banda RP<30: la coda frequente esiste e va modellata dal lato eventi (frequenze CPTI15 x fragilita x esposizione), non dall’extrapolazione della curva EP."
+}
