@@ -47,6 +47,7 @@ python3 scripts/pricing/validazione_assunzioni.py
 echo "-- [3/3] grafici SVG e SE robusti HC1 del SDM (Node)"
 python3 scripts/pricing/grafici.py
 python3 scripts/grafici_sdm.py
+python3 scripts/esplorazione/grafici_rp30.py
 node scripts/se_robusti.js
 
 if [ "$RIF" = 1 ]; then

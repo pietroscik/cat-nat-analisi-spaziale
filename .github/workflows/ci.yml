@@ -34,6 +34,7 @@ jobs:
             scripts/pricing/validazione_assunzioni.py \
             scripts/pricing/grafici.py \
             scripts/grafici_sdm.py \
+            scripts/esplorazione/grafici_rp30.py \
             scripts/sismico/match_sismico.py \
             scripts/sismico/build_matrice_v2.py \
             scripts/sismico/parse_biff.py \
@@ -66,11 +67,12 @@ jobs:
             docs/mappa_lisa_tariffa.svg docs/grafici_pricing.svg || \
             { echo "ERRORE: output approfondimenti non riproducibile (git diff)"; git diff --stat; exit 1; }
 
-      - name: Grafici SDM e mappe hazard (deterministici, rigenerano SVG)
+      - name: Grafici SVG (deterministici, rigenerano SDM/mappe hazard/coda RP<30)
         run: |
           python scripts/grafici_sdm.py
-          git diff --quiet -- docs/grafici_sdm.svg docs/mappe_hazard.svg || \
-            { echo "ERRORE: grafici SDM non riproducibili (git diff)"; git diff --stat; exit 1; }
+          python scripts/esplorazione/grafici_rp30.py
+          git diff --quiet -- docs/grafici_sdm.svg docs/mappe_hazard.svg docs/grafici_rp30.svg || \
+            { echo "ERRORE: grafici SVG non riproducibili (git diff)"; git diff --stat; exit 1; }
 
       - name: Setup Node
         uses: actions/setup-node@v4

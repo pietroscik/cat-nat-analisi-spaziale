@@ -1,0 +1,149 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1120" height="760" viewBox="0 0 1120 760" font-family="Helvetica,Arial,sans-serif">
+<rect width="1120" height="760" fill="#fafaf7"/>
+<text x="560.0" y="26.0" font-size="16" font-weight="bold" fill="#222" text-anchor="middle">Coda frequente RP&lt;30: dalla banda a priori alla stima event-based</text>
+<text x="560.0" y="44.0" font-size="10" fill="#777" text-anchor="middle">verdetto MPS04 · catalogo CPTI15 v4.0 · stima event-based · gate · sensibilita</text>
+<rect x="20.0" y="66.0" width="340.0" height="290.0" fill="#ffffff" stroke="#d8d6ce"/>
+<text x="30.0" y="86.0" font-size="11.5" font-weight="bold" fill="#222" text-anchor="start">1. Composizione della coda frequente</text>
+<text x="30.0" y="100.0" font-size="8.6" fill="#777" text-anchor="start">AAL event-based per bin di magnitudo (mln EUR/anno, RP&lt;30)</text>
+<line x1="54.0" y1="259.3" x2="346.00" y2="259.33" stroke="#e4e2da" stroke-width="1"/>
+<text x="49.0" y="262.3" font-size="8.5" fill="#777" text-anchor="end">10</text>
+<line x1="54.0" y1="186.7" x2="346.00" y2="186.67" stroke="#e4e2da" stroke-width="1"/>
+<text x="49.0" y="189.7" font-size="8.5" fill="#777" text-anchor="end">20</text>
+<line x1="54.0" y1="114.0" x2="346.00" y2="114.00" stroke="#e4e2da" stroke-width="1"/>
+<text x="49.0" y="117.0" font-size="8.5" fill="#777" text-anchor="end">30</text>
+<rect x="71.5" y="236.2" width="38.0" height="95.8" fill="#9c1f1f" stroke="none"/>
+<text x="90.5" y="231.2" font-size="9" font-weight="bold" fill="#222" text-anchor="middle">13,2</text>
+<text x="90.5" y="344.0" font-size="8.6" fill="#777" text-anchor="middle">5,0-5,5</text>
+<rect x="144.5" y="194.6" width="38.0" height="137.4" fill="#9c1f1f" stroke="none"/>
+<text x="163.5" y="189.6" font-size="9" font-weight="bold" fill="#222" text-anchor="middle">18,9</text>
+<text x="163.5" y="344.0" font-size="8.6" fill="#777" text-anchor="middle">5,5-6,0</text>
+<rect x="217.5" y="148.1" width="38.0" height="183.9" fill="#9c1f1f" stroke="none"/>
+<text x="236.5" y="143.1" font-size="9" font-weight="bold" fill="#222" text-anchor="middle">25,3</text>
+<text x="236.5" y="344.0" font-size="8.6" fill="#777" text-anchor="middle">6,0-6,5</text>
+<rect x="290.5" y="188.6" width="38.0" height="143.4" fill="#9c1f1f" stroke="none"/>
+<text x="309.5" y="183.6" font-size="9" font-weight="bold" fill="#222" text-anchor="middle">19,7</text>
+<text x="309.5" y="344.0" font-size="8.6" fill="#777" text-anchor="middle">6,5+</text>
+<line x1="54.0" y1="332.0" x2="346.00" y2="332.00" stroke="#bbb" stroke-width="1"/>
+<text x="200.0" y="355.0" font-size="7.8" fill="#777" text-anchor="middle">magnitudo Mw (finestra 1980-2020) — il 58% dal bin 6,0+ (stessi eventi maggiori)</text>
+<rect x="380.0" y="66.0" width="340.0" height="290.0" fill="#ffffff" stroke="#d8d6ce"/>
+<text x="390.0" y="86.0" font-size="11.5" font-weight="bold" fill="#222" text-anchor="start">2. Top eventi storici</text>
+<text x="390.0" y="100.0" font-size="8.6" fill="#777" text-anchor="start">maggiori contributi alla AAL frequente (mln EUR/anno)</text>
+<rect x="414.0" y="120.5" width="260.7" height="23.3" fill="#c97b2a" stroke="none"/>
+<text x="418.0" y="135.2" font-size="8.2" fill="#fff" text-anchor="start">Pianura emiliana 2012  17,0 (M6,09)</text>
+<rect x="414.0" y="156.9" width="209.9" height="23.3" fill="#c97b2a" stroke="none"/>
+<text x="418.0" y="171.5" font-size="8.2" fill="#fff" text-anchor="start">Valnerina 2016  13,7 (M6,61)</text>
+<rect x="414.0" y="193.2" width="92.7" height="23.3" fill="#c97b2a" stroke="none"/>
+<text x="418.0" y="207.8" font-size="8.2" fill="#fff" text-anchor="start">Irpinia-Basilicata 1980</text>
+<text x="511.7" y="207.8" font-size="8.2" fill="#222" text-anchor="start">6,0 (M6,81)</text>
+<rect x="414.0" y="229.5" width="77.3" height="23.3" fill="#c97b2a" stroke="none"/>
+<text x="418.0" y="244.2" font-size="8.2" fill="#fff" text-anchor="start">Pianura emiliana 2012</text>
+<text x="496.3" y="244.2" font-size="8.2" fill="#222" text-anchor="start">5,0 (M5,90)</text>
+<rect x="414.0" y="265.9" width="61.6" height="23.3" fill="#c97b2a" stroke="none"/>
+<text x="418.0" y="280.5" font-size="8.2" fill="#fff" text-anchor="start">Pianura emiliana 2012</text>
+<text x="480.6" y="280.5" font-size="8.2" fill="#222" text-anchor="start">4,0 (M5,50)</text>
+<rect x="414.0" y="302.2" width="60.4" height="23.3" fill="#c97b2a" stroke="none"/>
+<text x="418.0" y="316.8" font-size="8.2" fill="#fff" text-anchor="start">Parmense 1983</text>
+<text x="479.4" y="316.8" font-size="8.2" fill="#222" text-anchor="start">3,9 (M5,04)</text>
+<line x1="414.0" y1="332.0" x2="706.00" y2="332.00" stroke="#bbb" stroke-width="1"/>
+<text x="560.0" y="355.0" font-size="7.8" fill="#777" text-anchor="middle">CPTI15 v4.0, Mw&gt;=5,0 — contributo = tasso empirico x danno sotto ag_RP30 per sito</text>
+<rect x="740.0" y="66.0" width="340.0" height="290.0" fill="#ffffff" stroke="#d8d6ce"/>
+<text x="750.0" y="86.0" font-size="11.5" font-weight="bold" fill="#222" text-anchor="start">3. Gate: quanto vale la coda frequente?</text>
+<text x="750.0" y="100.0" font-size="8.6" fill="#777" text-anchor="start">AAL (mld EUR/anno) — stima event-based vs bounds del gate</text>
+<line x1="857.4" y1="114.0" x2="857.38" y2="332.00" stroke="#e4e2da" stroke-width="1"/>
+<text x="857.4" y="343.0" font-size="7.8" fill="#777" text-anchor="middle">1</text>
+<line x1="940.8" y1="114.0" x2="940.75" y2="332.00" stroke="#e4e2da" stroke-width="1"/>
+<text x="940.8" y="343.0" font-size="7.8" fill="#777" text-anchor="middle">2</text>
+<line x1="1024.1" y1="114.0" x2="1024.13" y2="332.00" stroke="#e4e2da" stroke-width="1"/>
+<text x="1024.1" y="343.0" font-size="7.8" fill="#777" text-anchor="middle">3</text>
+<rect x="774.0" y="122.7" width="265.5" height="26.2" fill="#777" stroke="#9a9a9a"/>
+<text x="778.0" y="138.8" font-size="8.2" fill="#fff" text-anchor="start">prior max-ent P1 (scartato)  3,18</text>
+<rect x="774.0" y="166.3" width="124.5" height="26.2" fill="#c97b2a" stroke="none"/>
+<text x="903.5" y="182.4" font-size="8.2" font-weight="bold" fill="#c97b2a" text-anchor="start">1,49</text>
+<text x="938.5" y="182.4" font-size="8.2" fill="#222" text-anchor="start">variante prudenziale scalata</text>
+<rect x="774.0" y="209.9" width="6.4" height="26.2" fill="#9c1f1f" stroke="none"/>
+<text x="785.4" y="226.0" font-size="8.2" font-weight="bold" fill="#9c1f1f" text-anchor="start">0,08</text>
+<text x="820.4" y="226.0" font-size="8.2" fill="#222" text-anchor="start">stima event-based (base)</text>
+<rect x="774.0" y="253.5" width="4.6" height="26.2" fill="#3f7d4e" stroke="none"/>
+<text x="783.6" y="269.6" font-size="8.2" font-weight="bold" fill="#3f7d4e" text-anchor="start">0,06</text>
+<text x="818.6" y="269.6" font-size="8.2" fill="#222" text-anchor="start">pavimento declusterato</text>
+<rect x="774.0" y="297.1" width="142.8" height="26.2" fill="#2b5f9e" stroke="none"/>
+<text x="921.8" y="313.2" font-size="8.2" font-weight="bold" fill="#2b5f9e" text-anchor="start">1,71</text>
+<text x="956.8" y="313.2" font-size="8.2" fill="#222" text-anchor="start">limite identificato RP&gt;=30</text>
+<line x1="774.0" y1="332.0" x2="1066.00" y2="332.00" stroke="#bbb" stroke-width="1"/>
+<text x="920.0" y="355.0" font-size="7.8" fill="#777" text-anchor="middle">event-based = 4,5% del limite RP&gt;=30: correctivo minore → totale RP&gt;=0 1,79 mld</text>
+<rect x="20.0" y="396.0" width="340.0" height="290.0" fill="#ffffff" stroke="#d8d6ce"/>
+<text x="30.0" y="416.0" font-size="11.5" font-weight="bold" fill="#222" text-anchor="start">4. Totale RP&gt;=0 vs benchmark CURVE=4</text>
+<text x="30.0" y="430.0" font-size="8.6" fill="#777" text-anchor="start">rapporto x del totale sul benchmark (1,03 mld EUR/anno)</text>
+<line x1="110.1" y1="444.0" x2="110.09" y2="662.00" stroke="#e4e2da" stroke-width="1"/>
+<text x="110.1" y="673.0" font-size="7.8" fill="#777" text-anchor="middle">1x</text>
+<line x1="166.2" y1="444.0" x2="166.17" y2="662.00" stroke="#e4e2da" stroke-width="1"/>
+<text x="166.2" y="673.0" font-size="7.8" fill="#777" text-anchor="middle">2x</text>
+<line x1="222.3" y1="444.0" x2="222.26" y2="662.00" stroke="#e4e2da" stroke-width="1"/>
+<text x="222.3" y="673.0" font-size="7.8" fill="#777" text-anchor="middle">3x</text>
+<line x1="278.3" y1="444.0" x2="278.34" y2="662.00" stroke="#e4e2da" stroke-width="1"/>
+<text x="278.3" y="673.0" font-size="7.8" fill="#777" text-anchor="middle">4x</text>
+<rect x="54.0" y="452.7" width="265.5" height="26.2" fill="#777" stroke="none"/>
+<text x="58.0" y="468.8" font-size="8.2" fill="#fff" text-anchor="start">P1 max-ent (scartato)  4,73x</text>
+<rect x="54.0" y="496.3" width="173.8" height="26.2" fill="#c97b2a" stroke="none"/>
+<text x="58.0" y="512.4" font-size="8.2" fill="#fff" text-anchor="start">prudenza estrema (scalata)  3,10x</text>
+<rect x="54.0" y="539.9" width="171.3" height="26.2" fill="#777" stroke="none"/>
+<text x="58.0" y="556.0" font-size="8.2" fill="#fff" text-anchor="start">P2 appiattita (scartata)  3,05x</text>
+<rect x="54.0" y="583.5" width="97.0" height="26.2" fill="#9c1f1f" stroke="none"/>
+<text x="156.0" y="599.6" font-size="8.2" font-weight="bold" fill="#9c1f1f" text-anchor="start">1,73x</text>
+<text x="183.0" y="599.6" font-size="8.2" fill="#222" text-anchor="start">centrale (1,71 + 0,077)</text>
+<rect x="54.0" y="627.1" width="92.8" height="26.2" fill="#2b5f9e" stroke="none"/>
+<text x="151.8" y="643.2" font-size="8.2" font-weight="bold" fill="#2b5f9e" text-anchor="start">1,66x</text>
+<text x="178.8" y="643.2" font-size="8.2" fill="#222" text-anchor="start">limite inferiore RP&gt;=30</text>
+<line x1="54.0" y1="662.0" x2="346.00" y2="662.00" stroke="#bbb" stroke-width="1"/>
+<text x="200.0" y="685.0" font-size="7.8" fill="#777" text-anchor="middle">i prior P1/P2 si archiviano come bound laschi (41x/19x sopra la stima event-based)</text>
+<rect x="380.0" y="396.0" width="340.0" height="290.0" fill="#ffffff" stroke="#d8d6ce"/>
+<text x="390.0" y="416.0" font-size="11.5" font-weight="bold" fill="#222" text-anchor="start">5. Sensibilità della stima</text>
+<text x="390.0" y="430.0" font-size="8.6" fill="#777" text-anchor="start">AAL frequente per variante (mln EUR/anno)</text>
+<line x1="470.2" y1="444.0" x2="470.15" y2="662.00" stroke="#e4e2da" stroke-width="1"/>
+<text x="470.2" y="673.0" font-size="7.8" fill="#777" text-anchor="middle">25</text>
+<line x1="526.3" y1="444.0" x2="526.31" y2="662.00" stroke="#e4e2da" stroke-width="1"/>
+<text x="526.3" y="673.0" font-size="7.8" fill="#777" text-anchor="middle">50</text>
+<line x1="582.5" y1="444.0" x2="582.46" y2="662.00" stroke="#e4e2da" stroke-width="1"/>
+<text x="582.5" y="673.0" font-size="7.8" fill="#777" text-anchor="middle">75</text>
+<line x1="638.6" y1="444.0" x2="638.62" y2="662.00" stroke="#e4e2da" stroke-width="1"/>
+<text x="638.6" y="673.0" font-size="7.8" fill="#777" text-anchor="middle">100</text>
+<line x1="694.8" y1="444.0" x2="694.77" y2="662.00" stroke="#e4e2da" stroke-width="1"/>
+<text x="694.8" y="673.0" font-size="7.8" fill="#777" text-anchor="middle">125</text>
+<line x1="414.0" y1="462.2" x2="587.24" y2="462.17" stroke="#ddd6c8" stroke-width="1"/>
+<circle cx="587.2" cy="462.2" r="4.0" fill="#9c1f1f"/>
+<text x="601.2" y="454.2" font-size="8.2" font-weight="bold" fill="#9c1f1f" text-anchor="middle">77,1</text>
+<text x="704.0" y="465.2" font-size="7.9" fill="#222" text-anchor="end">base (Io0 mediana cat., anel. 0,010, PGA/4,5)</text>
+<line x1="414.0" y1="498.5" x2="645.82" y2="498.50" stroke="#ddd6c8" stroke-width="1"/>
+<circle cx="645.8" cy="498.5" r="4.0" fill="#2b5f9e"/>
+<text x="659.8" y="490.5" font-size="8.2" font-weight="bold" fill="#2b5f9e" text-anchor="middle">103,2</text>
+<text x="704.0" y="501.5" font-size="7.9" fill="#222" text-anchor="end">soglia Mw&gt;=4,5 (+ deficit ravvicinato)</text>
+<line x1="414.0" y1="534.8" x2="577.49" y2="534.83" stroke="#ddd6c8" stroke-width="1"/>
+<circle cx="577.5" cy="534.8" r="4.0" fill="#2b5f9e"/>
+<text x="591.5" y="526.8" font-size="8.2" font-weight="bold" fill="#2b5f9e" text-anchor="middle">72,8</text>
+<text x="704.0" y="537.8" font-size="7.9" fill="#222" text-anchor="end">finestra 1960-2020</text>
+<line x1="414.0" y1="571.2" x2="538.80" y2="571.17" stroke="#ddd6c8" stroke-width="1"/>
+<circle cx="538.8" cy="571.2" r="4.0" fill="#3f7d4e"/>
+<text x="552.8" y="563.2" font-size="8.2" font-weight="bold" fill="#3f7d4e" text-anchor="middle">55,6</text>
+<text x="704.0" y="574.2" font-size="7.9" fill="#222" text-anchor="end">declustering 50km/90gg (pavimento)</text>
+<line x1="414.0" y1="607.5" x2="689.77" y2="607.50" stroke="#ddd6c8" stroke-width="1"/>
+<circle cx="689.8" cy="607.5" r="4.0" fill="#777"/>
+<text x="676.0" y="599.5" font-size="8.2" font-weight="bold" fill="#777" text-anchor="middle">122,8</text>
+<text x="704.0" y="610.5" font-size="7.9" fill="#222" text-anchor="end">att. anelastica 0,005 (PGA/3,5)</text>
+<line x1="414.0" y1="643.8" x2="450.59" y2="643.83" stroke="#ddd6c8" stroke-width="1"/>
+<circle cx="450.6" cy="643.8" r="4.0" fill="#777"/>
+<text x="464.6" y="635.8" font-size="8.2" font-weight="bold" fill="#777" text-anchor="middle">16,3</text>
+<text x="704.0" y="646.8" font-size="7.9" fill="#222" text-anchor="end">Io0 post-1980 (cat. completo)</text>
+<line x1="414.0" y1="444.0" x2="414.00" y2="662.00" stroke="#bbb" stroke-width="1"/>
+<text x="560.0" y="685.0" font-size="7.8" fill="#777" text-anchor="middle">intervallo complessivo 16-123 mln/anno; la stima puntuale e un limite inferiore</text>
+<rect x="740.0" y="396.0" width="340.0" height="290.0" fill="#ffffff" stroke="#d8d6ce"/>
+<text x="752.0" y="420.0" font-size="11.5" font-weight="bold" fill="#222" text-anchor="start">Il verdetto in cinque righe</text>
+<text x="752.0" y="454.0" font-size="9" fill="#222" text-anchor="start">1. Sotto RP30 non esiste hazard pubblico MPS04 (81% in 50 anni = RP~30: il muro informativo).</text>
+<text x="752.0" y="471.0" font-size="9" fill="#222" text-anchor="start">2. La coda frequente e fatta di eventi osservati: Mw&gt;=6 ogni ~6,8 anni (CPTI15 1980-2020).</text>
+<text x="752.0" y="488.0" font-size="9" fill="#222" text-anchor="start">3. Stima event-based: 77 mln/anno, il 4,5% del limite RP&gt;=30 — correctivo minore, non un raddoppio.</text>
+<text x="752.0" y="505.0" font-size="9" fill="#222" text-anchor="start">4. I prior max-ent (P1 3,18 / P2 1,45 mld) si archiviano come bound laschi: scartati dal gate.</text>
+<text x="752.0" y="522.0" font-size="9" fill="#222" text-anchor="start">5. Totale RP&gt;=0 = 1,79 mld (1,73x benchmark); chiusura definitiva al passo DBMI15 (danni osservati).</text>
+<text x="752.0" y="556.0" font-size="8" fill="#777" text-anchor="start">Nota: il gap 1,035-vs-1,713 mld e artefatto dell'approssimazione CURVE=4 (ratio 1,655</text>
+<text x="752.0" y="569.0" font-size="8" fill="#777" text-anchor="start">gia documentato in ep_curve.json), non una sottostima del premio. Dettagli:</text>
+<text x="752.0" y="582.0" font-size="8" fill="#777" text-anchor="start">docs/esplorazione_validazione_rp30.md, §6-§7.</text>
+<text x="560.0" y="750.0" font-size="8.5" fill="#777" text-anchor="middle">Fonti: INGV CPTI15 v4.0 (Rovida et al.), MPS04, IVASS, AIDA · valori letti da results/esplorazione_*.json · generato da scripts/esplorazione/grafici_rp30.py · dettagli in docs/esplorazione_validazione_rp30.md</text>
+</svg>

@@ -17,6 +17,24 @@ da AIDA), in due prospettive complementari: il livello di **impresa** (30.673 un
 
 ---
 
+## 0. I risultati in un colpo d'occhio
+
+Le figure seguenti sono i quattro quadri grafici del repository (SVG deterministici,
+rigenerati dagli script e verificati dalla CI; clic per la versione interattiva su GitHub):
+
+![Quadro grafico dei risultati SDM: coefficienti con IC 95%, effetti LeSage-Pace, robustezza su nove specifiche, AIC vs k, test LR e diagnostica](docs/grafici_sdm.svg)
+
+![Hazard comunali: accelerazione di picco RP475 (MPS04 INGV) e quota di area in frana P3/P4 (ISPRA) per i 3.823 comuni](docs/mappe_hazard.svg)
+
+![Quadro grafico del pricing: curva EP sismica, peso della loss per performance ISP, chi paga il premio, province estreme, robustezza, Moran](docs/grafici_pricing.svg)
+
+![Coda frequente RP&#60;30: composizione per magnitudo, top eventi storici, gate sulle stime, rapporto sul benchmark, sensibilità](docs/grafici_rp30.svg)
+
+Le due mappe di loss comunale ([EAL attesa e loss ratio](docs/mappa_loss.svg) e
+[cluster LISA della coerenza tariffaria](docs/mappa_lisa_tariffa.svg)) completano la vista.
+
+---
+
 ## 1. Struttura del repository
 
 ```
@@ -40,6 +58,7 @@ zionario_dati.md                    ← dizionario delle 37 (+16 sismiche) colon
   grafici_pricing.svg                   ← quadro grafico dei risultati: EP, quartili ISP, chi paga, robustezza, Moran
   grafici_sdm.svg                        ← quadro grafico dei risultati SDM: coefficienti IC95, effetti, robustezza, AIC vs k
   mappe_hazard.svg                       ← dot map comunali degli hazard: ag RP475 (MPS04) e frana P3/P4 (quota area)
+  grafici_rp30.svg                       ← coda frequente RP<30: composizione per magnitudo, top eventi, gate, sensibilità
   log_R_livello_impresa.md            ← guida e integrazione dei log R (spatialreg) livello impresa
 scripts/
   step1_kdist_moran.py                 ← selezione k via curva k-dist + Moran (livello comune)
@@ -57,6 +76,8 @@ scripts/
   pricing/validazione_assunzioni.py     ← validazione formale delle assunzioni (curve, OLS, W, seed)
   pricing/grafici.py                    ← quadro grafico SVG dei risultati (6 pannelli dai JSON)
   grafici_sdm.py                          ← quadro grafico dei risultati SDM + mappe hazard (SVG, 6 pannelli + 2 dot map)
+  esplorazione/                          ← fase di validazione coda RP<30: CPTI15, stima event-based, prior, CV
+  esplorazione/grafici_rp30.py            ← quadro grafico della coda RP<30 (SVG, 5 pannelli + verdetto)
   sismico/                             ← pipeline del terzo hazard sismico (estrazione, matching, SDM p=4)
 results/
   grid_results.json                     ← griglia di selezione k (k-dist, Moran, AIC)
@@ -80,7 +101,7 @@ data/
   log_R_livello_impresa/               ← 12
  log R (spatialreg) dell'analisi a livello impresa
 notebook/
-  riproduce_sdm_comuni.ipynb           ← riproduzione end-to-end dell'analisi SDM k=5 (numpy, assert vs FINAL_k5)
+  riproduce_sdm_comuni.ipynb           ← riproduzione end-to-end: SDM k=5 + estensione sismica p=4 (numpy, assert vs FINAL_k5/FINAL_sismico_k5)
   README.md                            ← guida all'esecuzione del notebook e mappa cella → artefatto
 ```
 
@@ -380,7 +401,9 @@ oss sul tessuto produttivo: `python3 scripts/pricing/tessuto_produttivo.py`
    `docs/grafici_pricing.svg` (quadro grafico a 6 pannelli, legge i JSON dei risultati). I grafici dei risultati SDM e le mappe
    hazard seguono la stessa filosofia: `python3 scripts/grafici_sdm.py` →
    `docs/grafici_sdm.svg` + `docs/mappe_hazard.svg` (deterministici, solo stdlib,
-   verificati in CI con git diff).
+   verificati in CI con git diff). Il quadro grafico della coda frequente RP<30 segue la
+   stessa filosofia: `python3 scripts/esplorazione/grafici_rp30.py` → `docs/grafici_rp30.svg`
+   (legge `results/esplorazione_*.json`, rigenerato e verificato in CI).
 11. SE robusti HC1 del SDM: `node scripts/se_robusti.js` → `results/se_robusti_hc1.json`
    (Node 18+; deterministico: riusa `scripts/definitivo.js` e verifica internamente di
    replicare `results/se_definitivi.json` a scarto relativo 0).

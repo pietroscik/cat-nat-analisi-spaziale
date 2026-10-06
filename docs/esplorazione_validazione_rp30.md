@@ -138,6 +138,11 @@ al benchmark, e **soglia per-sito**: la banda frequente è il danno dove la PGA
 locale resta sotto l'`ag_RP30` del comune — disgiunta per costruzione dal
 limite identificato di 1,713 mld.
 
+**Vista grafica**: `docs/grafici_rp30.svg` — cinque pannelli (composizione per magnitudo,
+top eventi, gate sui bounds, rapporto sul benchmark, sensibilità) più il riquadro del
+verdetto, tutti letti dai JSON di questa fase (rigenerato da
+`scripts/esplorazione/grafici_rp30.py`, verificato in CI).
+
 **Risultato base: AAL frequente = 77,1 mln €/anno**, il 4,5% del limite
 identificato e il 2,4% del prior max-ent P1 (3,18 mld). Totale RP≥0 = 1,713 +
 0,077 = **1,79 mld €/anno (1,73× il benchmark, dal 1,66× del limite
