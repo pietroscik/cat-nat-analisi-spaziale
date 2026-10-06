@@ -38,6 +38,8 @@ zionario_dati.md                    ← dizionario delle 37 (+16 sismiche) colon
   mappa_loss.svg                       ← mappa di loss: EAL attesa e loss ratio per comune
   mappa_lisa_tariffa.svg                ← cluster LISA della coerenza tariffaria (HH/LL del loss ratio)
   grafici_pricing.svg                   ← quadro grafico dei risultati: EP, quartili ISP, chi paga, robustezza, Moran
+  grafici_sdm.svg                        ← quadro grafico dei risultati SDM: coefficienti IC95, effetti, robustezza, AIC vs k
+  mappe_hazard.svg                       ← dot map comunali degli hazard: ag RP475 (MPS04) e frana P3/P4 (quota area)
   log_R_livello_impresa.md            ← guida e integrazione dei log R (spatialreg) livello impresa
 scripts/
   step1_kdist_moran.py                 ← selezione k via curva k-dist + Moran (livello comune)
@@ -54,6 +56,7 @@ scripts/
  del risultato del tessuto (winsorizzato, ROA, SLX)
   pricing/validazione_assunzioni.py     ← validazione formale delle assunzioni (curve, OLS, W, seed)
   pricing/grafici.py                    ← quadro grafico SVG dei risultati (6 pannelli dai JSON)
+  grafici_sdm.py                          ← quadro grafico dei risultati SDM + mappe hazard (SVG, 6 pannelli + 2 dot map)
   sismico/                             ← pipeline del terzo hazard sismico (estrazione, matching, SDM p=4)
 results/
   grid_results.json                     ← griglia di selezione k (k-dist, Moran, AIC)
@@ -212,6 +215,10 @@ SAR p=4 (10.595,4) ≪ SDM p=2 (12.717,4);
 - Diagnostica: Moran residui I = −0,0355 (p = 0,004); RESET F = 4,95 (scende da 24,4); BP LM = 470;
 - Robustezza: hazard alternativi (RP30/RP50/Sa RP1000/Sa RP2500) → β_Sism_Grandi 0,118–0,136;
   k = 6/7/8 → 0,126–0,127 (ρ 0,41→0,49); esclusione Sardegna → 0,128.
+- Vista grafica dei risultati SDM (coefficienti con IC 95%, effetti, robustezza nelle nove
+  specifiche, selezione k, confronto di specifica) in `docs/grafici_sdm.svg`; dot map comunali
+  degli hazard (ag RP475 e frana P3/P4) in `docs/mappe_hazard.svg` — entrambe rigenerate da
+  `scripts/grafici_sdm.py` e verificate dalla CI.
 
 **Sintesi.** Il sismico è il driver dominante del premio teorico Cat-Nat: β grande e
 precisissimo, stabile in ogni robustezza. Nel modello a due regressori β_Frana_Grandi
@@ -370,7 +377,10 @@ oss sul tessuto produttivo: `python3 scripts/pricing/tessuto_produttivo.py`
    scripts/pricing/validazione_assunzioni.py` → `results/validazione_assunzioni.json`
    (validazione formale delle assunzioni: correzione della coda, diagnostica OLS,
    trasformazione log, matrice W, seed); `python3 scripts/pricing/grafici.py` →
-   `docs/grafici_pricing.svg` (quadro grafico a 6 pannelli, legge i JSON dei risultati).
+   `docs/grafici_pricing.svg` (quadro grafico a 6 pannelli, legge i JSON dei risultati). I grafici dei risultati SDM e le mappe
+   hazard seguono la stessa filosofia: `python3 scripts/grafici_sdm.py` →
+   `docs/grafici_sdm.svg` + `docs/mappe_hazard.svg` (deterministici, solo stdlib,
+   verificati in CI con git diff).
 11. SE robusti HC1 del SDM: `node scripts/se_robusti.js` → `results/se_robusti_hc1.json`
    (Node 18+; deterministico: riusa `scripts/definitivo.js` e verifica internamente di
    replicare `results/se_definitivi.json` a scarto relativo 0).

@@ -10,6 +10,12 @@ numerica corretta (vedi la nota bug in fondo). Risultati macchina completi in
 `results/FINAL_sismico_k5.json`; pipeline in `scripts/sismico/` e metodologia dati in
 `docs/sismico_metodologia.md`.
 
+**Vista grafica**: `docs/grafici_sdm.svg` (quadro a sei pannelli rigenerato da
+`scripts/grafici_sdm.py`: coefficienti con IC 95%, effetti LeSage-Pace, robustezza nelle
+nove specifiche, selezione k via AIC, confronto di specifica, rho) e
+`docs/mappe_hazard.svg` (dot map comunali dell'hazard sismico ag RP475 e della quota di
+area in frana P3/P4).
+
 ## 1. Baseline p = 2: replica esatta del modello definitivo
 
 Il primo stadio dello script ristima il modello a due regressori come controllo di

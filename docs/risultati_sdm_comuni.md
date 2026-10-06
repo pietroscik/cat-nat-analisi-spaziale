@@ -4,7 +4,9 @@ Unità: 3.823 comuni. Specifica: `y = log1p(Premio_Teorico_Comunale_EUR)`;
 regressori `log1p(Risk_Frana_Asset_PMI)`, `log1p(Risk_Frana_Asset_Grandi)`;
 W = KNN k=5 row-standardized, coordinate corrette (Gazzo, Lucignano, Olgiate Olona, Telese Terme).
 Fonti numeriche: `results/FINAL_k5.json`, `results/risultati_definitivi.json`,
-`results/se_definitivi.json`.
+`results/se_definitivi.json`. Vista grafica della selezione k (AIC SDM/SAR/SEM) e del
+confronto di specifica in `docs/grafici_sdm.svg` (pannelli 4-5, rigenerato da
+`scripts/grafici_sdm.py`).
 
 ## 1. Coefficienti del modello definitivo (k = 5)
 
